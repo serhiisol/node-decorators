@@ -2,7 +2,7 @@
 
 ## Example:
 ```
-import { Request, Response, Param, Params, Controller, RouteGet, App, Middleware } from './decorators';
+import { Request, Response, Param, Params, Controller, RouteGet, App, Middleware } from '@node-decorators';
 
 @Controller('/')
 class Test {
@@ -25,6 +25,7 @@ app.controller(Test)
 ```
 
 ## API
+You have two options how to decorate express application:
 
 ### Express application wrapper
 
@@ -33,6 +34,19 @@ import {App} from '@node-decorators';
 let app = App();
 app.controller(ControllerClass);
 ```
+
+### Decorate function
+
+```
+import * as express from 'express';
+import {decorateExpressApp} from '@node-decorators';
+let app = express();
+decorateExpressApp(app)
+app.controller(ControllerClass);
+```
+
+These two functions will add additional method **controller** to express application.
+**app.controller** returns app.
 
 
 ### ClassDecorator

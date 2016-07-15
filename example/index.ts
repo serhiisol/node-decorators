@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Request, Response, Params, Controller, Get, App, decorateExpressApp, Middleware, DecoratedExpress } from '../index';
+import { Request, Response, Params, Controller, Get, decorateExpressApp, Middleware, DecoratedExpress } from '../index';
 
 @Controller('/')
 class Test {
