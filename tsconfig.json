@@ -18,7 +18,6 @@
   ],
   "files": [
     "src/index",
-    "example/index",
-    "typings/index"
+    "example/index"
   ]
 }
