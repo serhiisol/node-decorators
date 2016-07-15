@@ -2,7 +2,7 @@
 
 ## Example:
 ```
-import { Request, Response, Param, Params, Controller, RouteGet, App, Middleware } from '@node-decorators';
+import { Request, Response, Param, Params, Controller, RouteGet, App, Middleware } from 'node-decorators';
 
 @Controller('/')
 class Test {
@@ -30,7 +30,7 @@ You have two options how to decorate express application:
 ### Express application wrapper
 
 ```
-import {App} from '@node-decorators';
+import {App} from 'node-decorators';
 let app = App();
 app.controller(ControllerClass);
 ```
@@ -39,7 +39,7 @@ app.controller(ControllerClass);
 
 ```
 import * as express from 'express';
-import {decorateExpressApp} from '@node-decorators';
+import {decorateExpressApp} from 'node-decorators';
 let app = express();
 decorateExpressApp(app)
 app.controller(ControllerClass);
