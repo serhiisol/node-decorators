@@ -4,7 +4,6 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-//    "mapRoot": "/",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
@@ -18,7 +17,8 @@
     "node_modules/**/*"
   ],
   "files": [
-    "index",
+    "src/index",
+    "example/index",
     "typings/index"
   ]
 }
