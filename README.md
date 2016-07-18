@@ -2,7 +2,16 @@
 
 ## Example:
 ```
-import { Request, Response, Param, Params, Controller, RouteGet, App, Middleware } from 'node-decorators';
+import {
+  Request,
+  Response,
+  Param,
+  Params,
+  Controller,
+  RouteGet,
+  App,
+  Middleware
+} from 'node-decorators';
 
 @Controller('/')
 class Test {
