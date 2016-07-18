@@ -1,6 +1,6 @@
 {
   "name": "node-decorators",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "postinstall": "typings install"
+    "typings": "typings install"
   },
   "keywords": [
     "express",
@@ -26,5 +26,13 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
-  }
+  },
+  "files": [
+    "!**/*.ts",
+    "src/**/*.js",
+    "src/**/*.js.map",
+    "index.d.ts",
+    "index.js",
+    "README.md"
+  ]
 }
