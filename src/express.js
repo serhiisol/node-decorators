@@ -46,7 +46,7 @@ function registerController(app, Controller) {
         };
         router[method].apply(router, [
             routes[methodName].url
-        ].concat(middleware[methodName], [
+        ].concat((middleware[methodName] || []), [
             fn
         ]));
     };

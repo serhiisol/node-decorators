@@ -16,15 +16,16 @@ var index_1 = require('../index');
 var Test = (function () {
     function Test() {
     }
-    Test.prototype.getData = function (res, req, id) {
+    Test.prototype.
+    // @Middleware((req, res, next) => {
+    //   console.log('Hello World');
+    //   next();
+    // })
+    getData = function (res, req, id) {
         res.send('balalala ' + JSON.stringify(id));
     };
     __decorate([
         index_1.Get('/all/:id'),
-        index_1.Middleware(function (req, res, next) {
-            console.log('Hello World');
-            next();
-        }),
         __param(0, index_1.Response()),
         __param(1, index_1.Request()),
         __param(2, index_1.Params('id')), 

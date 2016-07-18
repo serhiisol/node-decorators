@@ -5,10 +5,10 @@ import { Request, Response, Params, Controller, Get, decorateExpressApp, Middlew
 class Test {
 
   @Get('/all/:id')
-  @Middleware((req, res, next) => {
-    console.log('Hello World');
-    next();
-  })
+  // @Middleware((req, res, next) => {
+  //   console.log('Hello World');
+  //   next();
+  // })
   getData(@Response() res, @Request() req, @Params('id') id: string) {
     res.send('balalala ' + JSON.stringify(id));
   }

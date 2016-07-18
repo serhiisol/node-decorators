@@ -43,7 +43,7 @@ function registerController(app, Controller) {
     };
 
     router[method].apply(router, [
-      routes[methodName].url, ...middleware[methodName], fn
+      routes[methodName].url, ...(middleware[methodName] || []), fn
     ]);
   }
 
