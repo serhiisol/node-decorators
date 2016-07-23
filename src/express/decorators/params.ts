@@ -1,8 +1,8 @@
-import { getMeta } from '../utils';
+import { getExpressMeta } from '../../utils';
 import { ParameterType } from '../interface';
 
-function addParameterConfiguration(target: Object, propertyKey: string | symbol, config: IParameterConfiguration) {
-  let meta = getMeta(target);
+function addParameterConfiguration(target: IDecoratedClass, propertyKey: string | symbol, config: IParameterConfiguration) {
+  let meta = getExpressMeta(target);
   if (!meta.params[propertyKey]) {
     meta.params[propertyKey] = [];
   }
@@ -11,7 +11,7 @@ function addParameterConfiguration(target: Object, propertyKey: string | symbol,
 
 function parameterDecoratorFactory(parameterType: ParameterType): (name?: string) => ParameterDecorator {
   return function(name?: string): ParameterDecorator {
-    return function (target: Object, propertyKey: string | symbol, index: number) {
+    return function (target: IDecoratedClass, propertyKey: string | symbol, index: number) {
       addParameterConfiguration(target, propertyKey, {index, type: parameterType, name});
     };
   };

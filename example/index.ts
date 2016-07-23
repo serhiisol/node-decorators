@@ -1,27 +1,35 @@
 import * as express from 'express';
-import { Request, Response, Params, Controller, Get, decorateExpressApp, Middleware, DecoratedExpress } from '../index';
+import {
+  Response,
+  Params,
+  Controller,
+  Get,
+  bootstrapExpress,
+  Middleware,
+  DecoratedExpress
+} from '../index';
+import { TestModel } from './model';
+
 
 @Controller('/')
-class Test {
+class TestController {
 
   @Get('/all/:id')
-  // @Middleware((req, res, next) => {
-  //   console.log('Hello World');
-  //   next();
-  // })
-  getData(@Response() res, @Request() req, @Params('id') id: string) {
-    res.send('balalala ' + JSON.stringify(id));
+  @Middleware((req, res, next) => {
+    console.log('Hello World');
+    next();
+  })
+  getData(@Response() res, @Params('id') id: string) {
+    let test = new TestModel();
+    test.testField = "Hello World";
+    test.instanceMethod();
+    test.save(() => res.send('balalala ' + JSON.stringify(id)));
   }
 
 }
 
-// let app = App();
-//
-// app.controller(Test)
-//   .listen(3000);
-
 let app: DecoratedExpress = <DecoratedExpress>express();
 
-decorateExpressApp(app);
+bootstrapExpress(app);
 
-app.controller(Test).listen(3000);
+app.controller(TestController).listen(3000);

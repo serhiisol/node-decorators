@@ -1,7 +1,7 @@
 "use strict";
-var utils_1 = require('../utils');
+var utils_1 = require('../../utils');
 function makeRouteMeta(target, key, descriptor, method, url) {
-    var meta = utils_1.getMeta(target);
+    var meta = utils_1.getExpressMeta(target);
     meta.routes[key] = { method: method, url: url };
     return descriptor;
 }

@@ -1,5 +1,5 @@
 "use strict";
-function ensureMeta(target) {
+function getExpressMeta(target) {
     if (!target.__meta__) {
         target.__meta__ = {
             baseUrl: '',
@@ -8,10 +8,17 @@ function ensureMeta(target) {
             params: {}
         };
     }
-}
-function getMeta(target) {
-    ensureMeta(target);
     return target.__meta__;
 }
-exports.getMeta = getMeta;
+exports.getExpressMeta = getExpressMeta;
+function getMongooseMeta(target) {
+    if (!target.__meta__) {
+        target.__meta__ = {
+            schema: {},
+            name: ''
+        };
+    }
+    return target.__meta__;
+}
+exports.getMongooseMeta = getMongooseMeta;
 //# sourceMappingURL=utils.js.map

@@ -1,13 +1,13 @@
-import { getMeta } from '../utils';
+import { getExpressMeta } from '../../utils';
 
-function makeRouteMeta(target: Object, key: string | symbol, descriptor: any, method: string, url: string) {
-  let meta = getMeta(target);
+function makeRouteMeta(target: IDecoratedClass, key: string | symbol, descriptor: any, method: string, url: string) {
+  let meta = getExpressMeta(target);
   meta.routes[key] = <IRoute>{method, url};
   return descriptor;
 }
 
 let makeRoute = (method: string, url: string): MethodDecorator =>
-  (target: Object, key: string | symbol, descriptor: any) => makeRouteMeta(target, key, descriptor, 'get', url);
+  (target: IDecoratedClass, key: string | symbol, descriptor: any) => makeRouteMeta(target, key, descriptor, 'get', url);
 
 export let Get = (url: string): MethodDecorator => makeRoute('get', url);
 

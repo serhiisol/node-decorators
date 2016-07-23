@@ -13,37 +13,35 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var express = require('express');
 var index_1 = require('../index');
-var Test = (function () {
-    function Test() {
+var model_1 = require('./model');
+var TestController = (function () {
+    function TestController() {
     }
-    Test.prototype.
-    // @Middleware((req, res, next) => {
-    //   console.log('Hello World');
-    //   next();
-    // })
-    getData = function (res, req, id) {
-        res.send('balalala ' + JSON.stringify(id));
+    TestController.prototype.getData = function (res, id) {
+        var test = new model_1.TestModel();
+        test.testField = "Hello World";
+        test.instanceMethod();
+        test.save(function () { return res.send('balalala ' + JSON.stringify(id)); });
     };
     __decorate([
         index_1.Get('/all/:id'),
+        index_1.Middleware(function (req, res, next) {
+            console.log('Hello World');
+            next();
+        }),
         __param(0, index_1.Response()),
-        __param(1, index_1.Request()),
-        __param(2, index_1.Params('id')), 
+        __param(1, index_1.Params('id')), 
         __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object, Object, String]), 
+        __metadata('design:paramtypes', [Object, String]), 
         __metadata('design:returntype', void 0)
-    ], Test.prototype, "getData", null);
-    Test = __decorate([
+    ], TestController.prototype, "getData", null);
+    TestController = __decorate([
         index_1.Controller('/'), 
         __metadata('design:paramtypes', [])
-    ], Test);
-    return Test;
+    ], TestController);
+    return TestController;
 }());
-// let app = App();
-//
-// app.controller(Test)
-//   .listen(3000);
 var app = express();
 index_1.decorateExpressApp(app);
-app.controller(Test).listen(3000);
+app.controller(TestController).listen(3000);
 //# sourceMappingURL=index.js.map

@@ -1,8 +1,8 @@
-import { getMeta } from '../utils';
+import { getExpressMeta } from '../../utils';
 
 export let Middleware = (middleware: Function): MethodDecorator => {
-  return (target: Object, propertyKey: string | symbol, descriptor: any) => {
-    let meta = getMeta(target);
+  return (target: IDecoratedClass, propertyKey: string | symbol, descriptor: any) => {
+    let meta = getExpressMeta(target);
     if (!meta.middleware[propertyKey]) {
       meta.middleware[propertyKey] = [];
     }

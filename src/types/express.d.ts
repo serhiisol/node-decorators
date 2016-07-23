@@ -1,7 +1,3 @@
-interface Object {
-  __meta__: IMeta;
-}
-
 interface IRoute {
   method: string;
   url: string;
@@ -15,21 +11,9 @@ interface IMiddleware {
   [key: string]: Function[];
 }
 
-interface IParameterConfiguration {
-  index: number;
-  type: any;
-  name?: string;
-}
-
-interface IParams {
-  [key: string]: IParameterConfiguration[];
-}
-
-interface IMeta {
+interface IExpressMeta {
   baseUrl: string;
   routes: IRoutes;
   middleware: IMiddleware;
   params: IParams;
 }
-
-
