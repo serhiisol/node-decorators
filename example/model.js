@@ -19,7 +19,6 @@ mongoose_1.connect('192.168.99.100:27017/test', {
 });
 var TestModelClass = (function () {
     function TestModelClass() {
-        this.instanceField = "Hello";
     }
     TestModelClass.testMethod = function () {
         console.log('static test method');
@@ -27,7 +26,6 @@ var TestModelClass = (function () {
     TestModelClass.prototype.instanceMethod = function () {
         console.log(this);
     };
-    TestModelClass.field = "Bar";
     TestModelClass = __decorate([
         index_1.Schema({
             testField: String
@@ -37,5 +35,5 @@ var TestModelClass = (function () {
     ], TestModelClass);
     return TestModelClass;
 }());
-exports.TestModel = index_1.bootstrapModel(TestModelClass);
+exports.TestModel = index_1.bootstrapMongoose(TestModelClass);
 //# sourceMappingURL=model.js.map

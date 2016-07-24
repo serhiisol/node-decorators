@@ -42,6 +42,6 @@ var TestController = (function () {
     return TestController;
 }());
 var app = express();
-index_1.decorateExpressApp(app);
+index_1.bootstrapExpress(app);
 app.controller(TestController).listen(3000);
 //# sourceMappingURL=index.js.map

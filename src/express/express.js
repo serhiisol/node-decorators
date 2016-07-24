@@ -56,12 +56,19 @@ function registerController(app, Controller) {
     app.use(baseUrl, router);
     return app;
 }
-function decorateExpressApp(app) {
+function bootstrapExpress(app) {
     app['controller'] = function (Controller) { return registerController(app, Controller); };
     return app;
 }
-exports.decorateExpressApp = decorateExpressApp;
+exports.bootstrapExpress = bootstrapExpress;
 ;
+/**
+ * @deprecated Use bootstrapExpress
+ */
+exports.decorateExpressApp = bootstrapExpress;
+/**
+ * @deprecated Use bootstrapExpress
+ */
 exports.App = function () {
     var app = express();
     app.controller = function (Controller) { return registerController(app, Controller); };

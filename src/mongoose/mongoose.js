@@ -1,7 +1,7 @@
 "use strict";
 var mongoose_1 = require('mongoose');
 var utils_1 = require('../utils');
-function bootstrapModel(MongooseModel) {
+function bootstrapMongoose(MongooseModel) {
     var meta = utils_1.getMongooseMeta(MongooseModel.prototype), schema = new mongoose_1.Schema(meta.schema), model = MongooseModel.prototype;
     for (var key in MongooseModel) {
         if (MongooseModel.hasOwnProperty(key)) {
@@ -15,5 +15,5 @@ function bootstrapModel(MongooseModel) {
     }
     return mongoose_1.model(meta.name, schema);
 }
-exports.bootstrapModel = bootstrapModel;
+exports.bootstrapMongoose = bootstrapMongoose;
 //# sourceMappingURL=mongoose.js.map
