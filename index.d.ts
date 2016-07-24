@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { Document } from 'mongoose';
+import { Document, Model as IModel } from 'mongoose';
 
 export interface DecoratedExpress extends Express {
   controller(Controller): DecoratedExpress;
@@ -32,4 +32,5 @@ export function Cookies(name?: string): ParameterDecorator;
 
 
 export function Schema(schemaDefinition: any): ClassDecorator;
-export function bootstrapMongoose<T extends Document>(MongooseModel): ClassDecorator;
+export function Model(name: string): ClassDecorator;
+export function bootstrapMongoose<T extends Document>(MongooseModel): IModel<T>;

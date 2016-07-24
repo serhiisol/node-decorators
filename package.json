@@ -13,8 +13,11 @@
     "typings": "typings install"
   },
   "keywords": [
+    "nodejs",
     "express",
-    "decorators"
+    "mongoose",
+    "decorators",
+    "typescript"
   ],
   "author": "Serhii So",
   "license": "MIT",
