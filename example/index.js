@@ -20,6 +20,7 @@ var TestController = (function () {
     TestController.prototype.getData = function (res, id) {
         var test = new model_1.TestModel();
         test.testField = "Hello World";
+        model_1.TestModel.testMethod();
         test.instanceMethod();
         test.save(function () { return res.send('balalala ' + JSON.stringify(id)); });
     };
@@ -43,5 +44,5 @@ var TestController = (function () {
 }());
 var app = express();
 index_1.bootstrapExpress(app);
-app.controller(TestController).listen(3000);
+app.controller(TestController).listen(3003);
 //# sourceMappingURL=index.js.map

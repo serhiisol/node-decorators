@@ -127,6 +127,7 @@ app.controller(ControllerClass);
 @Cookies(name?: string)
 
 #### Release notes
+* 0.0.8 - ES6 support as target
 * 0.0.6 - Base mongoose decorators
 * 0.0.5 - Base express decorators
 

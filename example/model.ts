@@ -22,10 +22,14 @@ class TestModelClass {
     console.log(this);
   }
 }
-interface ITestModel {
+interface ITest {
   testField: string;
 }
-interface ITestModelType extends ITestModel, Document {
+
+interface ITestInstance extends ITest, Document {
   instanceMethod(): void;
 }
-export let TestModel: IModel<ITestModelType> = bootstrapMongoose<ITestModelType>(TestModelClass);
+interface ITestModel extends IModel <ITestInstance>{
+  testField: string;
+}
+export let TestModel: ITestModel = <ITestModel>bootstrapMongoose(TestModelClass);
