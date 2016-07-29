@@ -14,9 +14,11 @@ connect('192.168.99.100:27017/test', {
 })
 @Model('Test')
 class TestModelClass {
-  static testMethod() {
+  static staticMethod() {
     console.log('static test method')
   }
+
+  static staticProperty: string = "Hello World";
 
   instanceMethod() {
     console.log(this);
@@ -30,6 +32,7 @@ interface ITestInstance extends ITest, Document {
   instanceMethod(): void;
 }
 interface ITestModel extends IModel <ITestInstance>{
-  testField: string;
+  staticMethod();
+  staticProperty: string;
 }
 export let TestModel: ITestModel = <ITestModel>bootstrapMongoose(TestModelClass);

@@ -1,0 +1,12 @@
+# TS Files
+src/**/*.ts
+index.ts
+typings.json
+tsconfig.json
+
+# Misc
+.editorconfig
+.gitignore
+
+# Example
+example/

@@ -20,9 +20,9 @@ class TestController {
     next();
   })
   getData(@Response() res, @Params('id') id: string) {
+    TestModel.staticMethod()
     let test = new TestModel();
     test.testField = "Hello World";
-    (<any>TestModel).testMethod();
     test.instanceMethod();
     test.save(() => res.send('balalala ' + JSON.stringify(id)));
   }

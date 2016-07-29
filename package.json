@@ -30,13 +30,5 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
-  },
-  "files": [
-    "!**/*.ts",
-    "src/**/*.js",
-    "src/**/*.js.map",
-    "index.d.ts",
-    "index.js",
-    "README.md"
-  ]
+  }
 }
