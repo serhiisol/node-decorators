@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["index.ts"],"names":[],"mappings":";;;;AAAA,iBAAc,cAAc,CAAC,EAAA;AAC7B,iBAAc,SAAS,CAAC,EAAA;AACxB,iBAAc,cAAc,CAAC,EAAA;AAC7B,iBAAc,UAAU,CAAC,EAAA","sourcesContent":["export * from './controller';\nexport * from './route';\nexport * from './middleware';\nexport * from './params';\n"]}
