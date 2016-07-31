@@ -4,6 +4,9 @@ node_modules
 # IDEs and editors
 .idea
 
+# Build
+build/
+
 # misc
 npm-debug.log
 typings/

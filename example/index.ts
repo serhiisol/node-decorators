@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { DecoratedExpress } from 'node-decorators/express';
 import {
   Response,
   Params,
@@ -29,7 +28,7 @@ class TestController {
 
 }
 
-let app: DecoratedExpress = bootstrapExpress(express());
+let app: any = bootstrapExpress(express());
 
 
 app.controller(TestController).listen(3003);

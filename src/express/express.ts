@@ -1,7 +1,5 @@
 import { Router, Express } from 'express';
-import * as express from 'express';
 import { ParameterType } from './interface';
-import { DecoratedExpress } from 'node-decorators/express';
 
 function getParam(source: any, paramType: string, name: string) {
   let param = source[paramType];
@@ -52,7 +50,7 @@ function registerController(app, Controller) {
   return app;
 }
 
-export function bootstrapExpress(app: Express): DecoratedExpress {
+export function bootstrapExpress(app: Express) {
   app['controller'] = Controller => registerController(app, Controller);
-  return <DecoratedExpress>app;
+  return app;
 };

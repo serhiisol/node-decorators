@@ -20,7 +20,8 @@
     "typings/index",
     "express.d.ts",
     "express.ts",
-    "mongoose",
+    "mongoose.d.ts",
+    "mongoose.ts",
     "example/index"
   ]
 }
