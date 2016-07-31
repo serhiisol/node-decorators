@@ -1,40 +1,51 @@
 import { Schema, model as Model, Model as IModel, Document } from 'mongoose';
-import { getMongooseMeta } from '../utils';
+import { getMongooseMeta, extend } from '../utils';
 
-let blacklist: string[] = ['length', 'name', 'prototype', '__meta__', 'constructor']
-
-function removeBlacklisted(keys: string[]) {
-  return keys.filter(item => {
-    return blacklist.indexOf(item) === -1;
-  })
-}
-
-export function bootstrapMongoose<T extends Document>(MongooseModel): IModel<T> {
-  let meta: IMongooseMeta = getMongooseMeta(MongooseModel.prototype),
+export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T> {
+  let meta: IMongooseMeta = getMongooseMeta(DecoratedClass.prototype),
+    classInstance = new DecoratedClass(),
     schema: Schema = new Schema(meta.schema),
-    model = MongooseModel.prototype,
-    staticKeys: string[] = removeBlacklisted(Object.getOwnPropertyNames(MongooseModel)),
-    instanceKeys: string[] = removeBlacklisted(Object.getOwnPropertyNames(model));
+    statics = {},
+    indexes = {},
+    model;
 
-  for (let key of staticKeys) {
-    if (typeof MongooseModel[key] === 'function') {
-      schema.statics[key] = MongooseModel[key];
+  meta.statics.forEach(stat => {
+    if (typeof stat[1] === 'function') {
+      schema.statics[<string>stat[0]] = <Function>stat[1]
+    } else {
+      statics[<string>stat] = classInstance[<string>stat];
     }
-  }
+  });
 
-  for (let key of instanceKeys) {
-    if (typeof model[key] === 'function') {
-      schema.methods[key] = model[key];
+  meta.queries.forEach((query: [string, Function]) => {
+    schema['query'][query[0]] = query[1];
+  });
+
+  meta.instances.forEach((instance: [string, Function]) => {
+    schema.methods[instance[0]] = instance[1];
+  });
+
+  meta.virtuals.forEach((virtual: [string, PropertyDescriptor]) => {
+    let v = schema.virtual(virtual[0]);
+    if (virtual[1].get) {
+      v.get(virtual[1].get);
     }
-  }
+    if (virtual[1].set) {
+      v.set(virtual[1].set);
+    }
+  });
+
+  meta.indexes.forEach((index: string) => {
+    indexes[index] = classInstance[index];
+  });
+  schema.index(indexes);
+
+  meta.options.forEach((option: string) => {
+    schema.set(option, classInstance[option]);
+  });
 
   model = Model<T>(meta.name, schema);
-
-  for (let key of staticKeys) {
-    if (typeof MongooseModel[key] !== 'function') {
-      model[key] = MongooseModel[key];
-    }
-  }
+  extend(model, statics);
 
   return model;
 }

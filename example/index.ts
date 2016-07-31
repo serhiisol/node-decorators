@@ -1,13 +1,13 @@
 import * as express from 'express';
+import { DecoratedExpress } from 'node-decorators/express';
 import {
   Response,
   Params,
   Controller,
   Get,
   bootstrapExpress,
-  Middleware,
-  DecoratedExpress
-} from '../index';
+  Middleware
+} from '../express';
 import { TestModel } from './model';
 
 
@@ -29,8 +29,7 @@ class TestController {
 
 }
 
-let app: DecoratedExpress = <DecoratedExpress>express();
+let app: DecoratedExpress = bootstrapExpress(express());
 
-bootstrapExpress(app);
 
 app.controller(TestController).listen(3003);

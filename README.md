@@ -13,7 +13,7 @@ import {
   Get,
   bootstrapExpress,
   Middleware
-} from 'node-decorators';
+} from 'node-decorators/express';
 
 @Controller('/')
 class TestController {
@@ -37,7 +37,7 @@ app.controller(TestController).listen(3000);
 ## Example Mongoose Model
 ```
 import {connect, Document, Model as IModel } from 'mongoose';
-import {Schema, Model, bootstrapMongoose} from '../index';
+import {Schema, Model, bootstrapMongoose} from 'node-decorators/mongoose';
 
 connect('192.168.99.100:27017/test', {
   "server": {
@@ -81,23 +81,18 @@ bootstrapExpress\<T extends Document\>(MongooseModel): IModel\<T\> -
 This function will add additional method **controller** to express application.
 **app.controller** returns app.
 
-```
-import * as express from 'express';
-import {bootstrapExpress} from 'node-decorators';
-let app = express();
-bootstrapExpress(app)
-app.controller(ControllerClass);
-```
+## Express
 
-### ClassDecorator
+### Class
 @Controller(baseUrl: string)
 
+**mongoose**
 @Schema(schemaDefinition: any)
 
+**mongoose**
 @Model(name: string)
 
-### MethodDecorators
-
+### Method
 @Get(url: string)
 
 @Post(url: string)
@@ -110,8 +105,7 @@ app.controller(ControllerClass);
 
 @Middleware(middleware: Function)
 
-### ParameterDecorators
-
+### Parameter
 @Request()
 
 @Response()
@@ -126,13 +120,38 @@ app.controller(ControllerClass);
 
 @Cookies(name?: string)
 
-#### Release notes
-* 0.0.8 - ES6 support as target
-* 0.0.6 - Base mongoose decorators
-* 0.0.5 - Base express decorators
+## Mongoose
 
-#### License
-  "you are allowed to use" a.k.a. MIT :)
+### Class
+
+@Schema(schemaDefinition: any)
+
+@Model(name: string)
+
+### Method
+
+@Static
+
+@Query
+
+@Instance
+
+@Virtual
+
+### Property
+
+@Static
+
+@Index
+
+@Set = @Option
+
+
+#### [Change Log]
+
+#### [License]
 
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com
+[Change Log]:/CHANGELOG.md
+[License]:/LICENSE.md

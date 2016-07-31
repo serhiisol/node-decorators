@@ -1,10 +1,7 @@
 import { Router, Express } from 'express';
 import * as express from 'express';
 import { ParameterType } from './interface';
-
-export interface DecoratedExpress extends Express {
-  controller(Controller): DecoratedExpress;
-}
+import { DecoratedExpress } from 'node-decorators/express';
 
 function getParam(source: any, paramType: string, name: string) {
   let param = source[paramType];
@@ -59,18 +56,3 @@ export function bootstrapExpress(app: Express): DecoratedExpress {
   app['controller'] = Controller => registerController(app, Controller);
   return <DecoratedExpress>app;
 };
-
-/**
- * @deprecated Use bootstrapExpress
- */
-export let decorateExpressApp = bootstrapExpress;
-
-/**
- * @deprecated Use bootstrapExpress
- */
-export let App = (): DecoratedExpress => {
-  let app: DecoratedExpress = <DecoratedExpress>express();
-  app.controller = Controller => registerController(app, Controller);
-  return app;
-};
-
