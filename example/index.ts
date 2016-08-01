@@ -5,9 +5,8 @@ import {
   Controller,
   Get,
   bootstrapExpress,
-  Middleware,
-  DecoratedExpress
-} from '../index';
+  Middleware
+} from '../express';
 import { TestModel } from './model';
 
 
@@ -29,8 +28,7 @@ class TestController {
 
 }
 
-let app: DecoratedExpress = <DecoratedExpress>express();
+let app: any = bootstrapExpress(express());
 
-bootstrapExpress(app);
 
 app.controller(TestController).listen(3003);

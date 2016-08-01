@@ -1,8 +1,11 @@
+///<reference path="default.d.ts"/>
 interface IMongooseMeta {
-  schema: any;
-  name: string;
-}
-
-interface IMongooseModel extends IDecoratedClass {
-
+  name:      string;
+  schema:    any;
+  statics:   [ [string, Function] | string ];
+  queries:   [ [string, Function] ];
+  instances: [ [string, Function] ];
+  virtuals:  [ [string, PropertyDescriptor] ];
+  indexes:   string[];
+  options:   string[];
 }

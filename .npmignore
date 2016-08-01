@@ -1,8 +1,9 @@
 # TS Files
 src/**/*.ts
-index.ts
 typings.json
 tsconfig.json
+express.ts
+mongoose.ts
 
 # Misc
 .editorconfig

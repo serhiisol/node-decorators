@@ -1,3 +1,4 @@
+///<reference path="default.d.ts"/>
 interface IRoute {
   method: string;
   url: string;

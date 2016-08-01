@@ -17,7 +17,11 @@
     "node_modules/**/*"
   ],
   "files": [
-    "src/index",
+    "typings/index",
+    "express.d.ts",
+    "express.ts",
+    "mongoose.d.ts",
+    "mongoose.ts",
     "example/index"
   ]
 }

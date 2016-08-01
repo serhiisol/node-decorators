@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["index.ts"],"names":[],"mappings":"AAAA,uCAAuC;;;;;AAEvC,iBAAc,WAAW,CAAC,EAAA;AAC1B,iBAAc,YAAY,CAAC,EAAA","sourcesContent":["///<reference path=\"types/index.d.ts\"/>\n\nexport * from './express';\nexport * from './mongoose';\n"]}
