@@ -86,12 +86,6 @@ This function will add additional method **controller** to express application.
 ### Class
 @Controller(baseUrl: string)
 
-**mongoose**
-@Schema(schemaDefinition: any)
-
-**mongoose**
-@Model(name: string)
-
 ### Method
 @Get(url: string)
 
@@ -123,7 +117,6 @@ This function will add additional method **controller** to express application.
 ## Mongoose
 
 ### Class
-
 @Schema(schemaDefinition: any)
 
 @Model(name: string)
