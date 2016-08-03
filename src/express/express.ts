@@ -6,13 +6,17 @@ function getParam(source: any, paramType: string, name: string) {
   return param[name] || param;
 }
 
-function extractParameters(req, res, params): any[] {
+function extractParameters(req, res, next, params): any[] {
   let args = [];
+  if (!params || !params.length) {
+    return [req, res, next];
+  }
   for (let item of params) {
 
     switch(item.type) {
       case ParameterType.RESPONSE: args[item.index] = res; break;
       case ParameterType.REQUEST: args[item.index] = req; break;
+      case ParameterType.NEXT: args[item.index] = next; break;
       case ParameterType.PARAMS: args[item.index] = getParam(req, 'params', item.name); break;
       case ParameterType.QUERY: args[item.index] = getParam(req, 'query', item.name); break;
       case ParameterType.BODY: args[item.index] = getParam(req, 'body', item.name); break;
@@ -35,8 +39,8 @@ function registerController(app, Controller) {
   for (let methodName in routes) {
     let method: string = routes[methodName].method, fn: Function;
 
-    fn = (req, res) => {
-      let args = extractParameters(req, res, params[methodName]);
+    fn = (req, res, next) => {
+      let args = extractParameters(req, res, next, params[methodName]);
       return controller[methodName].apply(controller, args)
     };
 

@@ -1,3 +1,19 @@
+# 0.1.2
+### Features
+* @Next *express* decorator
+### Bug Fixes
+* *express* route function usage without parameter decorators
+```
+@Get('/')
+homeAction(req, res, next) {
+  res.render('Home.twig');
+}
+```
+
+# 0.1.1
+### Bug Fixes
+* added trash files into **.npmignore**
+
 # 0.1.0 
 ### Features
 * New mongoose decorators

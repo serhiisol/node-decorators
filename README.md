@@ -139,12 +139,5 @@ This function will add additional method **controller** to express application.
 
 @Set = @Option
 
-
-#### [Change Log]
-
-#### [License]
-
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com
-[Change Log]:/CHANGELOG.md
-[License]:/LICENSE.md

@@ -5,5 +5,6 @@ export enum ParameterType {
   QUERY,
   BODY,
   HEADERS,
-  COOKIES
+  COOKIES,
+  NEXT
 }

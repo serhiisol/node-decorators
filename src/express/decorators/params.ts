@@ -19,6 +19,7 @@ function parameterDecoratorFactory(parameterType: ParameterType): (name?: string
 
 export const Request = parameterDecoratorFactory(ParameterType.REQUEST);
 export const Response = parameterDecoratorFactory(ParameterType.RESPONSE);
+export const Next = parameterDecoratorFactory(ParameterType.NEXT);
 export const Params = parameterDecoratorFactory(ParameterType.PARAMS);
 export const Query = parameterDecoratorFactory(ParameterType.QUERY);
 export const Body = parameterDecoratorFactory(ParameterType.BODY);

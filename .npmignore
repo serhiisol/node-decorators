@@ -8,6 +8,8 @@ mongoose.ts
 # Misc
 .editorconfig
 .gitignore
+.idea/
+typings/
 
 # Example
 example/
