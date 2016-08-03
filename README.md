@@ -104,6 +104,8 @@ This function will add additional method **controller** to express application.
 
 @Response()
 
+@Next()
+
 @Params(name?: string)
 
 @Query(name?: string)
