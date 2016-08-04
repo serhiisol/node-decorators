@@ -42,7 +42,27 @@ import { Model } from 'node-decorators/mongoose';
 # 0.0.6
 ### Features
 * Base mongoose decorators
+  * Class
+    * @Schema(schemaDefinition: any)
+    * @Model(name: string)
 
 # 0.0.5
 ### Features
 * Base express decorators
+  * Class
+    * @Controller(baseUrl: string)
+  * Method
+    * @Get(url: string)
+    * @Post(url: string)
+    * @Put(url: string)
+    * @Delete(url: string)
+    * @Options(url: string)
+    * @Middleware(middleware: Function)
+  * Parameter
+    * @Request()
+    * @Response()
+    * @Params(name?: string)
+    * @Query(name?: string)
+    * @Body(name?: string)
+    * @Headers(name?: string)
+    * @Cookies(name?: string)
