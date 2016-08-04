@@ -1,6 +1,7 @@
 # 0.1.2
 ### Features
 * @Next *express* decorator
+
 ### Bug Fixes
 * *express* route function usage without parameter decorators
 ```
