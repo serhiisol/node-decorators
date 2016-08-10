@@ -1,3 +1,7 @@
+# 0.1.3
+### Bug Fixes
+* Fixed express decorators request method assignment
+
 # 0.1.2
 ### Features
 * @Next *express* decorator

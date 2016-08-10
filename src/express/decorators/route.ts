@@ -7,7 +7,7 @@ function makeRouteMeta(target: IDecoratedClass, key: string | symbol, descriptor
 }
 
 let makeRoute = (method: string, url: string): MethodDecorator =>
-  (target: IDecoratedClass, key: string | symbol, descriptor: any) => makeRouteMeta(target, key, descriptor, 'get', url);
+  (target: IDecoratedClass, key: string | symbol, descriptor: any) => makeRouteMeta(target, key, descriptor, method, url);
 
 export let Get = (url: string): MethodDecorator => makeRoute('get', url);
 
