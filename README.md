@@ -99,6 +99,17 @@ This function will add additional method **controller** to express application.
 
 @Middleware(middleware: Function)
 
+Quick note about middleware priority:
+```
+@Delete('/:id')
+@Middleware(ThirdMiddleware)  //<-- this will be executed last
+@Middleware(SecondMiddleware) //<-- this will be executed second
+@Middleware(FirstMiddleware)  //<-- this will be executed first
+remove(@Request() req, @Response() res, @Params('id') id) {
+  //...
+}
+```
+
 ### Parameter
 @Request()
 
