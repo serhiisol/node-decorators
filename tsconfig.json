@@ -17,7 +17,6 @@
     "node_modules/**/*"
   ],
   "files": [
-    "typings/index",
     "express.d.ts",
     "express.ts",
     "mongoose.d.ts",

@@ -54,23 +54,23 @@ class TestModelClass {
   }
 
   @Index
-  name: number = 1
+  name: number = 1;
 
   @Index
-  type: number = -1
+  type: number = -1;
 
   @Set
   autoIndex: boolean = true
 }
-interface ITest {
+interface Test {
   testField: string;
 }
 
-interface ITestInstance extends ITest, Document {
+interface TestInstance extends Test, Document {
   instanceMethod(): void;
 }
-interface ITestModel extends IModel <ITestInstance>{
+type TestModelType = IModel<TestInstance> & {
   staticMethod();
   staticProperty: string;
 }
-export let TestModel: ITestModel = <ITestModel>bootstrapMongoose(TestModelClass);
+export let TestModel: TestModelType = <TestModelType>bootstrapMongoose(TestModelClass);
