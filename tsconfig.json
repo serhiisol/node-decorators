@@ -21,6 +21,10 @@
     "express.ts",
     "mongoose.d.ts",
     "mongoose.ts",
-    "example/index"
+    "co.d.ts",
+    "co.ts",
+    "example/express/index",
+    "example/mongoose/index",
+    "example/co/index"
   ]
 }
