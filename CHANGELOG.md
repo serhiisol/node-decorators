@@ -1,3 +1,9 @@
+# 0.2.0
+### Features
+* New [Co] decorator @Async
+### Breaking changes
+* moved project to **ES6**
+
 # 0.1.4
 ### Bug Fixes
 * Fixed express decorators request method assignment
@@ -5,7 +11,6 @@
 # 0.1.2
 ### Features
 * @Next *express* decorator
-
 ### Bug Fixes
 * *express* route function usage without parameter decorators
 ```
@@ -28,7 +33,6 @@ homeAction(req, res, next) {
   * @Virtual
   * @Index
   * @Set = @Option
-
 ### BREAKING CHANGES
   * New imports:
 ```
@@ -70,3 +74,5 @@ import { Model } from 'node-decorators/mongoose';
     * @Body(name?: string)
     * @Headers(name?: string)
     * @Cookies(name?: string)
+    
+[Co]:https://github.com/tj/co

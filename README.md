@@ -1,23 +1,18 @@
-# node-decorators
-
-This project implements decorators for modern tools for NodeJS like:
+# node-decorators [0.2.0]
+Project implements decorators for modern tools for NodeJS like:
 - [ExpressJS]
 - [MongooseJS]
+- [Co]
 
-## Example Express Application and Controller:
+## Quick Examples
+#### Example Express Application and Controller:
 ```
-import {
-  Response,
-  Params,
-  Controller,
-  Get,
-  bootstrapExpress,
-  Middleware
+import { Response, Params, Controller, Get,
+  bootstrapExpress, Middleware
 } from 'node-decorators/express';
 
 @Controller('/')
 class TestController {
-
   @Get('/all/:id')
   @Middleware((req, res, next) => {
     console.log('Hello World');
@@ -26,7 +21,6 @@ class TestController {
   getData(@Response() res, @Params('id') id: string) {
     res.send(`balalala  ${id}`);
   }
-
 }
 
 let app: DecoratedExpress = <DecoratedExpress>express();
@@ -34,10 +28,13 @@ bootstrapExpress(app);
 app.controller(TestController).listen(3000);
 ```
 
-## Example Mongoose Model
+#### Example Mongoose Model
 ```
 import {connect, Document, Model as IModel } from 'mongoose';
-import {Schema, Model, bootstrapMongoose} from 'node-decorators/mongoose';
+import {
+  Schema, Model, bootstrapMongoose,
+  Static, Instance
+} from 'node-decorators/mongoose';
 
 connect('192.168.99.100:27017/test', {
   "server": {
@@ -52,54 +49,64 @@ connect('192.168.99.100:27017/test', {
 })
 @Model('Test')
 class TestModelClass {
-  static testMethod() {
+  @Static
+  testMethod() {
     console.log('static test method')
   }
-  
+  @Instance
   instanceMethod() {
     console.log(this);
   }
 }
-interface ITestModel {
-  testField: string;
-}
-interface ITestModelType extends ITestModel, Document {
-  instanceMethod(): void;
-}
-export let TestModel: IModel<ITestModelType> = bootstrapMongoose<ITestModelType>(TestModelClass);
 
+export let TestModel = bootstrapMongoose(TestModelClass);
+```
+
+#### Example Co (Async)
+```
+...
+import { Async } from 'node-decorators/co';
+
+let testAsyncFunc = () => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.log('testAsyncFunc');
+      resolve()
+    }, 3000);
+  });
+};
+
+@Controller('/')
+class TestController {
+  @Get('/')
+  @Async
+  *getData(@Response() res) {
+    console.log('code before async function');
+    yield testAsyncFunc();
+    console.log('code after async function');
+    res.send('Success');
+  }
+}
+
+let app: any = bootstrapExpress(express());
+app.controller(TestController).listen(3003);
 ```
 
 ## API
 
-### Functions
+#### Functions
+bootstrapExpress(Express()) - Function will add additional method **controller()** to express application.
+**app.controller()** returns app.
 
-bootstrapMongoose\<T extends Document\>(MongooseModel): IModel\<T\> -
-Use this function to generate model for class.
+bootstrapMongoose(MongooseModel) - Function to generate model for class.
 
-bootstrapExpress\<T extends Document\>(MongooseModel): IModel\<T\> - 
-This function will add additional method **controller** to express application.
-**app.controller** returns app.
+#### Decorators
 
-## Express
-
-### Class
-@Controller(baseUrl: string)
-
-### Method
-@Get(url: string)
-
-@Post(url: string)
-
-@Put(url: string)
-
-@Delete(url: string)
-
-@Options(url: string)
-
-@Middleware(middleware: Function)
-
-Quick note about middleware priority:
+##### Express
+###### Class
+* @Controller(baseUrl: string)
+###### Method
+* @Middleware(middleware: Function), middleware priority:
 ```
 @Delete('/:id')
 @Middleware(ThirdMiddleware)  //<-- this will be executed last
@@ -109,48 +116,39 @@ remove(@Request() req, @Response() res, @Params('id') id) {
   //...
 }
 ```
+* @Get(url: string)
+* @Post(url: string)
+* @Put(url: string)
+* @Delete(url: string)
+* @Options(url: string)
+###### Parameter
+* @Request()
+* @Response()
+* @Next()
+* @Params(name?: string)
+* @Query(name?: string)
+* @Body(name?: string)
+* @Headers(name?: string)
+* @Cookies(name?: string)
 
-### Parameter
-@Request()
+##### Mongoose
+###### Class
+* @Schema(schemaDefinition: any)
+* @Model(name: string)
+###### Method
+* @Static
+* @Query
+* @Instance
+* @Virtual
+###### Property
+* @Static
+* @Index
+* @Set = @Option
 
-@Response()
-
-@Next()
-
-@Params(name?: string)
-
-@Query(name?: string)
-
-@Body(name?: string)
-
-@Headers(name?: string)
-
-@Cookies(name?: string)
-
-## Mongoose
-
-### Class
-@Schema(schemaDefinition: any)
-
-@Model(name: string)
-
-### Method
-
-@Static
-
-@Query
-
-@Instance
-
-@Virtual
-
-### Property
-
-@Static
-
-@Index
-
-@Set = @Option
+##### Co
+###### Method
+* @Async
 
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com
+[Co]:https://github.com/tj/co
