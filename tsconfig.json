@@ -10,7 +10,7 @@
     "noImplicitAny": false,
     "rootDir": ".",
     "sourceMap": true,
-    "target": "es5",
+    "target": "es6",
     "inlineSources": true
   },
   "exclude": [

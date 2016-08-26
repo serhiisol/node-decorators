@@ -1,7 +1,7 @@
-import { Schema, model as Model, Model as IModel, Document } from 'mongoose';
+import { Schema, model as Model } from 'mongoose';
 import { getMongooseMeta, extend } from '../utils';
 
-export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T> {
+export function bootstrapMongoose(DecoratedClass) {
   let meta: IMongooseMeta = getMongooseMeta(DecoratedClass.prototype),
     classInstance = new DecoratedClass(),
     schema: Schema = new Schema(meta.schema),
@@ -44,7 +44,7 @@ export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T>
     schema.set(option, classInstance[option]);
   });
 
-  model = Model<T>(meta.name, schema);
+  model = Model(meta.name, schema);
   extend(model, statics);
 
   return model;

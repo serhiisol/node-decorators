@@ -1,7 +1,7 @@
-import { connect, Document, Model as IModel } from 'mongoose';
+import { connect, Document } from 'mongoose';
 import {
   Schema,
-  Model,
+  Model as M,
   bootstrapMongoose,
   Static,
   Query,
@@ -9,7 +9,7 @@ import {
   Virtual,
   Index,
   Set
-} from '../mongoose';
+} from '../../mongoose';
 
 connect('192.168.99.100:27017/test', {
   "server": {
@@ -22,7 +22,7 @@ connect('192.168.99.100:27017/test', {
 @Schema({
   testField: String
 })
-@Model('Test')
+@M('Test')
 class TestModelClass {
 
   @Static
@@ -68,9 +68,13 @@ interface Test {
 
 interface TestInstance extends Test, Document {
   instanceMethod(): void;
+  save(fn: Function): Promise<any>
 }
-type TestModelType = IModel<TestInstance> & {
+
+interface TestModelType extends Function {
+  new (args?: any): TestInstance;
   staticMethod();
   staticProperty: string;
 }
-export let TestModel: TestModelType = <TestModelType>bootstrapMongoose(TestModelClass);
+
+export let TestModel = <TestModelType>bootstrapMongoose(TestModelClass);
