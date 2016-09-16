@@ -1,3 +1,7 @@
+# 0.2.1
+### Features
+* New express function **bootstrapControllersFromDirectory(app: Express, folder: string)** for reading folder with controllers
+
 # 0.2.0
 ### Features
 * New [Co] decorator @Async

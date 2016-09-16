@@ -1,6 +1,6 @@
 {
   "name": "node-decorators",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
@@ -26,7 +26,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": "^5.4.1"
+    "node": "^6.3.0"
   },
   "repository": {
     "type": "git",

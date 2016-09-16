@@ -1,3 +1,4 @@
+import { readFileSync, readdirSync } from 'fs';
 import { Router, Express } from 'express';
 import { ParameterType } from './interface';
 
@@ -58,3 +59,27 @@ export function bootstrapExpress(app: Express) {
   app['controller'] = Controller => registerController(app, Controller);
   return app;
 };
+
+export function bootstrapControllersFromDirectory(app: Express, folder: string) {
+  let controllers: string[] = readdirSync(folder);
+  controllers.forEach((name: string) => {
+    try {
+      let artifacts = name.split('.');
+      if (artifacts.pop() === 'js') {
+        name = artifacts.join();
+        let controller = require(`${folder}/${name}`);
+        if (controller.prototype && controller.prototype.__meta__) {
+          registerController(app, controller);
+        } else if (typeof controller === 'object') {
+          for (let key in controller) {
+            if (controller.hasOwnProperty(key)) {
+              registerController(app, controller[key]);
+            }
+          }
+        }
+      }
+    } catch(e) {
+      console.log(`Cannot register controller ${name}`, e, e.message);
+    }
+  });
+}

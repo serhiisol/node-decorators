@@ -16,15 +16,15 @@
   "exclude": [
     "node_modules/**/*"
   ],
+  "include": [
+    "example/**/*"
+  ],
   "files": [
     "express.d.ts",
     "express.ts",
     "mongoose.d.ts",
     "mongoose.ts",
     "co.d.ts",
-    "co.ts",
-    "example/express/index",
-    "example/mongoose/index",
-    "example/co/index"
+    "co.ts"
   ]
 }

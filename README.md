@@ -1,4 +1,4 @@
-# node-decorators [0.2.0]
+# node-decorators [0.2.1]
 Project implements decorators for modern tools for NodeJS like:
 - [ExpressJS]
 - [MongooseJS]
@@ -97,6 +97,8 @@ app.controller(TestController).listen(3003);
 #### Functions
 bootstrapExpress(Express()) - Function will add additional method **controller()** to express application.
 **app.controller()** returns app.
+
+bootstrapControllersFromDirectory(app: Express, folder: string) - read folder and attach controllers
 
 bootstrapMongoose(MongooseModel) - Function to generate model for class.
 
