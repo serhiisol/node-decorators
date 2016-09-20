@@ -1,6 +1,6 @@
 {
   "name": "node-decorators",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {

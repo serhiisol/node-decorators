@@ -1,3 +1,7 @@
+# 0.2.2
+### Bug Fixes
+* Fixed typings and dev build configuration
+
 # 0.2.1
 ### Features
 * New express function **bootstrapControllersFromDirectory(app: Express, folder: string)** for reading folder with controllers

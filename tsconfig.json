@@ -20,11 +20,8 @@
     "example/**/*"
   ],
   "files": [
-    "express.d.ts",
     "express.ts",
-    "mongoose.d.ts",
     "mongoose.ts",
-    "co.d.ts",
     "co.ts"
   ]
 }

@@ -1,1 +1,1 @@
-export function Async(): MethodDecorator;
+export function Async(target: any, name:string);

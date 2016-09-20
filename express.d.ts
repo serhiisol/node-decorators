@@ -1,4 +1,4 @@
-import {Express} from 'express';
+import { Express } from 'express';
 
 export interface DecoratedExpress extends Express {
   controller(Controller):DecoratedExpress;
