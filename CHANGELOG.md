@@ -1,3 +1,7 @@
+# 0.2.3
+### Bug Fixes
+* Fixed context of the async decorator
+
 # 0.2.2
 ### Bug Fixes
 * Fixed typings and dev build configuration

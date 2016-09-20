@@ -1,4 +1,4 @@
-# node-decorators [0.2.1]
+# node-decorators [0.2.3]
 Project implements decorators for modern tools for NodeJS like:
 - [ExpressJS]
 - [MongooseJS]
