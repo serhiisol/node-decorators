@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'fs';
+import { readdirSync } from 'fs';
 import { Router, Express } from 'express';
 import { ParameterType } from './interface';
 
@@ -58,7 +58,21 @@ function registerController(app, Controller) {
 export function bootstrapExpress(app: Express) {
   app['controller'] = Controller => registerController(app, Controller);
   return app;
-};
+}
+
+export function bootstrapController(app: Express, controller: any) {
+  registerController(app, controller);
+}
+
+export function bootstrapControllers(app: Express, controllers: any[]) {
+  try {
+    controllers.forEach(controller => {
+      bootstrapController(app, controller);
+    })
+  } catch (e) {
+    console.log('Second parameter should be array of controllers', e, e.message);
+  }
+}
 
 export function bootstrapControllersFromDirectory(app: Express, folder: string) {
   let controllers: string[] = readdirSync(folder);

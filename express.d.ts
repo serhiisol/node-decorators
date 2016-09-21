@@ -4,7 +4,11 @@ export interface DecoratedExpress extends Express {
   controller(Controller):DecoratedExpress;
 }
 
-export function bootstrapExpress(app:Express):DecoratedExpress;
+export function bootstrapExpress(app:Express): DecoratedExpress;
+export function bootstrapController(app:Express, controller: any);
+export function bootstrapControllers(app:Express, controller: any[]);
+export function bootstrapControllersFromDirectory(app:Express, folder: string);
+
 
 export function Controller(baseUrl:string):ClassDecorator;
 

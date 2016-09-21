@@ -1,3 +1,9 @@
+# 0.2.4
+### Features
+* Two new ways to register controller(s) - ```bootstrapController```, ```bootstrapControllers```
+### Bug Fixes
+* Added missing typings for ```bootstrapControllersFromDirectory```
+
 # 0.2.3
 ### Bug Fixes
 * Fixed context of the async decorator
