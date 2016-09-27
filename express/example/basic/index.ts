@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as favicon from 'serve-favicon';
 
 import {
   Response,
@@ -31,8 +30,6 @@ class TestController {
     console.log('Express welcomes: ' + JSON.stringify(id));
     res.send('Express welcomes: ' + JSON.stringify(id));
   }
-
-
 
 }
 
