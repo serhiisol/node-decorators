@@ -17,11 +17,18 @@
     "node_modules/**/*"
   ],
   "include": [
-    "example/**/*"
+    "co/example/**/*",
+    "mongoose/example/**/*",
+    "express/example/**/*"
   ],
   "files": [
-    "express.ts",
-    "mongoose.ts",
-    "co.ts"
+    "types/co.d.ts",
+    "co/index.ts",
+
+    "types/mongoose.d.ts",
+    "mongoose/index.ts",
+
+    "types/express.d.ts",
+    "express/index.ts"
   ]
 }

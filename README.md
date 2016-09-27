@@ -1,4 +1,4 @@
-# node-decorators [0.2.4]
+# node-decorators [1.0.0]
 Project implements decorators for modern tools for NodeJS like:
 - [ExpressJS]
 - [MongooseJS]
@@ -66,7 +66,7 @@ export let TestModel = bootstrapMongoose(TestModelClass);
 ```
 ...
 import { Async } from 'node-decorators/co';
-
+...
 let testAsyncFunc = () => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -75,85 +75,19 @@ let testAsyncFunc = () => {
     }, 3000);
   });
 };
-
-@Controller('/')
+...
 class TestController {
-  @Get('/')
   @Async
-  *getData(@Response() res) {
+  *getData() {
     console.log('code before async function');
     yield testAsyncFunc();
     console.log('code after async function');
-    res.send('Success');
   }
 }
 
-let app: any = bootstrapExpress(express());
-app.controller(TestController).listen(3003);
+...
 ```
 
-## API
-
-#### Functions
-bootstrapExpress(Express()) - Function will add additional method **controller()** to express application.
-**app.controller()** returns app.
-
-bootstrapController(app: Express, controller) - attach controller to app
-
-bootstrapControllers(app: Express, controllers) - attach controllers to app
-
-bootstrapControllersFromDirectory(app: Express, folder: string) - read folder and attach controllers
-
-bootstrapMongoose(MongooseModel) - Function to generate model for class.
-
-#### Decorators
-
-##### Express
-###### Class
-* @Controller(baseUrl: string)
-###### Method
-* @Middleware(middleware: Function), middleware priority:
-```
-@Delete('/:id')
-@Middleware(ThirdMiddleware)  //<-- this will be executed last
-@Middleware(SecondMiddleware) //<-- this will be executed second
-@Middleware(FirstMiddleware)  //<-- this will be executed first
-remove(@Request() req, @Response() res, @Params('id') id) {
-  //...
-}
-```
-* @Get(url: string)
-* @Post(url: string)
-* @Put(url: string)
-* @Delete(url: string)
-* @Options(url: string)
-###### Parameter
-* @Request()
-* @Response()
-* @Next()
-* @Params(name?: string)
-* @Query(name?: string)
-* @Body(name?: string)
-* @Headers(name?: string)
-* @Cookies(name?: string)
-
-##### Mongoose
-###### Class
-* @Schema(schemaDefinition: any)
-* @Model(name: string)
-###### Method
-* @Static
-* @Query
-* @Instance
-* @Virtual
-###### Property
-* @Static
-* @Index
-* @Set = @Option
-
-##### Co
-###### Method
-* @Async
 
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com

@@ -1,17 +1,13 @@
 # dependencies
-node_modules
+node_modules/
 
 # IDEs and editors
-.idea
-
-# Build
-build/
+.idea/
 
 # misc
 npm-debug.log
-typings/
 
-# example
+# compiled
 **/*.js
 **/*.map
 
