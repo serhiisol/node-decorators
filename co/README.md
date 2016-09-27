@@ -1,4 +1,5 @@
-# @decorators [1.0.0]
+![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
+
 Project implements decorators for modern tools for NodeJS like:
 - [CoJS]
 
