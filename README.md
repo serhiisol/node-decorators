@@ -5,12 +5,20 @@ Project implements decorators for modern tools for NodeJS like:
 - [MongooseJS]
 - [Co]
 
+## Installation
+
+```
+npm install @decorators/co --save
+npm install @decorators/express --save
+npm install @decorators/mongoose --save
+```
+
 ## Quick Examples
 #### Example Express Application and Controller:
 ```
 import { Response, Params, Controller, Get,
   bootstrapExpress, Middleware
-} from 'node-decorators/express';
+} from '@decorators/express';
 
 @Controller('/')
 class TestController {
@@ -35,7 +43,7 @@ import {connect, Document, Model as IModel } from 'mongoose';
 import {
   Schema, Model, bootstrapMongoose,
   Static, Instance
-} from 'node-decorators/mongoose';
+} from '@decorators/mongoose';
 
 connect('192.168.99.100:27017/test', {
   "server": {
@@ -66,7 +74,7 @@ export let TestModel = bootstrapMongoose(TestModelClass);
 #### Example Co (Async)
 ```
 ...
-import { Async } from 'node-decorators/co';
+import { Async } from '@decorators/co';
 ...
 let testAsyncFunc = () => {
   return new Promise(resolve => {
