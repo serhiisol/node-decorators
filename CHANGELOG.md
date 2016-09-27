@@ -1,3 +1,12 @@
+# 1.0.0
+### BREAKING CHANGES
+* Moved project to scoped packages
+```
+npm install @decorators/co --save
+npm install @decorators/express --save
+npm install @decorators/mongoose --save
+```
+
 # 0.2.4
 ### Features
 * Two new ways to register controller(s) - ```bootstrapController```, ```bootstrapControllers```
@@ -52,7 +61,7 @@ homeAction(req, res, next) {
   * @Index
   * @Set = @Option
 ### BREAKING CHANGES
-  * New imports:
+* New imports:
 ```
 import { Controller } from 'node-decorators/express';
 import { Model } from 'node-decorators/mongoose';

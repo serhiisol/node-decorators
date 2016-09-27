@@ -1,0 +1,6 @@
+# TS Files
+src/**/*.ts
+index.ts
+
+# Example
+example/
