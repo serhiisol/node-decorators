@@ -1,3 +1,20 @@
+# Socket#1.1.0
+### Features
+* New socket.io decorators
+  ##### Class
+  * **@Connect(serverOrPort: number | string | HttpServer, opts?: any)**
+  * **@Middleware(fn: Function)** 
+  ##### Method
+  * **@OnIO(event: string)**
+  * **@OnConnect()**
+  * **@OnConnection()**
+  * **@OnSocket(event: string)**
+  ##### Parameter
+  * **@IO()**
+  * **@Socket()**
+  * **@Args()**
+  * **@Callback()**
+
 # 1.0.0
 ### BREAKING CHANGES
 * Moved project to scoped packages

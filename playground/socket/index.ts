@@ -8,7 +8,7 @@ import {
   IO,
   Callback,
   bootstrapSocketIO
-} from '../index'
+} from '@decorators/socket'
 
 @Connect(3000)
 @Middleware((socket, next) => {
