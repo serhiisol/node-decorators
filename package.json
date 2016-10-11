@@ -9,11 +9,13 @@
   "dependencies": {
     "co": "^4.6.0",
     "express": "^4.14.0",
-    "mongoose": "^4.5.5"
+    "mongoose": "^4.5.5",
+    "socket.io": "^1.4.8"
   },
   "devDependencies": {
     "@types/express": "^4.0.32",
-    "@types/mongoose": "^4.5.33"
+    "@types/mongoose": "^4.5.33",
+    "@types/socket.io": "^1.4.27"
   },
   "keywords": [
     "nodejs",

@@ -16,17 +16,7 @@
   "exclude": [
     "node_modules/**/*"
   ],
-  "include": [
-    "types/**/*",
-    "co/example/**/*",
-    "mongoose/example/**/*",
-    "express/example/**/*",
-    "socket/example/index.ts"
-  ],
   "files": [
-    "co/index.ts",
-    "mongoose/index.ts",
-    "express/index.ts",
-    "socket/index.ts"
+    "index.ts"
   ]
 }
