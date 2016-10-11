@@ -1,41 +1,66 @@
 import * as socketIO from 'socket.io';
 import { ParameterType } from './interface';
 
-function extractParameters(io, socket, params, eventArgs) {
+/**
+ * Extract parameters for new handler
+ * @param io
+ * @param socket
+ * @param params Meta parameters
+ * @param eventArgs incoming arguments
+ * @returns {any[]} returns arguments array, or io and socket, event args (default) by default
+ */
+function extractParameters(io, socket, params, eventArgs): any[] {
   let args = [];
+  /**
+   * if no parameters provided, return io and socket, and event arguments (which came for default handler)
+   */
   if (!params || !params.length) {
-    return [io, socket];
+    return [io, socket, ...eventArgs];
   }
-  let callback: Function, argsAdded = false;
+
+  /**
+   * Callback function
+   * @type {Function}
+   */
+  let callback: Function;
+  /**
+   * extract callback function, it it exists
+   */
   if (eventArgs.length && typeof eventArgs[eventArgs.length - 1] === 'function') {
     callback = eventArgs.pop();
   }
 
+  /**
+   * loop through all params and put them into correct order
+   */
   for (let item of params) {
-
     switch(item.type) {
       case ParameterType.IO: args[item.index] = io; break;
       case ParameterType.Socket: args[item.index] = socket; break;
-      case ParameterType.Args:
-        args[item.index] = eventArgs.pop();
-        argsAdded = true;
-        break;
+      case ParameterType.Args: args[item.index] = eventArgs.pop(); break;
       case ParameterType.Callback: args[item.index] = callback; break;
     }
-
-  }
-
-  if (!argsAdded) {
-    args = args.concat(eventArgs);
   }
 
   return args;
 }
 
-export function bootstrapSocketIO(BaseController): SocketIOServer {
+/**
+ * Bootstrap root controller and create io server
+ * @param RootController
+ * @returns {SocketIOServer} server
+ */
+export function bootstrapSocketIO(RootController): SocketIOServer {
 
-  let io;
+  let io: SocketIO.Server;
 
+  /**
+   * Apply listeners to socket or io
+   * @param socket
+   * @param controller
+   * @param { {[key: string]: string} } listeners object with registered listeners
+   * @param { {[key: string]: {index: number, type: number}[] } }params object with registered params for specific listener
+   */
   function applyListeners(socket, controller, listeners, params) {
     for (let listener in listeners) {
       if (listeners.hasOwnProperty(listener)) {
@@ -51,34 +76,66 @@ export function bootstrapSocketIO(BaseController): SocketIOServer {
     }
   }
 
-  function attachController(Controller, allowConnect) {
+  /**
+   * Attach Controller
+   * @param Controller
+   * @param isRoot
+   */
+  function attachController(Controller, isRoot: boolean) {
 
     const controller = new Controller(),
       meta: SocketIOMeta = controller.__meta__,
       listeners = meta.listeners,
       params = meta.params;
 
-    if (allowConnect) {
-      io = socketIO.listen.apply(socketIO, [meta.serverOrPort, meta.options]);
+    if (isRoot) {
+      io = socketIO.listen(meta.serverOrPort, meta.options);
     }
 
-    if (!io) {
+    if (!io && isRoot) {
       throw new Error('Register at least one controller with @Connect');
     }
 
+    /**
+     * Apply all registered middleware to io
+     */
     meta.middleware.forEach(middleware => {
-      io.use(middleware);
+      io.use(<any>middleware);
     });
 
+    /**
+     * Apply global listeners (io based)
+     */
     applyListeners(null, controller, listeners.io, params);
 
     io.on('connection', socket => {
+      /**
+       * Apply socket listeners (socket based)
+       */
       applyListeners(socket, controller, listeners.socket, params);
     });
   }
 
-  attachController(BaseController, true);
+  /**
+   * Attach root controller
+   */
+  attachController(RootController, true);
+
   return {
-    controller: (Controller) => attachController(Controller, false)
+    /**
+     * Function for adding new controllers
+     * @param Controller
+     * @returns { SocketIOServer }
+     */
+    attachController: (Controller) => {
+      attachController(Controller, false)
+      return this;
+    },
+    /**
+     * IO Object
+     * @type {SocketIO.Server}
+     */
+    io
   };
+
 }

@@ -44,4 +44,4 @@ class AdditionalController {
 }
 
 let server = bootstrapSocketIO(ConnectClass);
-server.controller(AdditionalController);
+server.attachController(AdditionalController);

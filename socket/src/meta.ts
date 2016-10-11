@@ -1,3 +1,8 @@
+/**
+ * Get or initiate metadata on target
+ * @param target
+ * @returns {SocketIOMeta}
+ */
 export function getMeta(target: SocketIOClass): SocketIOMeta {
   if (!target.__meta__) {
     target.__meta__ = <SocketIOMeta> {
@@ -11,6 +16,7 @@ export function getMeta(target: SocketIOClass): SocketIOMeta {
       params: {}
     };
   }
+
   return <SocketIOMeta>target.__meta__;
 }
 

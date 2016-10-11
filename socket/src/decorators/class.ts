@@ -1,5 +1,12 @@
 import { getMeta } from '../meta';
 
+/**
+ * Creates server with options
+ * @param {number | string | HttpServer} serverOrPort
+ * @param {any} options
+ * @returns {(target:Function)=>void}
+ * @constructor
+ */
 export let Connect = (serverOrPort: any, options?: any): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
@@ -8,6 +15,12 @@ export let Connect = (serverOrPort: any, options?: any): ClassDecorator  => {
   }
 };
 
+/**
+ * Registers middleware
+ * @param {Function} fn
+ * @returns {(target:Function)=>void}
+ * @constructor
+ */
 export let Middleware = (fn: Function): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
