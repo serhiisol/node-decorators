@@ -2,8 +2,8 @@ import { getMeta } from '../meta';
 
 /**
  * Creates server with options
- * @param {number | string | HttpServer} serverOrPort
- * @param {any} options
+ * @param {number | string | Object} serverOrPort
+ * @param {Object} options
  * @returns {(target:Function)=>void}
  * @constructor
  */

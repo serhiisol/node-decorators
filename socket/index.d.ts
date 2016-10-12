@@ -5,8 +5,8 @@
 /**
  * Socket IO Server
  */
-interface SocketIOServer {
-  attachController(controller);
+export interface SocketIOServer {
+  attachController(controller): SocketIOServer;
   io: SocketIO.Server
 }
 /**
@@ -14,12 +14,12 @@ interface SocketIOServer {
  * @param RootController
  * @returns {SocketIOServer} server
  */
-export function bootstrapSocketIO(rootController): SocketIOServer;
+export function bootstrapSocketIO(RootController): SocketIOServer;
 
 /**
  * Creates server with options
- * @param {number | string | HttpServer} serverOrPort
- * @param {any} options
+ * @param {number | string | Object } serverOrPort
+ * @param {Object|string|number} opts
  * @returns {(target:Function)=>void}
  * @constructor
  */
@@ -58,6 +58,12 @@ export function OnConnection();
  * @constructor
  */
 export function OnSocket(event: string);
+
+/**
+ * Register disconnect socket event (**socket.on('disconnect', fn)**);
+ * @constructor
+ */
+export function OnDisconnect();
 
 /**
  * Returns server itself

@@ -1,6 +1,17 @@
+# Socket#1.1.1
+### Features
+* new socket.io decorator
+  ##### Method
+    * **@OnDisconnect()**
+* **SocketIOServer** interface added
+### Bug fixes
+  * **attachController** will now return correct object (SocketIOServer, this)
+
 # Socket#1.1.0
 ### Features
 * New socket.io decorators
+  #### Functions
+  * **bootstrapSocketIO(rootController: Controller)**
   ##### Class
   * **@Connect(serverOrPort: number | string | HttpServer, opts?: any)**
   * **@Middleware(fn: Function)** 

@@ -11,7 +11,8 @@
     "rootDir": ".",
     "sourceMap": true,
     "target": "es6",
-    "inlineSources": true
+    "inlineSources": true,
+    "typeRoots": ["node_modules/@types"]
   },
   "exclude": [
     "node_modules/**/*"
@@ -20,13 +21,14 @@
     "types/**/*",
     "co/example/**/*",
     "mongoose/example/**/*",
-    "express/example/**/*",
-    "socket/example/index.ts"
+    "express/example/**/*"
   ],
   "files": [
     "co/index.ts",
     "mongoose/index.ts",
     "express/index.ts",
+
+    "socket/index.d.ts",
     "socket/index.ts"
   ]
 }
