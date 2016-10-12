@@ -7,7 +7,7 @@ import { ParameterType } from './interface';
  * @param socket
  * @param params Meta parameters
  * @param eventArgs incoming arguments
- * @returns {any[]} returns arguments array, or io and socket, event args (default) by default
+ * @returns {Array} returns arguments array, or io and socket, event args (default) by default
  */
 function extractParameters(io, socket, params, eventArgs): any[] {
   let args = [];
@@ -58,10 +58,10 @@ export function bootstrapSocketIO(RootController): SocketIOServer {
    * Apply listeners to socket or io
    * @param socket
    * @param controller
-   * @param { {[key: string]: string} } listeners object with registered listeners
-   * @param { {[key: string]: {index: number, type: number}[] } }params object with registered params for specific listener
+   * @param {Listener} listeners object with registered listeners
+   * @param {Params} params object with registered params for specific listener
    */
-  function applyListeners(socket, controller, listeners, params) {
+  function applyListeners(socket, controller, listeners: Listener, params: Params) {
     for (let listener in listeners) {
       if (listeners.hasOwnProperty(listener)) {
         let event: string = listeners[listener], handler: Function;
@@ -127,8 +127,8 @@ export function bootstrapSocketIO(RootController): SocketIOServer {
      * @param Controller
      * @returns { SocketIOServer }
      */
-    attachController: (Controller) => {
-      attachController(Controller, false)
+    attachController: function(Controller) {
+      attachController(Controller, false);
       return this;
     },
     /**

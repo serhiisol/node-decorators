@@ -28,6 +28,7 @@ npm install @decorators/socket --save
 * **@OnConnect()** - register **connection** listener (**io.on('connection', fn)**)
 * **@OnConnection()** - alias of **@OnConnect**
 * **@OnSocket(event: string)** - register socket event (**socket.on**);
+* **@OnDisconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**);
 ##### Parameter
 * **@IO()** - returns server itself
 * **@Socket()** - returns socket

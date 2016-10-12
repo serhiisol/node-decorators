@@ -7,9 +7,9 @@ import { getMeta } from '../meta';
  * @param descriptor Function descriptor
  * @param {string} type Listener type: io or socket
  * @param {string} event Event name
- * @returns {any}
+ * @returns {Object}
  */
-function addListenerMeta(target: SocketIOClass, key: string | symbol, descriptor: any, type: string, event: string) {
+function addListenerMeta(target: SocketIOClass, key: string | symbol, descriptor: any, type: string, event: string): Object {
   let meta: SocketIOMeta = getMeta(target);
   meta.listeners[type][key] = event;
   return descriptor;
@@ -25,7 +25,7 @@ let listenerDecoratorFactory = (type: string, event: string): MethodDecorator =>
   return (target: SocketIOClass, key: string | symbol, descriptor?: any) => {
     return addListenerMeta(target, key, descriptor, type, event)
   };
-}
+};
 
 /**
  * Register global event (**io.on**)
@@ -52,3 +52,9 @@ export let OnConnection = OnConnect;
  * @constructor
  */
 export let OnSocket = (event: string): MethodDecorator => listenerDecoratorFactory('socket', event);
+
+/**
+ * register **disconnect** listener (**socket.on('disconnect', fn)**)
+ * @constructor
+ */
+export let OnDisconnect = (): MethodDecorator => listenerDecoratorFactory('socket', 'disconnect');
