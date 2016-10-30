@@ -18,7 +18,7 @@ npm install @decorators/socket --save
 ## Example of usage
 Here's example of usage with Express framework. It uses TypeScript and `@decorators/express` package
 
-```
+```typescript
 import { Response, Params, Controller, Get,
   bootstrapExpress, Middleware
 } from 'node-decorators/express';
