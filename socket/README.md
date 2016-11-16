@@ -9,19 +9,20 @@ npm install @decorators/socket --save
 ```
 ### API
 #### Functions
-* **bootstrapSocketIO(rootController: Controller)** - creates server and registers root controller for that
+* **bootstrapSocketIO(serverOrPort: any, options?: any)** - creates server and registers root controller for that
   returns object with:
   ```
   interface SocketIOServer {
     attachController(controller);
+    attachControllers(controllers);
     io: SocketIO.Server
   }
   ```
-  * **controller(controller: Controller)** - registers new controller
+  * **attachController(controller: Controller)** - registers new controller
+  * **attachControllers(controllers: Controller[])** - registers new controllers
   * **io** - SocketIO Server
 #### Decorators
 ##### Class
-* **@Connect(serverOrPort: number | string | HttpServer, opts?: any)** - creates server with options
 * **@Middleware(fn: Function)** - registers middleware
 ##### Method
 * **@OnIO(event: string)** - register global event (**io.on**)
@@ -38,7 +39,6 @@ npm install @decorators/socket --save
 ### Quick Example:
 ```
 import {
-  Connect,
   Middleware,
   OnConnect,
   OnIO,
@@ -52,12 +52,12 @@ import {
 ...
 ...
 ...
-@Connect(3000)
+
 @Middleware((socket, next) => {
   console.log('Middleware');
   next();
 })
-class ConnectClass {
+class ConnectionController {
 
   @OnConnect()
   onConnection() {
@@ -85,8 +85,11 @@ class AdditionalController {
 
 }
 
-let server = bootstrapSocketIO(ConnectClass);
-server.attachController(AdditionalController);
+bootstrapSocketIO(3000)
+  .attachControllers([
+    ConnectionController,
+    AdditionalController
+  ]);
 ...
 ...
 ...

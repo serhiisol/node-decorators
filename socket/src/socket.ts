@@ -46,13 +46,14 @@ function extractParameters(io, socket, params, eventArgs): any[] {
 }
 
 /**
- * Bootstrap root controller and create io server
- * @param RootController
+ * Bootstrap and create io server
+ * @param {number | string | Object} serverOrPort
+ * @param {Object} options
  * @returns {SocketIOServer} server
  */
-export function bootstrapSocketIO(RootController): SocketIOServer {
+export function bootstrapSocketIO(serverOrPort: any, options?: any): SocketIOServer {
 
-  let io: SocketIO.Server;
+  let io: SocketIO.Server = socketIO.listen(serverOrPort, options);
 
   /**
    * Apply listeners to socket or io
@@ -79,22 +80,13 @@ export function bootstrapSocketIO(RootController): SocketIOServer {
   /**
    * Attach Controller
    * @param Controller
-   * @param isRoot
    */
-  function attachController(Controller, isRoot: boolean) {
+  function attachController(Controller) {
 
     const controller = new Controller(),
       meta: SocketIOMeta = controller.__meta__,
       listeners = meta.listeners,
       params = meta.params;
-
-    if (isRoot) {
-      io = socketIO.listen(meta.serverOrPort, meta.options);
-    }
-
-    if (!io && isRoot) {
-      throw new Error('Register at least one controller with @Connect');
-    }
 
     /**
      * Apply all registered middleware to io
@@ -116,11 +108,6 @@ export function bootstrapSocketIO(RootController): SocketIOServer {
     });
   }
 
-  /**
-   * Attach root controller
-   */
-  attachController(RootController, true);
-
   return {
     /**
      * Function for adding new controllers
@@ -128,7 +115,18 @@ export function bootstrapSocketIO(RootController): SocketIOServer {
      * @returns { SocketIOServer }
      */
     attachController: function(Controller) {
-      attachController(Controller, false);
+      attachController(Controller);
+      return this;
+    },
+    /**
+     * Function for adding new controllers
+     * @param Controllers
+     * @returns { SocketIOServer }
+     */
+    attachControllers: function(Controllers = []) {
+      Controllers.forEach(Controller => {
+        attachController(Controller);
+      });
       return this;
     },
     /**

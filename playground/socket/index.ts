@@ -1,5 +1,4 @@
 import {
-  Connect,
   Middleware,
   OnConnect,
   OnSocket,
@@ -10,12 +9,11 @@ import {
   bootstrapSocketIO
 } from '@decorators/socket'
 
-@Connect(3000)
 @Middleware((socket, next) => {
-  console.log('Middleware');
+  console.log('Middleware 1');
   next();
 })
-class ConnectClass {
+class ConnectionController {
 
   @OnConnect()
   onConnection() {
@@ -29,6 +27,10 @@ class ConnectClass {
 
 }
 
+@Middleware((socket, next) => {
+  console.log('Middleware 2');
+  next();
+})
 class AdditionalController {
 
   @OnConnect()
@@ -43,5 +45,8 @@ class AdditionalController {
 
 }
 
-let server = bootstrapSocketIO(ConnectClass);
-server.attachController(AdditionalController);
+bootstrapSocketIO(3000)
+  .attachControllers([
+    ConnectionController,
+    AdditionalController
+  ]);
