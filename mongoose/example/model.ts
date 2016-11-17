@@ -69,15 +69,13 @@ class TestModelClass {
   @Set
   autoIndex: boolean = true
 }
-interface Test {
-  testField: string;
-}
 
-interface TestInstance extends Test, mongoose.Document {
+interface TestInstance extends mongoose.Document {
+  testField: string;
   instanceMethod(): void;
 }
 
-interface TestModelType extends Function {
+type TestModelType = mongoose.Model<TestInstance> & {
   new (args?: any): TestInstance;
   staticMethod();
   staticProperty: string;

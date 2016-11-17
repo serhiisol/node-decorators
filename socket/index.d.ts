@@ -7,23 +7,16 @@
  */
 export interface SocketIOServer {
   attachController(controller): SocketIOServer;
+  attachControllers(controllers): SocketIOServer;
   io: SocketIO.Server
 }
 /**
- * Bootstrap root controller and create io server
- * @param RootController
+ * Bootstrap and create io server
+ * @param {number | string | Object} serverOrPort
+ * @param {Object} options
  * @returns {SocketIOServer} server
  */
-export function bootstrapSocketIO(RootController): SocketIOServer;
-
-/**
- * Creates server with options
- * @param {number | string | Object } serverOrPort
- * @param {Object|string|number} opts
- * @returns {(target:Function)=>void}
- * @constructor
- */
-export function Connect(serverOrPort: any, opts?: any);
+export function bootstrapSocketIO(serverOrPort: any, options?: any): SocketIOServer;
 
 /**
  * Registers middleware

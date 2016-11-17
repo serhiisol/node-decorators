@@ -1,3 +1,13 @@
+# Socket#1.1.2
+### BREAKING CHANGES
+* Moved server configuration out of **@Connect** decorator to **bootstrapSocketIO**
+  ```
+  bootstrapSocketIO(httpServerInstance || 3000)
+  ```
+* Removed  **@Connect** decorator
+### Features
+* **attachControllers** attach array of controllers
+
 # Socket#1.1.1
 ### Features
 * new socket.io decorator

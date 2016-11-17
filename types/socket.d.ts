@@ -21,6 +21,7 @@ interface SocketIOClass extends Object {
 }
 
 interface SocketIOServer {
-  attachController(controller);
+  attachController(Controller);
+  attachControllers(Controllers);
   io: SocketIO.Server
 }
