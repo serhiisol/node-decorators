@@ -9,21 +9,14 @@ npm install @decorators/socket --save
 ```
 ### API
 #### Functions
-* **bootstrapSocketIO(serverOrPort: any, options?: any)** - creates server and registers root controller for that
-  returns object with:
-  ```
-  interface SocketIOServer {
-    attachController(controller);
-    attachControllers(controllers);
-    io: SocketIO.Server
-  }
-  ```
-  * **attachController(controller: Controller)** - registers new controller
-  * **attachControllers(controllers: Controller[])** - registers new controllers
-  * **io** - SocketIO Server
+* **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server
+* **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket
+ 
 #### Decorators
 ##### Class
-* **@Middleware(fn: Function)** - registers middleware
+* **@Controller(namespace: string)** - registers controller for namespace
+* **@Middleware(fn: Function)** - registers global (io) middleware
+* **@SocketMiddleware(fn: Function)** - registers socket middleware
 ##### Method
 * **@OnIO(event: string)** - register global event (**io.on**)
 * **@OnConnect()** - register **connection** listener (**io.on('connection', fn)**)

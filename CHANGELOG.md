@@ -1,3 +1,12 @@
+# Socket#1.2.0
+### BREAKING CHANGES
+* Updated Socket.io version to **1.6.0**
+* Removed **attachController** for the sake of **attachControllers**
+* **bootstrapSocketIO** now accepts io server instance as first argument and array of controllers as second
+### Features
+* New **@Controller(namespace: string)** decorator, registers namespace for sockets
+* **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket
+
 # Socket#1.1.2
 ### BREAKING CHANGES
 * Moved server configuration out of **@Connect** decorator to **bootstrapSocketIO**

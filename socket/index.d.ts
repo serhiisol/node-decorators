@@ -3,28 +3,44 @@
  */
 
 /**
- * Socket IO Server
+ * Attach controllers to IO server
+ * @param {SocketIO.Server} io
+ * @param {Object[]} Controllers
  */
-export interface SocketIOServer {
-  attachController(controller): SocketIOServer;
-  attachControllers(controllers): SocketIOServer;
-  io: SocketIO.Server
-}
-/**
- * Bootstrap and create io server
- * @param {number | string | Object} serverOrPort
- * @param {Object} options
- * @returns {SocketIOServer} server
- */
-export function bootstrapSocketIO(serverOrPort: any, options?: any): SocketIOServer;
+export function bootstrapSocketIO(io: SocketIO.Server, Controllers: any[])
 
 /**
- * Registers middleware
+ * Attach Controller to already existed socket io server
+ * With this approach you can't define global middleware, it's up to you.
+ * @param {SocketIO.Server} io
+ * @param {SocketIO.Socket} socket
+ * @param Controller
+ */
+export function attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller);
+
+/**
+ * Registers controller for namespace
+ * @param {String} namespace
+ * @returns {(target:Function)=>void}
+ * @constructor
+ */
+export function Controller(namespace: string);
+
+/**
+ * Registers global middleware
  * @param {Function} fn
  * @returns {(target:Function)=>void}
  * @constructor
  */
 export function Middleware(fn: Function);
+
+/**
+ * Registers socket middleware
+ * @param {Function} fn
+ * @returns {(target:Function)=>void}
+ * @constructor
+ */
+export function SocketMiddleware(fn: Function);
 
 /**
  * Register global event (**io.on**)

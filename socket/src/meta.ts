@@ -8,7 +8,9 @@ export function getMeta(target: SocketIOClass): SocketIOMeta {
     target.__meta__ = <SocketIOMeta> {
       serverOrPort: undefined,
       options: undefined,
+      namespace: '/',
       middleware: [],
+      socketMiddleware: [],
       listeners: {
         io: {},
         socket: {}

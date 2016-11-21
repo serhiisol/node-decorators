@@ -1,2 +1,2 @@
 export * from './decorators';
-export { bootstrapSocketIO } from './socket';
+export { bootstrapSocketIO, attachControllerToSocket } from './socket';
