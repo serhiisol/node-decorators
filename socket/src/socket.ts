@@ -1,4 +1,3 @@
-import * as socketIO from 'socket.io';
 import { ParameterType } from './interface';
 
 /**
@@ -9,7 +8,12 @@ import { ParameterType } from './interface';
  * @param eventArgs incoming arguments
  * @returns {Array} returns arguments array, or io and socket, event args (default) by default
  */
-function extractParameters(io, socket, params, eventArgs): any[] {
+function extractParameters(
+  io: SocketIO.Server | SocketIO.Namespace,
+  socket: SocketIO.Socket,
+  params,
+  eventArgs
+): any[] {
   let args = [];
   /**
    * if no parameters provided, return io and socket, and event arguments (which came for default handler)
@@ -46,94 +50,118 @@ function extractParameters(io, socket, params, eventArgs): any[] {
 }
 
 /**
- * Bootstrap and create io server
- * @param {number | string | Object} serverOrPort
- * @param {Object} options
- * @returns {SocketIOServer} server
+ * Apply listeners to socket or io
+ * @param io
+ * @param socket
+ * @param controller
+ * @param {Listener} listeners object with registered listeners
+ * @param {Params} params object with registered params for specific listener
  */
-export function bootstrapSocketIO(serverOrPort: any, options?: any): SocketIOServer {
-
-  let io: SocketIO.Server = socketIO.listen(serverOrPort, options);
-
-  /**
-   * Apply listeners to socket or io
-   * @param socket
-   * @param controller
-   * @param {Listener} listeners object with registered listeners
-   * @param {Params} params object with registered params for specific listener
-   */
-  function applyListeners(socket, controller, listeners: Listener, params: Params) {
-    for (let listener in listeners) {
-      if (listeners.hasOwnProperty(listener)) {
-        let event: string = listeners[listener], handler: Function;
-
-        handler = (...args) => {
-          let handlerArgs = extractParameters(io, socket, params[listener], args);
-          return controller[listener].apply(controller, handlerArgs)
-        };
-
-        (socket || io).on.apply((socket || io), [event, handler]);
-      }
-    }
-  }
-
-  /**
-   * Attach Controller
-   * @param Controller
-   */
-  function attachController(Controller) {
-
-    const controller = new Controller(),
-      meta: SocketIOMeta = controller.__meta__,
-      listeners = meta.listeners,
-      params = meta.params;
-
-    /**
-     * Apply all registered middleware to io
-     */
-    meta.middleware.forEach(middleware => {
-      io.use(<any>middleware);
-    });
-
-    /**
-     * Apply global listeners (io based)
-     */
-    applyListeners(null, controller, listeners.io, params);
-
-    io.on('connection', socket => {
-      /**
-       * Apply socket listeners (socket based)
-       */
-      applyListeners(socket, controller, listeners.socket, params);
+function applyListeners(
+  io: SocketIO.Server | SocketIO.Namespace,
+  socket: SocketIO.Socket,
+  controller,
+  listeners: Listener,
+  params: Params
+) {
+  for (let listener of Object.keys(listeners)) {
+    (socket || io).on(listeners[listener], (...args) => {
+      let handlerArgs = extractParameters(io, (socket || args[0]), params[listener], args);
+      return controller[listener].apply(controller, handlerArgs)
     });
   }
+}
 
-  return {
-    /**
-     * Function for adding new controllers
-     * @param Controller
-     * @returns { SocketIOServer }
-     */
-    attachController: function(Controller) {
-      attachController(Controller);
-      return this;
-    },
-    /**
-     * Function for adding new controllers
-     * @param Controllers
-     * @returns { SocketIOServer }
-     */
-    attachControllers: function(Controllers = []) {
-      Controllers.forEach(Controller => {
-        attachController(Controller);
-      });
-      return this;
-    },
-    /**
-     * IO Object
-     * @type {SocketIO.Server}
-     */
-    io
-  };
+/**
+ * Get artifacts, instantiates controller and extract meta data
+ * @param Controller
+ * @returns { {controller, meta: SocketIOMeta, listeners: {io: Listener, socket: Listener}, params: Params} }
+ */
+function getArtifacts(Controller) {
+  const controller = new Controller(),
+    meta: SocketIOMeta = controller.__meta__,
+    namespace: string = meta.namespace,
+    listeners = meta.listeners,
+    params = meta.params;
+  return { controller, meta, listeners, params, namespace };
+}
 
+/**
+ * Attach controller to socket
+ * @param io
+ * @param socket
+ * @param artifacts
+ */
+function _attachControllerToSocket(io, socket, artifacts) {
+  /**
+   * Apply all registered middleware to io
+   */
+  artifacts.meta.socketMiddleware.forEach(middleware => {
+    (<any>socket).use(middleware);
+  });
+  /**
+   * Apply socket listeners (socket based)
+   */
+  applyListeners(
+    io,
+    socket,
+    artifacts.controller,
+    artifacts.listeners.socket,
+    artifacts.params
+  );
+}
+
+/**
+ * Attach Controller
+ * @param io
+ * @param Controller
+ */
+function attachController(io: SocketIO.Server, Controller) {
+  const artifacts = getArtifacts(Controller),
+    _io: SocketIO.Namespace = io.of(artifacts.namespace);
+
+  /**
+   * Apply all registered global middleware to io
+   */
+  artifacts.meta.middleware.forEach(middleware => {
+    _io.use(<any>middleware);
+  });
+
+  /**
+   * Apply global listeners (io based)
+   */
+  applyListeners(_io, null, artifacts.controller, artifacts.listeners.io, artifacts.params);
+
+  /**
+   * Apply local listeners (socket based)
+   */
+  _io.on('connection', (socket) => _attachControllerToSocket(_io, socket, artifacts));
+}
+
+/**
+ * Attaches controllers to IO server
+ * @param {SocketIO.Server} io
+ * @param {Object[]} Controllers
+ */
+export function bootstrapSocketIO(io: SocketIO.Server, Controllers: any[]) {
+  Controllers.forEach(Controller => {
+    attachController(io, Controller);
+  });
+}
+
+/**
+ * Attach Controller to already existed socket io server
+ * With this approach you can't define global middleware, it's up to you.
+ * @param {SocketIO.Server} io
+ * @param {SocketIO.Socket} socket
+ * @param Controllers
+ */
+export function attachControllerToSocket(
+  io: SocketIO.Server,
+  socket: SocketIO.Socket,
+  Controllers
+) {
+  Controllers.forEach(Controller => {
+    _attachControllerToSocket(io, socket, getArtifacts(Controller));
+  });
 }

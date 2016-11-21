@@ -1,52 +1,59 @@
+import { listen } from 'socket.io';
 import {
   Middleware,
+  SocketMiddleware,
   OnConnect,
   OnSocket,
   Args,
-  Socket,
-  IO,
-  Callback,
-  bootstrapSocketIO
+  bootstrapSocketIO,
+  Controller
 } from '@decorators/socket'
 
+const server = listen(3000);
+
 @Middleware((socket, next) => {
-  console.log('Middleware 1');
+  console.log('Global IO Middleware');
   next();
 })
-class ConnectionController {
+@SocketMiddleware((socket, next) => {
+  console.log('Middleware for each single event');
+  next();
+})
+@Controller('/messaging')
+class FirstController {
 
   @OnConnect()
   onConnection() {
-    console.log('ConnectClass @OnConnect');
-  }
-
-  @OnSocket('register')
-  onRegister(@Socket() socket, @Callback() callback, @Args() args, @IO() io) {
-    console.log('ConnectClass @OnSocket', args);
-  }
-
-}
-
-@Middleware((socket, next) => {
-  console.log('Middleware 2');
-  next();
-})
-class AdditionalController {
-
-  @OnConnect()
-  onConnection() {
-    console.log('AdditionalController @OnConnect');
+    console.log('User connected');
   }
 
   @OnSocket('message')
-  onMessage(@Socket() socket, @Callback() callback, message) {
-    console.log('AdditionalController @OnSocket', message);
+  onMessage(@Args() message) {
+    console.log(`Message:  ${message}`);
   }
 
 }
 
-bootstrapSocketIO(3000)
-  .attachControllers([
-    ConnectionController,
-    AdditionalController
-  ]);
+bootstrapSocketIO(server, [FirstController]);
+
+
+/**
+ * Add controllers to socket only
+ */
+// import {attachControllerToSocket} from '@decorators/socket'
+// const server3003 = listen(3003);
+//
+// @SocketMiddleware((socket, next) => {
+//   console.log('on each event');
+//   next();
+// })
+// class ExternalController {
+//   @OnSocket('register')
+//   onregister() {
+//     console.log('register');
+//   }
+// }
+//
+// server3003.on('connection', (socket) => {
+//   attachControllerToSocket(server3003, socket, [ExternalController]);
+// });

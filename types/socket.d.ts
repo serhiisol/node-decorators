@@ -5,8 +5,10 @@ interface Listener {
 interface SocketIOMeta {
   serverOrPort: any;
   options: any;
+  namespace: string;
 
   middleware: Function[];
+  socketMiddleware: Function[];
 
   listeners: {
     io: Listener;
@@ -18,10 +20,4 @@ interface SocketIOMeta {
 
 interface SocketIOClass extends Object {
   __meta__: SocketIOMeta;
-}
-
-interface SocketIOServer {
-  attachController(Controller);
-  attachControllers(Controllers);
-  io: SocketIO.Server
 }

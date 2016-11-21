@@ -9,27 +9,22 @@ npm install @decorators/socket --save
 ```
 ### API
 #### Functions
-* **bootstrapSocketIO(serverOrPort: any, options?: any)** - creates server and registers root controller for that
-  returns object with:
-  ```
-  interface SocketIOServer {
-    attachController(controller);
-    attachControllers(controllers);
-    io: SocketIO.Server
-  }
-  ```
-  * **attachController(controller: Controller)** - registers new controller
-  * **attachControllers(controllers: Controller[])** - registers new controllers
-  * **io** - SocketIO Server
+* **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server
+* **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket
+ 
 #### Decorators
 ##### Class
-* **@Middleware(fn: Function)** - registers middleware
+* **@Controller(namespace: string)** - registers controller for namespace
+* **@Middleware(fn: Function)** - registers global (io) middleware
+* **@SocketMiddleware(fn: Function)** - registers socket middleware
+
 ##### Method
 * **@OnIO(event: string)** - register global event (**io.on**)
 * **@OnConnect()** - register **connection** listener (**io.on('connection', fn)**)
 * **@OnConnection()** - alias of **@OnConnect**
 * **@OnSocket(event: string)** - register socket event (**socket.on**);
 * **@OnDisconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**);
+
 ##### Parameter
 * **@IO()** - returns server itself
 * **@Socket()** - returns socket
@@ -37,65 +32,44 @@ npm install @decorators/socket --save
 * **@Callback()** - returns callback function (if it exists)
 
 ### Quick Example:
-```
+```typescript
+import { listen } from 'socket.io';
 import {
   Middleware,
+  SocketMiddleware,
   OnConnect,
-  OnIO,
   OnSocket,
   Args,
-  Socket,
-  IO,
-  Callback,
-  bootstrapSocketIO
-} from '../index'
-...
-...
-...
+  bootstrapSocketIO,
+  Controller
+} from '@decorators/socket'
+
+const server = listen(3000);
 
 @Middleware((socket, next) => {
-  console.log('Middleware');
+  console.log('Global IO Middleware');
   next();
 })
-class ConnectionController {
+@SocketMiddleware((socket, next) => {
+  console.log('Middleware for each single event');
+  next();
+})
+@Controller('/messaging')
+class FirstController {
 
   @OnConnect()
   onConnection() {
-    console.log('ConnectClass @OnConnect');
-  }
-
-  @OnSocket('register')
-  onRegister(@Socket() socket, @Callback() callback, @Args() args, @IO() io) {
-    console.log('ConnectClass @OnSocket', args);
-  }
-
-}
-
-class AdditionalController {
-
-  @OnConnect()
-  onConnection() {
-    console.log('AdditionalController @OnConnect');
+    console.log('User connected');
   }
 
   @OnSocket('message')
-  onMessage(@Socket() socket, @Callback() callback, message) {
-    console.log('AdditionalController @OnSocket', message);
+  onMessage(@Args() message) {
+    console.log(`Message:  ${message}`);
   }
 
 }
 
-bootstrapSocketIO(3000)
-  .attachControllers([
-    ConnectionController,
-    AdditionalController
-  ]);
-...
-...
+bootstrapSocketIO(server, [FirstController]);
 ...
 ```
-
-
-
-
 [Socket.IO]:http://socket.io/
