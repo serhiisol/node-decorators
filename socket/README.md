@@ -30,65 +30,44 @@ npm install @decorators/socket --save
 * **@Callback()** - returns callback function (if it exists)
 
 ### Quick Example:
-```
+```typescript
+import { listen } from 'socket.io';
 import {
   Middleware,
+  SocketMiddleware,
   OnConnect,
-  OnIO,
   OnSocket,
   Args,
-  Socket,
-  IO,
-  Callback,
-  bootstrapSocketIO
-} from '../index'
-...
-...
-...
+  bootstrapSocketIO,
+  Controller
+} from '@decorators/socket'
+
+const server = listen(3000);
 
 @Middleware((socket, next) => {
-  console.log('Middleware');
+  console.log('Global IO Middleware');
   next();
 })
-class ConnectionController {
+@SocketMiddleware((socket, next) => {
+  console.log('Middleware for each single event');
+  next();
+})
+@Controller('/messaging')
+class FirstController {
 
   @OnConnect()
   onConnection() {
-    console.log('ConnectClass @OnConnect');
-  }
-
-  @OnSocket('register')
-  onRegister(@Socket() socket, @Callback() callback, @Args() args, @IO() io) {
-    console.log('ConnectClass @OnSocket', args);
-  }
-
-}
-
-class AdditionalController {
-
-  @OnConnect()
-  onConnection() {
-    console.log('AdditionalController @OnConnect');
+    console.log('User connected');
   }
 
   @OnSocket('message')
-  onMessage(@Socket() socket, @Callback() callback, message) {
-    console.log('AdditionalController @OnSocket', message);
+  onMessage(@Args() message) {
+    console.log(`Message:  ${message}`);
   }
 
 }
 
-bootstrapSocketIO(3000)
-  .attachControllers([
-    ConnectionController,
-    AdditionalController
-  ]);
-...
-...
+bootstrapSocketIO(server, [FirstController]);
 ...
 ```
-
-
-
-
 [Socket.IO]:http://socket.io/
