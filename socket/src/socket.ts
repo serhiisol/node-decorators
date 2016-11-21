@@ -9,7 +9,7 @@ import { ParameterType } from './interface';
  * @returns {Array} returns arguments array, or io and socket, event args (default) by default
  */
 function extractParameters(
-  io: SocketIO.Server,
+  io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
   params,
   eventArgs
@@ -58,7 +58,7 @@ function extractParameters(
  * @param {Params} params object with registered params for specific listener
  */
 function applyListeners(
-  io: SocketIO.Server,
+  io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
   controller,
   listeners: Listener,
@@ -117,26 +117,25 @@ function _attachControllerToSocket(io, socket, artifacts) {
  * @param Controller
  */
 function attachController(io: SocketIO.Server, Controller) {
-  const artifacts = getArtifacts(Controller);
+  const artifacts = getArtifacts(Controller),
+    _io: SocketIO.Namespace = io.of(artifacts.namespace);
 
   /**
    * Apply all registered global middleware to io
    */
   artifacts.meta.middleware.forEach(middleware => {
-    io.use(<any>middleware);
+    _io.use(<any>middleware);
   });
 
   /**
    * Apply global listeners (io based)
    */
-  applyListeners(io, null, artifacts.controller, artifacts.listeners.io, artifacts.params);
+  applyListeners(_io, null, artifacts.controller, artifacts.listeners.io, artifacts.params);
 
   /**
    * Apply local listeners (socket based)
    */
-  io
-    .of(artifacts.namespace)
-    .on('connection', (socket) => _attachControllerToSocket(io, socket, artifacts));
+  _io.on('connection', (socket) => _attachControllerToSocket(_io, socket, artifacts));
 }
 
 /**
