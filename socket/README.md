@@ -17,12 +17,14 @@ npm install @decorators/socket --save
 * **@Controller(namespace: string)** - registers controller for namespace
 * **@Middleware(fn: Function)** - registers global (io) middleware
 * **@SocketMiddleware(fn: Function)** - registers socket middleware
+
 ##### Method
 * **@OnIO(event: string)** - register global event (**io.on**)
 * **@OnConnect()** - register **connection** listener (**io.on('connection', fn)**)
 * **@OnConnection()** - alias of **@OnConnect**
 * **@OnSocket(event: string)** - register socket event (**socket.on**);
 * **@OnDisconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**);
+
 ##### Parameter
 * **@IO()** - returns server itself
 * **@Socket()** - returns socket
