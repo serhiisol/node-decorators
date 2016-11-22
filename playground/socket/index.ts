@@ -11,11 +11,11 @@ import {
 
 const server = listen(3000);
 
-@Middleware((socket, next) => {
+@Middleware((io, socket, next) => {
   console.log('Global IO Middleware');
   next();
 })
-@SocketMiddleware((socket, next) => {
+@SocketMiddleware((io, socket, packet, next) => {
   console.log('Middleware for each single event');
   next();
 })

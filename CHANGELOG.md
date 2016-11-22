@@ -1,3 +1,9 @@
+# Socket#1.2.1
+### Features
+* added new parameters to middleware functions:
+  * **@Middleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, next: Function) => {})** - registers global (io) middleware
+  * **@SocketMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers socket middleware
+
 # Socket#1.2.0
 ### BREAKING CHANGES
 * Updated Socket.io version to **1.6.0**

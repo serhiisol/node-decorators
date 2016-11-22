@@ -15,8 +15,8 @@ npm install @decorators/socket --save
 #### Decorators
 ##### Class
 * **@Controller(namespace: string)** - registers controller for namespace
-* **@Middleware(fn: Function)** - registers global (io) middleware
-* **@SocketMiddleware(fn: Function)** - registers socket middleware
+* **@Middleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, next: Function) => {})** - registers global (io) middleware
+* **@SocketMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers socket middleware
 
 ##### Method
 * **@OnIO(event: string)** - register global event (**io.on**)
