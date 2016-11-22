@@ -97,7 +97,9 @@ function _attachControllerToSocket(io, socket, artifacts) {
    * Apply all registered middleware to io
    */
   artifacts.meta.socketMiddleware.forEach(middleware => {
-    (<any>socket).use(middleware);
+    (<any>socket).use((...args) => {
+      return middleware.apply(middleware, [io, socket, ...args]);
+    });
   });
   /**
    * Apply socket listeners (socket based)
@@ -124,7 +126,7 @@ function attachController(io: SocketIO.Server, Controller) {
    * Apply all registered global middleware to io
    */
   artifacts.meta.middleware.forEach(middleware => {
-    _io.use(<any>middleware);
+    _io.use((...args) => middleware.apply(middleware, [_io, ...args]));
   });
 
   /**
