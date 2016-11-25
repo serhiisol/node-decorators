@@ -9,7 +9,7 @@ export function bootstrapMongoose(DecoratedClass) {
     indexes = {},
     model;
 
-  meta.statics.forEach(stat => {
+  meta.statics.forEach((stat: [string, Function] | string) => {
     if (typeof stat[1] === 'function') {
       schema.statics[<string>stat[0]] = <Function>stat[1]
     } else {
