@@ -65,4 +65,7 @@ bootstrapExpress(app);
 app.controller(TestController).listen(3000);
 ```
 
+### License
+MIT
+
 [ExpressJS]:http://expressjs.com

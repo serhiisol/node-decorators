@@ -24,7 +24,7 @@ let testAsyncFunc = () => {
 };
 
 class TestController {
-  @Async
+  @Async()
   *getData() {
     console.log('code before async function');
     yield testAsyncFunc();
@@ -32,5 +32,8 @@ class TestController {
   }
 }
 ```
+
+### License
+MIT
 
 [CoJS]:https://github.com/tj/co

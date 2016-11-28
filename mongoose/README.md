@@ -54,4 +54,7 @@ class TestModelClass {
 export let TestModel = bootstrapMongoose(TestModelClass);
 ```
 
+### License
+MIT
+
 [MongooseJS]:http://mongoosejs.com

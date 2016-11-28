@@ -43,6 +43,9 @@ app.controller(TestController).listen(3000);
 ## Documentation
 Look at the corresponding package for instructions
 
+## License
+MIT
+
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com
 [Co]:https://github.com/tj/co
