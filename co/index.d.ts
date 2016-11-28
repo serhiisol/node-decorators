@@ -1,1 +1,1 @@
-export function Async(target: any, name:string);
+export { Async } from './src';

@@ -23,5 +23,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
-  }
+  },
+  "types": "index.d.ts"
 }

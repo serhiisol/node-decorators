@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "commonjs",
@@ -24,13 +24,7 @@
     "express/example/**/*"
   ],
   "files": [
-    "co/index.ts",
 
-    "mongoose/index.d.ts",
-    "mongoose/index.ts",
-    "express/index.ts",
-
-    "socket/index.d.ts",
-    "socket/index.ts"
+    "mongoose/index.ts"
   ]
 }
