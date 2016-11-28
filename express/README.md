@@ -18,13 +18,12 @@ npm install @decorators/express --save
 
 ##### Method
 * @Middleware(middleware: Function), middleware priority:
-```
+```typescript
 @Delete('/:id')
 @Middleware(ThirdMiddleware)  //<-- this will be executed last
 @Middleware(SecondMiddleware) //<-- this will be executed second
 @Middleware(FirstMiddleware)  //<-- this will be executed first
 remove(@Request() req, @Response() res, @Params('id') id) {
-  //...
 }
 ```
 * @Get(url: string)
@@ -44,7 +43,7 @@ remove(@Request() req, @Response() res, @Params('id') id) {
 * @Cookies(name?: string)
 
 ### Example Express Application and Controller:
-```
+```typescript
 import { Response, Params, Controller, Get,
   bootstrapExpress, Middleware
 } from 'node-decorators/express';

@@ -31,13 +31,12 @@ npm install @decorators/mongoose --save
 * @Set() = @Option()
 
 ### Example Mongoose Model
-```
-...
+```typescript
 import {
   SchemaField, Model, bootstrapMongoose,
   Static, Instance
 } from 'node-decorators/mongoose';
-...
+
 @Model('Test')
 class TestModelClass {
   @SchemaField(String)

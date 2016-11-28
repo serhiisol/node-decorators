@@ -70,6 +70,6 @@ class FirstController {
 }
 
 bootstrapSocketIO(server, [FirstController]);
-...
+
 ```
 [Socket.IO]:http://socket.io/
