@@ -14,7 +14,6 @@ npm install @decorators/mongoose --save
 
 #### Decorators
 ##### Class
-* @Schema(schemaDefinition: any)
 * @Model(name: string)
 
 ##### Method
@@ -24,6 +23,7 @@ npm install @decorators/mongoose --save
 * @Virtual
 
 ##### Property
+* @SchemaField(schemaFieldDefinition)
 * @Static
 * @Index
 * @Set = @Option
@@ -32,7 +32,7 @@ npm install @decorators/mongoose --save
 ```
 import {connect, Document, Model as IModel } from 'mongoose';
 import {
-  Schema, Model, bootstrapMongoose,
+  SchemaField, Model, bootstrapMongoose,
   Static, Instance
 } from 'node-decorators/mongoose';
 
@@ -44,11 +44,11 @@ connect('192.168.99.100:27017/test', {
   }
 });
 
-@Schema({
-  testField: String
-})
 @Model('Test')
 class TestModelClass {
+  @SchemaField(String)
+  testField: string;
+
   @Static
   testMethod() {
     console.log('static test method')

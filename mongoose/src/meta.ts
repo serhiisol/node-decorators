@@ -2,7 +2,7 @@ export function getMongooseMeta(target: MongooseClass): MongooseMeta {
   if (!target.__meta__) {
     target.__meta__ = <MongooseMeta> {
       name: '',
-      schema:    [],
+      schema:    {},
       statics:   [],
       queries:   [],
       instances: [],

@@ -1,27 +1,27 @@
 {
-  "name": "@decorators/mongoose",
+  "name": "@decorators/playground-mongoose",
   "version": "1.1.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "mongoose": "^4.7.0"
+    "@decorators/mongoose": "../../mongoose"
   },
   "keywords": [
     "nodejs",
-    "mongoose",
+    "socket.io",
     "node decorators",
     "typescript"
   ],
   "author": "Serhii Sol",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/serhiisol/node-decorators/issues"
+    "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": "^7.1.0"
+    "node": "7.1.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/serhiisol/node-decorators.git"
+    "url": "https://github.com/serhiiso/node-decorators.git"
   }
 }
