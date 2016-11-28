@@ -11,10 +11,9 @@ npm install @decorators/co --save
 #### Decorators
 ##### Method
 * @Async
-```
-...
+```typescript
 import { Async } from 'node-decorators/co';
-...
+
 let testAsyncFunc = () => {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -23,20 +22,18 @@ let testAsyncFunc = () => {
     }, 3000);
   });
 };
-...
+
 class TestController {
-  @Async
+  @Async()
   *getData() {
     console.log('code before async function');
     yield testAsyncFunc();
     console.log('code after async function');
   }
 }
-
-...
 ```
 
-
-
+### License
+MIT
 
 [CoJS]:https://github.com/tj/co

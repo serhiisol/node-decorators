@@ -70,6 +70,9 @@ class FirstController {
 }
 
 bootstrapSocketIO(server, [FirstController]);
-...
 ```
+
+### License
+MIT
+
 [Socket.IO]:http://socket.io/

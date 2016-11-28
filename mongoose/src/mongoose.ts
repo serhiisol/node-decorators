@@ -1,7 +1,21 @@
-import { Schema, model as Model } from 'mongoose';
+import { Schema, model as Model, Model as IModel, Document } from 'mongoose';
 import { getMongooseMeta, extend } from './meta';
 
-export function bootstrapMongoose(DecoratedClass) {
+/**
+ * Quick helper function to link reference
+ * @param {String} collectionRef
+ * @returns { {type: "mongoose".Schema.Types.ObjectId, ref: string} }
+ */
+export function ref(collectionRef: string): { type: any, ref: string } {
+  return { type: Schema.Types.ObjectId, ref: collectionRef };
+}
+
+/**
+ * Bootstrap decorated class to native mongoose
+ * @param DecoratedClass
+ * @returns {Object} Mongoose model itself
+ */
+export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T> {
   let meta: MongooseMeta = getMongooseMeta(DecoratedClass.prototype),
     classInstance = new DecoratedClass(),
     schema: Schema = new Schema(meta.schema),

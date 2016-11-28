@@ -1,3 +1,8 @@
+# Mongoose#1.1.1
+* Automatic definitions generation
+* new **ref(collectionRef)** - helper function to define reference to another collection/model
+* **ModelClass** interface provides all properties and functions to the class
+
 # Mongoose#1.1.0
 ### BREAKING CHANGES
 * Changed **@Schema** decorator to **@SchemaField** to use it inside class as property decorator

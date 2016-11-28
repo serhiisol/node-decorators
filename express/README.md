@@ -9,26 +9,21 @@ npm install @decorators/express --save
 ```
 
 ### API
-
 #### Functions
-* **bootstrapExpress(express())** - Function will add additional method **controller()** to express application.
-**app.controller()** returns app.
-* **bootstrapController(app: Express, controller)** - attach controller to app
 * **bootstrapControllers(app: Express, controllers)** - attach controllers to app
-* **bootstrapControllersFromDirectory(app: Express, folder: string)** - read folder and attach controllers
 
 #### Decorators
 ##### Class
 * @Controller(baseUrl: string)
+
 ##### Method
 * @Middleware(middleware: Function), middleware priority:
-```
+```typescript
 @Delete('/:id')
 @Middleware(ThirdMiddleware)  //<-- this will be executed last
 @Middleware(SecondMiddleware) //<-- this will be executed second
 @Middleware(FirstMiddleware)  //<-- this will be executed first
 remove(@Request() req, @Response() res, @Params('id') id) {
-  //...
 }
 ```
 * @Get(url: string)
@@ -36,6 +31,7 @@ remove(@Request() req, @Response() res, @Params('id') id) {
 * @Put(url: string)
 * @Delete(url: string)
 * @Options(url: string)
+
 ##### Parameter
 * @Request()
 * @Response()
@@ -47,7 +43,7 @@ remove(@Request() req, @Response() res, @Params('id') id) {
 * @Cookies(name?: string)
 
 ### Example Express Application and Controller:
-```
+```typescript
 import { Response, Params, Controller, Get,
   bootstrapExpress, Middleware
 } from 'node-decorators/express';
@@ -68,5 +64,8 @@ let app: DecoratedExpress = <DecoratedExpress>express();
 bootstrapExpress(app);
 app.controller(TestController).listen(3000);
 ```
+
+### License
+MIT
 
 [ExpressJS]:http://expressjs.com

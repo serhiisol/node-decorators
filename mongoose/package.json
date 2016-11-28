@@ -1,6 +1,6 @@
 {
   "name": "@decorators/mongoose",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
@@ -23,5 +23,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
-  }
+  },
+  "types": "index.d.ts"
 }

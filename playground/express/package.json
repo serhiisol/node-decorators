@@ -1,10 +1,10 @@
 {
-  "name": "@decorators/playground-socket",
-  "version": "1.2.2",
+  "name": "@decorators/playground-express",
+  "version": "1.1.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "@decorators/socket": "../../socket"
+    "@decorators/express": "../../express"
   },
   "keywords": [
     "nodejs",
@@ -18,7 +18,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": "^6.3.0"
+    "node": "7.1.0"
   },
   "repository": {
     "type": "git",

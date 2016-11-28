@@ -4,11 +4,8 @@ import {
   Model,
   bootstrapMongoose,
   Static,
-  Query,
   Instance,
-  Virtual,
-  Index,
-  Set
+  ModelClass
 } from '@decorators/mongoose';
 
 (<any>mongoose).Promise = Promise;
@@ -19,12 +16,6 @@ mongoose.connect('192.168.99.100:27017/test', {
     }
   }
 });
-
-
-class ModelClass {
-  save: (fn?: (err: any, product: this, numAffected: number) => void) => Promise<this>;
-  remove: (fn?: (err: any, product: this) => void) => Promise<this>;
-}
 
 interface TestInstance extends mongoose.Document {
   testField: string;
@@ -37,7 +28,7 @@ interface TestModelType extends mongoose.Model<TestInstance> {
 }
 
 @Model('Test')
-class TestModelClass extends ModelClass {
+  class TestModelClass extends ModelClass {
 
   @SchemaField(String)
   testField: string;
