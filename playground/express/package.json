@@ -4,7 +4,7 @@
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "@decorators/mongoose": "../../mongoose"
+    "@decorators/express": "../../express"
   },
   "keywords": [
     "nodejs",

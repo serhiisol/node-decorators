@@ -1,4 +1,3 @@
-import { readdirSync } from 'fs';
 import { Router, Express } from 'express';
 import { ParameterType } from './interface';
 
@@ -57,45 +56,12 @@ function registerController(app, Controller) {
   return app;
 }
 
-export function bootstrapExpress(app: Express) {
-  app['controller'] = Controller => registerController(app, Controller);
-  return app;
-}
-
-export function bootstrapController(app: Express, controller: any) {
-  registerController(app, controller);
-}
-
 export function bootstrapControllers(app: Express, controllers: any[]) {
   try {
     controllers.forEach(controller => {
-      bootstrapController(app, controller);
+      registerController(app, controller);
     })
   } catch (e) {
     console.log('Second parameter should be array of controllers', e, e.message);
   }
-}
-
-export function bootstrapControllersFromDirectory(app: Express, folder: string) {
-  let controllers: string[] = readdirSync(folder);
-  controllers.forEach((name: string) => {
-    try {
-      let artifacts = name.split('.');
-      if (artifacts.pop() === 'js') {
-        name = artifacts.join();
-        let controller = require(`${folder}/${name}`);
-        if (controller.prototype && controller.prototype.__meta__) {
-          registerController(app, controller);
-        } else if (typeof controller === 'object') {
-          for (let key in controller) {
-            if (controller.hasOwnProperty(key)) {
-              registerController(app, controller[key]);
-            }
-          }
-        }
-      }
-    } catch(e) {
-      console.log(`Cannot register controller ${name}`, e, e.message);
-    }
-  });
 }

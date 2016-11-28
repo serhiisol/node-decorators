@@ -9,17 +9,13 @@ npm install @decorators/express --save
 ```
 
 ### API
-
 #### Functions
-* **bootstrapExpress(express())** - Function will add additional method **controller()** to express application.
-**app.controller()** returns app.
-* **bootstrapController(app: Express, controller)** - attach controller to app
 * **bootstrapControllers(app: Express, controllers)** - attach controllers to app
-* **bootstrapControllersFromDirectory(app: Express, folder: string)** - read folder and attach controllers
 
 #### Decorators
 ##### Class
 * @Controller(baseUrl: string)
+
 ##### Method
 * @Middleware(middleware: Function), middleware priority:
 ```
@@ -36,6 +32,7 @@ remove(@Request() req, @Response() res, @Params('id') id) {
 * @Put(url: string)
 * @Delete(url: string)
 * @Options(url: string)
+
 ##### Parameter
 * @Request()
 * @Response()

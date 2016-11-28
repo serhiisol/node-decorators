@@ -1,3 +1,10 @@
+# Express#1.1.0
+* Automatic definitions generation
+* removed helper functions
+  * **bootstrapExpress**
+  *  **bootstrapController**
+  * **bootstrapControllersFromDirectory**
+
 # 1.0.0
 * Moved project to scoped packages
 ```

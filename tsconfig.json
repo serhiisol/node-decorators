@@ -24,7 +24,9 @@
     "express/example/**/*"
   ],
   "files": [
-
-    "mongoose/index.ts"
+    "co/index.ts",
+    "express/index.ts",
+    "mongoose/index.ts",
+    "socket/index.ts"
   ]
 }

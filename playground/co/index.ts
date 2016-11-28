@@ -16,6 +16,7 @@ class TestController {
     console.log('code before async function');
     yield testAsyncFunc();
     console.log('code after async function');
+    process.exit(0);
   }
 
 }

@@ -1,13 +1,14 @@
 import * as express from 'express';
+import { Express } from 'express';
 
 import {
   Response,
   Params,
   Controller,
   Get,
-  bootstrapExpress,
+  bootstrapControllers,
   Middleware
-} from '../../index';
+} from '@decorators/express';
 
 @Controller('/')
 class TestController {
@@ -33,5 +34,8 @@ class TestController {
 
 }
 
-let app: any = bootstrapExpress(express());
-app.controller(TestController).listen(3003);
+let app: Express = express();
+
+bootstrapControllers(app, [TestController]);
+
+app.listen(3003);

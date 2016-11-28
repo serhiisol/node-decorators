@@ -12,6 +12,7 @@ npm install @decorators/mongoose --save
 #### Functions
 * **bootstrapMongoose(MongooseModel)** - Function to generate model for class.
 * **ref(collectionRef)** - helper function to define reference to another collection/model
+* **ModelClass** - interface provides all properties and functions to the class
 
 #### Decorators
 ##### Class
