@@ -1,2 +1,2 @@
 export * from './decorators';
-export { bootstrapMongoose } from './mongoose';
+export { bootstrapMongoose, ref } from './mongoose';

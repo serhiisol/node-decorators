@@ -11,51 +11,43 @@ npm install @decorators/mongoose --save
 ### API
 #### Functions
 * **bootstrapMongoose(MongooseModel)** - Function to generate model for class.
+* **ref(collectionRef)** - helper function to define reference to another collection/model
 
 #### Decorators
 ##### Class
 * @Model(name: string)
 
 ##### Method
-* @Static
-* @Query
-* @Instance
-* @Virtual
+* @Static()
+* @Query()
+* @Instance()
+* @Virtual()
 
 ##### Property
 * @SchemaField(schemaFieldDefinition)
-* @Static
-* @Index
-* @Set = @Option
+* @Static()
+* @Index()
+* @Set() = @Option()
 
 ### Example Mongoose Model
 ```
-import {connect, Document, Model as IModel } from 'mongoose';
+...
 import {
   SchemaField, Model, bootstrapMongoose,
   Static, Instance
 } from 'node-decorators/mongoose';
-
-connect('192.168.99.100:27017/test', {
-  "server": {
-    "socketOptions": {
-      "keepAlive": 1
-    }
-  }
-});
-
+...
 @Model('Test')
 class TestModelClass {
   @SchemaField(String)
   testField: string;
 
-  @Static
+  @Static()
   testMethod() {
-    console.log('static test method')
   }
-  @Instance
+
+  @Instance()
   instanceMethod() {
-    console.log(this);
   }
 }
 

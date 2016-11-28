@@ -25,6 +25,8 @@
   ],
   "files": [
     "co/index.ts",
+
+    "mongoose/index.d.ts",
     "mongoose/index.ts",
     "express/index.ts",
 
