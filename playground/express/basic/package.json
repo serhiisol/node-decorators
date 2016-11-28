@@ -1,14 +1,14 @@
 {
-  "name": "@decorators/co",
+  "name": "@decorators/playground-express",
   "version": "1.1.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "co": "^4.6.0"
+    "@decorators/mongoose": "../../mongoose"
   },
   "keywords": [
     "nodejs",
-    "co",
+    "socket.io",
     "node decorators",
     "typescript"
   ],
@@ -18,7 +18,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": "^6.3.0"
+    "node": "7.1.0"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,22 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "rootDir": ".",
+    "sourceMap": true,
+    "target": "es6",
+    "inlineSources": true
+  },
+  "exclude": [
+    "node_modules/**/*"
+  ],
+  "files": [
+    "index.ts"
+  ]
+}

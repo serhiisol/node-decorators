@@ -1,4 +1,4 @@
-import { Async } from '../';
+import { Async } from '@decorators/co';
 
 let testAsyncFunc = () => {
   return new Promise(resolve => {
@@ -11,7 +11,7 @@ let testAsyncFunc = () => {
 
 class TestController {
 
-  @Async
+  @Async()
   *getData() {
     console.log('code before async function');
     yield testAsyncFunc();

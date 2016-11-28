@@ -9,6 +9,7 @@ npm-debug.log
 
 # compiled
 **/*.d.ts
+!types/**/*.d.ts
 **/*.js
 **/*.map
 
