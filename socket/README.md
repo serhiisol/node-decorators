@@ -14,16 +14,18 @@ npm install @decorators/socket --save
  
 #### Decorators
 ##### Class
-* **@Controller(namespace: string)** - registers controller for namespace
-* **@Middleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, next: Function) => {})** - registers global (io) middleware
-* **@SocketMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers socket middleware
+* **@Namespace(namespace: string)** - registers controller for namespace
+* **@ServerMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, next: Function) => {})** - registers global server (io) middleware
+* **@GlobalMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers socket global middleware
+* **@Middleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers controller-based middleware, 
+will handle only socket events registered in controller
 
 ##### Method
-* **@OnIO(event: string)** - register global event (**io.on**)
-* **@OnConnect()** - register **connection** listener (**io.on('connection', fn)**)
-* **@OnConnection()** - alias of **@OnConnect**
-* **@OnSocket(event: string)** - register socket event (**socket.on**);
-* **@OnDisconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**);
+* **@GlobalEvent(event: string)** - register global event (**io.on**)
+* **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
+* **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
+
+* **@Event(event: string)** - register socket event (**socket.on**);
 
 ##### Parameter
 * **@IO()** - returns server itself
@@ -31,38 +33,26 @@ npm install @decorators/socket --save
 * **@Args()** - returns event arguments (excluding callback)(if it exists)
 * **@Callback()** - returns callback function (if it exists)
 
+### Details
+#### Middleware
+The middleware order :
+* Global Server Middleware
+* Global Socket middleware
+* Controller based middleware
+* Event based middleware
+Additionally to this order depends on the order how you've registered appropriate types of middleware 
+
 ### Quick Example:
 ```typescript
 import { listen } from 'socket.io';
-import {
-  Middleware,
-  SocketMiddleware,
-  OnConnect,
-  OnSocket,
-  Args,
-  bootstrapSocketIO,
-  Controller
-} from '@decorators/socket'
+import {Event, Args, bootstrapSocketIO, Namespace } from '@decorators/socket';
 
 const server = listen(3000);
 
-@Middleware((socket, next) => {
-  console.log('Global IO Middleware');
-  next();
-})
-@SocketMiddleware((socket, next) => {
-  console.log('Middleware for each single event');
-  next();
-})
-@Controller('/messaging')
+@Namespace('/messaging')
 class FirstController {
 
-  @OnConnect()
-  onConnection() {
-    console.log('User connected');
-  }
-
-  @OnSocket('message')
+  @Event('message')
   onMessage(@Args() message) {
     console.log(`Message:  ${message}`);
   }

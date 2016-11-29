@@ -1,3 +1,16 @@
+# Socket#1.3.0
+* Renamed middleware names to
+   * **@ServerMiddleware**
+   * **@GlobalMiddleware**
+   * **@Middleware**
+* Renamed decorators:
+   * **@Namespace**
+   * **@GlobalEvent**
+   * **@Connection**
+   * **@Disconnect**
+   * **@Event**
+* Added event-based middleware, for socket events
+
 # Socket#1.2.2
 * Automatic definitions generation
 
