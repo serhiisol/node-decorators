@@ -1,5 +1,8 @@
 interface Listener {
-  [key: string]: string;
+  [key: string]: {
+    event: string;
+    middleware: Function[];
+  };
 }
 
 interface SocketIOMeta {
@@ -7,10 +10,14 @@ interface SocketIOMeta {
   options: any;
   namespace: string;
 
-  middleware: Function[];
-  socketMiddleware: Function[];
+  middleware: {
+    io: Function[];
+    socket: Function[];
+    controller: Function[];
+  }
 
   listeners: {
+    all: string[],
     io: Listener;
     socket: Listener;
   };
