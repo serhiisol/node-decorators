@@ -65,7 +65,18 @@ function applyListeners(
   params: Params
 ) {
   for (let listener of Object.keys(listeners)) {
-    (socket || io).on(listeners[listener], (...args) => {
+    if (socket) {
+      listeners[listener].middleware.forEach((middleware: Function) => {
+        (<any>socket).use((packet, next) => {
+          if (packet[0] === listeners[listener].event) {
+            return middleware(io, socket, packet, next);
+          }
+          next();
+        });
+      });
+    }
+
+    (socket || io).on(listeners[listener].event, (...args) => {
       let handlerArgs = extractParameters(io, (socket || args[0]), params[listener], args);
       return controller[listener].apply(controller, handlerArgs)
     });
@@ -94,11 +105,24 @@ function getArtifacts(Controller) {
  */
 function _attachControllerToSocket(io, socket, artifacts) {
   /**
-   * Apply all registered middleware to io
+   * Apply all registered middleware to socket
    */
-  artifacts.meta.socketMiddleware.forEach(middleware => {
+  artifacts.meta.middleware.socket.forEach(middleware => {
     (<any>socket).use((...args) =>middleware.apply(middleware, [io, socket, ...args]));
   });
+
+  /**
+   * Apply all registered controller-based middleware to socket
+   */
+  artifacts.meta.middleware.controller.forEach(middleware => {
+    (<any>socket).use((packet, next) => {
+      if (artifacts.meta.listeners.all.indexOf(packet[0]) !== -1) {
+        return middleware.apply(middleware, [io, socket, packet, next])
+      }
+      next();
+    });
+  });
+
   /**
    * Apply socket listeners (socket based)
    */
@@ -123,7 +147,7 @@ function attachController(io: SocketIO.Server, Controller) {
   /**
    * Apply all registered global middleware to io
    */
-  artifacts.meta.middleware.forEach(middleware => {
+  artifacts.meta.middleware.io.forEach(middleware => {
     _io.use((...args) => middleware.apply(middleware, [_io, ...args]));
   });
 

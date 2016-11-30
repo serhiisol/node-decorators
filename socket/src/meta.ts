@@ -9,9 +9,13 @@ export function getMeta(target: SocketIOClass): SocketIOMeta {
       serverOrPort: undefined,
       options: undefined,
       namespace: '/',
-      middleware: [],
-      socketMiddleware: [],
+      middleware: {
+        io: [],
+        socket: [],
+        controller: []
+      },
       listeners: {
+        all: [],
         io: {},
         socket: {}
       },

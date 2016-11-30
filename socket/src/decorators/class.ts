@@ -1,6 +1,10 @@
 import { getMeta } from '../meta';
 
-export let Controller = (namespace: string): ClassDecorator => {
+/**
+ * Defines namespace for the controller
+ * @param {string} namespace
+ */
+export let Namespace = (namespace: string): ClassDecorator => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
     meta.namespace = namespace;
@@ -13,10 +17,10 @@ export let Controller = (namespace: string): ClassDecorator => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let Middleware = (fn: Function): ClassDecorator  => {
+export let ServerMiddleware = (fn: Function): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
-    meta.middleware.push(fn);
+    meta.middleware.io.push(fn);
   }
 };
 
@@ -26,9 +30,22 @@ export let Middleware = (fn: Function): ClassDecorator  => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let SocketMiddleware = (fn: Function): ClassDecorator  => {
+export let GlobalMiddleware = (fn: Function): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
-    meta.socketMiddleware.push(fn);
+    meta.middleware.socket.push(fn);
+  }
+};
+
+/**
+ * Registers socket middleware
+ * @param {Function} fn
+ * @returns {(target:Function)=>void}
+ * @constructor
+ */
+export let Middleware = (fn: Function): ClassDecorator  => {
+  return (target: Function): void => {
+    let meta: SocketIOMeta = getMeta(target.prototype);
+    meta.middleware.controller.push(fn);
   }
 };
