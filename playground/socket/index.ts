@@ -3,12 +3,11 @@ import {
   Middleware,
   GlobalMiddleware,
   ServerMiddleware,
-  Connection,
   Event,
   Args,
   bootstrapSocketIO,
   Namespace
-} from '@decorators/socket'
+} from '@decorators/socket';
 
 const server = listen(3000);
 
