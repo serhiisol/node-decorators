@@ -25,7 +25,13 @@ will handle only socket events registered in controller
 * **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
 * **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
 
-* **@Event(event: string)** - register socket event (**socket.on**);
+* **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
+where middleware is a function which accepts four parameters:
+```typescript
+function middleware(io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet: [string, ...any], next: Function) {
+    //
+}
+```
 
 ##### Parameter
 * **@IO()** - returns server itself
