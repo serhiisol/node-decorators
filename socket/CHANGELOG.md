@@ -1,3 +1,6 @@
+# Socket#1.3.1
+* Added callback function (noop) even if it doesn't exists, just prevent additional checks in controller
+
 # Socket#1.3.0
 * Renamed middleware names to
    * **@ServerMiddleware**

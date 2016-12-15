@@ -20,7 +20,7 @@ function addParameterMeta(target: SocketIOClass, propertyKey: string | symbol, c
  * @param parameterType Parameter Type
  * @returns {()=>ParameterDecorator}
  */
-function parameterDecoratorFactory(parameterType: ParameterType): (name?: string) => ParameterDecorator {
+function parameterDecoratorFactory(parameterType: ParameterType): () => ParameterDecorator {
   return function(): ParameterDecorator {
     return function (target: SocketIOClass, propertyKey: string | symbol, index: number) {
       addParameterMeta(target, propertyKey, {index, type: parameterType});
