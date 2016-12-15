@@ -1,6 +1,11 @@
 import { ParameterType } from './interface';
 
 /**
+ * Dummy function to ensure, that callback exists
+ */
+function noop() {}
+
+/**
  * Extract parameters for new handler
  * @param io
  * @param socket
@@ -42,7 +47,7 @@ function extractParameters(
       case ParameterType.IO: args[item.index] = io; break;
       case ParameterType.Socket: args[item.index] = socket; break;
       case ParameterType.Args: args[item.index] = eventArgs.pop(); break;
-      case ParameterType.Callback: args[item.index] = callback; break;
+      case ParameterType.Callback: args[item.index] = callback || noop; break;
     }
   }
 
