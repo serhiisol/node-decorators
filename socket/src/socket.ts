@@ -6,6 +6,16 @@ import { ParameterType } from './interface';
 function noop() {}
 
 /**
+ * Get original socket, or create instance of passed WrapperClass (data)
+ * @param {ParameterConfiguration} item
+ * @param {SocketIO.Socket} socket
+ * @returns {SocketIO.Socket}
+ */
+function getSocket(item: ParameterConfiguration, socket: SocketIO.Socket) {
+  return item.data ? new item.data(socket) : socket;
+}
+
+/**
  * Extract parameters for new handler
  * @param io
  * @param socket
@@ -16,7 +26,7 @@ function noop() {}
 function extractParameters(
   io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
-  params,
+  params: ParameterConfiguration[],
   eventArgs
 ): any[] {
   let args = [];
@@ -45,7 +55,7 @@ function extractParameters(
   for (let item of params) {
     switch(item.type) {
       case ParameterType.IO: args[item.index] = io; break;
-      case ParameterType.Socket: args[item.index] = socket; break;
+      case ParameterType.Socket: args[item.index] = getSocket(item, socket); break;
       case ParameterType.Args: args[item.index] = eventArgs.pop(); break;
       case ParameterType.Callback: args[item.index] = callback || noop; break;
     }

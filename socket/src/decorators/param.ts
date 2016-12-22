@@ -18,7 +18,7 @@ function addParameterMeta(target: SocketIOClass, propertyKey: string | symbol, c
 /**
  * Parameter decorator factory, creates parameter decorator
  * @param parameterType Parameter Type
- * @returns {()=>ParameterDecorator}
+ * @returns { () => ParameterDecorator }
  */
 function parameterDecoratorFactory(parameterType: ParameterType): () => ParameterDecorator {
   return function(): ParameterDecorator {
@@ -30,24 +30,31 @@ function parameterDecoratorFactory(parameterType: ParameterType): () => Paramete
 
 /**
  * Returns server itself
- * @type {(name?:string)=>ParameterDecorator}
+ * @type { () => ParameterDecorator }
  */
 export const IO = parameterDecoratorFactory(ParameterType.IO);
 
 /**
  * Returns socket
- * @type {(name?:string)=>ParameterDecorator}
+ * @param WrapperClass Class, that will get plain socket object as dependency to add new functionality on top of standard one
+ * @type { (WrapperClass?: any) => ParameterDecorator }
  */
-export const Socket = parameterDecoratorFactory(ParameterType.Socket);
+export const Socket = function(WrapperClass?: any): ParameterDecorator {
+  return function (target: SocketIOClass, propertyKey: string | symbol, index: number) {
+    addParameterMeta(target, propertyKey, {
+      index, type: ParameterType.Socket, data: WrapperClass
+    });
+  };
+};
 
 /**
  * Returns event arguments (excluding callback)(if it exists)
- * @type {(name?:string)=>ParameterDecorator}
+ * @type { () => ParameterDecorator }
  */
 export const Args = parameterDecoratorFactory(ParameterType.Args);
 
 /**
  * Returns callback function (if it exists)
- * @type {(name?:string)=>ParameterDecorator}
+ * @type { () => ParameterDecorator }
  */
 export const Callback = parameterDecoratorFactory(ParameterType.Callback);

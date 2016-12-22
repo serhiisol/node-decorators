@@ -1,3 +1,11 @@
+# Socket#1.3.2
+* Added wrap option for **@Socket(WrapperClass?)** decorator, now you can pass wrapper class in it, to get extended functionality over the socket, optional parameter, e.g.:
+```typescript
+class SocketWrapper {
+  constructor(private socket: SocketIO.Socket) {}
+}
+```
+
 # Socket#1.3.1
 * Added callback function (noop) even if it doesn't exists, just prevent additional checks in controller
 

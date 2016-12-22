@@ -6,10 +6,19 @@ import {
   Event,
   Args,
   bootstrapSocketIO,
-  Namespace
+  Namespace,
+  Socket
 } from '@decorators/socket';
 
 const server = listen(3000);
+
+class SocketWrapper {
+  constructor(private socket: SocketIO.Socket) {}
+
+  log() {
+    console.log(this);
+  }
+}
 
 @ServerMiddleware((io, socket, next) => {
   console.log('Global Server Middleware');
@@ -30,7 +39,8 @@ class FirstController {
     console.log('Message middleware');
     next();
   })
-  onMessage(@Args() message) {
+  onMessage(@Args() message, @Socket(SocketWrapper) socket: SocketWrapper) {
+    socket.log();
     console.log(`Message:  ${message}`);
   }
 

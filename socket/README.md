@@ -35,7 +35,13 @@ function middleware(io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.S
 
 ##### Parameter
 * **@IO()** - returns server itself
-* **@Socket()** - returns socket
+* **@Socket(WrapperClass?: Class)** - returns socket, if **WrapperClass** provided, returns instance 
+of **WrapperClass**, passes **socket** as dependency into **WrapperClass**
+```typescript
+class SocketWrapper {
+  constructor(private socket: SocketIO.Socket) {}
+}
+```
 * **@Args()** - returns event arguments (excluding callback)(if it exists)
 * **@Callback()** - returns callback function (if it exists)
 
