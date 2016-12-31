@@ -28,7 +28,7 @@ will handle only socket events registered in controller
 * **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
 where middleware is a function which accepts four parameters:
 ```typescript
-function middleware(io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet: [string, ...any], next: Function) {
+function middleware(io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet: [string, any], next: Function) {
     //
 }
 ```
@@ -57,21 +57,19 @@ Additionally to this order depends on the order how you've registered appropriat
 ### Quick Example:
 ```typescript
 import { listen } from 'socket.io';
-import {Event, Args, bootstrapSocketIO, Namespace } from '@decorators/socket';
+import { Event, Args, bootstrapSocketIO, Namespace } from '@decorators/socket';
 
 const server = listen(3000);
 
 @Namespace('/messaging')
-class FirstController {
-
+class MessageController {
   @Event('message')
   onMessage(@Args() message) {
     console.log(`Message:  ${message}`);
   }
-
 }
 
-bootstrapSocketIO(server, [FirstController]);
+bootstrapSocketIO(server, [ MessageController ]);
 ```
 
 ### License

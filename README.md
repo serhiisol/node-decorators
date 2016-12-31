@@ -19,32 +19,30 @@ npm install @decorators/socket --save
 Here's example of usage with Express framework. It uses TypeScript and `@decorators/express` package
 
 ```typescript
-import { Response, Params, Controller, Get,
-  bootstrapExpress, Middleware
-} from 'node-decorators/express';
+import {
+  Response, Params, Controller, Get,
+  bootstrapControllers, Middleware
+} from '@decorators/express';
 
 @Controller('/')
-class TestController {
-  @Get('/all/:id')
+class UsersController {
+  @Get('/users/:id')
   @Middleware((req, res, next) => {
-    console.log('Hello World');
+    console.log('route middleware');
     next();
   })
   getData(@Response() res, @Params('id') id: string) {
-    res.send(`balalala  ${id}`);
+    res.send(Users.findById(id));
   }
 }
 
-let app: DecoratedExpress = <DecoratedExpress>express();
-bootstrapExpress(app);
-app.controller(TestController).listen(3000);
+let app = express();
+bootstrapControllers(app, [UsersController]);
+app.listen(3000);
 ```
 
 ## Documentation
 Look at the corresponding package for instructions
-
-## License
-MIT
 
 [ExpressJS]:http://expressjs.com
 [MongooseJS]:http://mongoosejs.com

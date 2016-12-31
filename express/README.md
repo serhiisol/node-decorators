@@ -10,7 +10,7 @@ npm install @decorators/express --save
 
 ### API
 #### Functions
-* **bootstrapControllers(app: Express, controllers)** - attach controllers to app
+* **bootstrapControllers(app: Express, [ controllers ])** - attach controllers to app
 
 #### Decorators
 ##### Class
@@ -19,11 +19,13 @@ npm install @decorators/express --save
 ##### Method
 * @Middleware(middleware: Function), middleware priority:
 ```typescript
-@Delete('/:id')
-@Middleware(ThirdMiddleware)  //<-- this will be executed last
-@Middleware(SecondMiddleware) //<-- this will be executed second
-@Middleware(FirstMiddleware)  //<-- this will be executed first
-remove(@Request() req, @Response() res, @Params('id') id) {
+class Controller {
+  @Delete('/:id')
+  @Middleware(ThirdMiddleware)  //<-- this will be executed last
+  @Middleware(SecondMiddleware) //<-- this will be executed second
+  @Middleware(FirstMiddleware)  //<-- this will be executed first
+  remove(@Request() req, @Response() res, @Params('id') id) {
+  }
 }
 ```
 * @Get(url: string)
@@ -44,25 +46,26 @@ remove(@Request() req, @Response() res, @Params('id') id) {
 
 ### Example Express Application and Controller:
 ```typescript
-import { Response, Params, Controller, Get,
-  bootstrapExpress, Middleware
-} from 'node-decorators/express';
+import {
+  Response, Params, Controller, Get,
+  bootstrapControllers, Middleware
+} from '@decorators/express';
 
 @Controller('/')
-class TestController {
-  @Get('/all/:id')
+class UsersController {
+  @Get('/users/:id')
   @Middleware((req, res, next) => {
-    console.log('Hello World');
+    console.log('route middleware');
     next();
   })
   getData(@Response() res, @Params('id') id: string) {
-    res.send(`balalala  ${id}`);
+    res.send(Users.findById(id));
   }
 }
 
-let app: DecoratedExpress = <DecoratedExpress>express();
-bootstrapExpress(app);
-app.controller(TestController).listen(3000);
+let app = express();
+bootstrapControllers(app, [UsersController]);
+app.listen(3000);
 ```
 
 ### License
