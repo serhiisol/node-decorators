@@ -15,10 +15,27 @@ npm install @decorators/socket --save
 #### Decorators
 ##### Class
 * **@Namespace(namespace: string)** - registers controller for namespace
-* **@ServerMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, next: Function) => {})** - registers global server (io) middleware
-* **@GlobalMiddleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers socket global middleware
-* **@Middleware((io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet, next: Function) => {})** - registers controller-based middleware, 
+
+* **@ServerMiddleware(middleware: Function | Function[])** - registers global server (io) middleware
+```typescript
+function middleware(
+  io: SocketIO.Server | SocketIO.Namespace,
+  socket: SocketIO.Socket,
+  next: Function
+) {}
+```
+
+* **@GlobalMiddleware(middleware: Function | Function[]) => {})** - registers socket global middleware
+* **@Middleware(middleware: Function | Function[])** - registers controller-based middleware, 
 will handle only socket events registered in controller
+```typescript
+function middleware(
+  io: SocketIO.Server | SocketIO.Namespace,
+  socket: SocketIO.Socket,
+  packet: [string, any],
+  next: Function
+) {}
+```
 
 ##### Method
 * **@GlobalEvent(event: string)** - register global event (**io.on**)
@@ -28,9 +45,12 @@ will handle only socket events registered in controller
 * **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
 where middleware is a function which accepts four parameters:
 ```typescript
-function middleware(io: SocketIO.Server | SocketIO.Namespace, socket: SocketIO.Socket, packet: [string, any], next: Function) {
-    //
-}
+function middleware(
+  io: SocketIO.Server | SocketIO.Namespace,
+  socket: SocketIO.Socket,
+  packet: [string, any],
+  next: Function
+) {}
 ```
 
 ##### Parameter

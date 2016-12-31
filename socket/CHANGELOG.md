@@ -1,3 +1,9 @@
+# Socket#1.3.3
+* Added possibility to pass array of middleware funcs into:
+   * **@ServerMiddleware**
+   * **@GlobalMiddleware**
+   * **@Middleware**
+
 # Socket#1.3.2
 * Added wrap option for **@Socket(WrapperClass?)** decorator, now you can pass wrapper class in it, to get extended functionality over the socket, optional parameter, e.g.:
 ```typescript

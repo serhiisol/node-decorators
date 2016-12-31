@@ -16,7 +16,7 @@ class SocketWrapper {
   constructor(private socket: SocketIO.Socket) {}
 
   log() {
-    console.log(this);
+    console.log('Log');
   }
 }
 
@@ -46,14 +46,4 @@ class FirstController {
 
 }
 
-@Namespace('/messaging')
-class SecondController {
-
-  @Event('message2')
-  onMessage2(@Args() message) {
-    console.log(`Message2:  ${message}`);
-  }
-
-}
-
-bootstrapSocketIO(server, [FirstController, SecondController]);
+bootstrapSocketIO(server, [ FirstController ]);

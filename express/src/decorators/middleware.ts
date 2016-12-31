@@ -3,7 +3,7 @@ import { getExpressMeta } from '../meta';
 export let Middleware = (middleware: Function|Function[]): MethodDecorator => {
   return (target: ExpressClass, propertyKey: string | symbol, descriptor: any) => {
     let meta = getExpressMeta(target);
-    let _middleware;
+    let _middleware: Function[];
 
     if (!meta.middleware[propertyKey]) {
       meta.middleware[propertyKey] = [];
