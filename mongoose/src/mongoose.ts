@@ -61,5 +61,5 @@ export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T>
   model = Model(meta.name, schema);
   extend(model, statics);
 
-  return model;
+  return <IModel<T>>model;
 }

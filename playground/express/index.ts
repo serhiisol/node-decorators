@@ -19,14 +19,13 @@ class TestController {
   }
 
   @Get('/:id')
-  @Middleware((req, res, next) => {
+  @Middleware([(req, res, next) => {
+    console.log('First Middleware');
+    next();
+  }, (req, res, next) => {
     console.log('Second Middleware');
     next();
-  })
-  @Middleware((req, res, next) => {
-    console.log('first Middleware');
-    next();
-  })
+  }])
   getData(@Response() res, @Params('id') id: string) {
     console.log('Express welcomes: ' + JSON.stringify(id));
     res.send('Express welcomes: ' + JSON.stringify(id));
