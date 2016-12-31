@@ -17,10 +17,18 @@ export let Namespace = (namespace: string): ClassDecorator => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let ServerMiddleware = (fn: Function): ClassDecorator  => {
+export let ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
-    meta.middleware.io.push(fn);
+    let middleware: Function[];
+
+    if (typeof fn === 'function') {
+      middleware = [fn];
+    } else if (Array.isArray(fn)){
+      middleware = (<Function[]>fn).filter(md => typeof md === 'function');
+    }
+
+    meta.middleware.io.push(...middleware);
   }
 };
 
@@ -30,10 +38,18 @@ export let ServerMiddleware = (fn: Function): ClassDecorator  => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let GlobalMiddleware = (fn: Function): ClassDecorator  => {
+export let GlobalMiddleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
-    meta.middleware.socket.push(fn);
+    let middleware: Function[];
+
+    if (typeof fn === 'function') {
+      middleware = [fn];
+    } else if (Array.isArray(fn)){
+      middleware = (<Function[]>fn).filter(md => typeof md === 'function');
+    }
+
+    meta.middleware.socket.push(...middleware);
   }
 };
 
@@ -43,9 +59,17 @@ export let GlobalMiddleware = (fn: Function): ClassDecorator  => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let Middleware = (fn: Function): ClassDecorator  => {
+export let Middleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
     let meta: SocketIOMeta = getMeta(target.prototype);
-    meta.middleware.controller.push(fn);
+    let middleware: Function[];
+
+    if (typeof fn === 'function') {
+      middleware = [fn];
+    } else if (Array.isArray(fn)){
+      middleware = (<Function[]>fn).filter(md => typeof md === 'function');
+    }
+
+    meta.middleware.controller.push(...middleware);
   }
 };
