@@ -1,3 +1,6 @@
+# Express#1.1.1
+* Added possibility to pass array of middleware funcs into **@Middleware**
+
 # Express#1.1.0
 * Automatic definitions generation
 * removed helper functions

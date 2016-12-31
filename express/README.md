@@ -17,13 +17,11 @@ npm install @decorators/express --save
 * @Controller(baseUrl: string)
 
 ##### Method
-* @Middleware(middleware: Function), middleware priority:
+* @Middleware(middleware: Function | Function[]), middleware priority:
 ```typescript
 class Controller {
   @Delete('/:id')
-  @Middleware(ThirdMiddleware)  //<-- this will be executed last
-  @Middleware(SecondMiddleware) //<-- this will be executed second
-  @Middleware(FirstMiddleware)  //<-- this will be executed first
+  @Middleware([FirstMiddleware, SecondMiddleware])  //<-- this will be executed first
   remove(@Request() req, @Response() res, @Params('id') id) {
   }
 }
