@@ -1,11 +1,17 @@
 import { getMongooseMeta } from '../meta';
-
+import { SchemaTypeOpts } from 'mongoose';
 /**
  * Defines model class
  * @param {String} name Model name
+ * @param {SchemaTypeOpts} options
  */
-export let Model = (name: string) => {
+export let Model = (name: string, options: SchemaTypeOpts<any>) => {
   return (target: Function) => {
-    getMongooseMeta(target.prototype).name = name;
+    const mongooseMeta = getMongooseMeta(target.prototype);
+    mongooseMeta.name = name;
+    Object.keys(options)
+        .forEach((key) => {
+          mongooseMeta.options.push(key, options[key]);
+        });
   }
 };
