@@ -18,7 +18,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": "^6.3.0"
+    "node": ">=6.3.0"
   },
   "repository": {
     "type": "git",

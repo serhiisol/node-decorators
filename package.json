@@ -31,7 +31,7 @@
     "url": "https://github.com/serhiisol/node-decorators/issues"
   },
   "engines": {
-    "node": "^6.3.0"
+    "node": ">=6.3.0"
   },
   "repository": {
     "type": "git",
