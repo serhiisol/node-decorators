@@ -1,3 +1,10 @@
+# Express#1.2.0
+* Added controller-based middleware - **@Controller(baseUrl: string, [middleware]?)**
+* moved route-based middleware to route definition decorator - **@Get(url: string, [middleware]?)**
+* renamed **bootstrapControllers** to **attachControllers**
+* **@Middleware** moved to deprecated, will be removed in 2.0.0
+* **bootstrapControllers** moved to deprecated, will be removed in 2.0.0
+
 # Express#1.1.1
 * Added possibility to pass array of middleware funcs into **@Middleware**
 

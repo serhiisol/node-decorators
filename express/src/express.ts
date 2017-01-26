@@ -1,4 +1,4 @@
-import { Router, Express } from 'express';
+import { Router, Express, RequestHandler } from 'express';
 import { ParameterType } from './interface';
 
 function getParam(source: any, paramType: string, name: string) {
@@ -30,11 +30,16 @@ function extractParameters(req, res, next, params): any[] {
 
 function registerController(app, Controller) {
   let controller = new Controller(),
-    router = Router(),
+    router: Router = Router(),
+    controllerMiddleware: RequestHandler[] = controller.__meta__.controllerMiddleware,
     routes: Routes = controller.__meta__.routes,
     middleware: Middleware = controller.__meta__.middleware,
     baseUrl: string = controller.__meta__.baseUrl,
     params: Params = controller.__meta__.params;
+
+  if (controllerMiddleware.length) {
+    router.use(...controllerMiddleware);
+  }
 
   for (let methodName in routes) {
     let method: string = routes[methodName].method, fn: Function;
@@ -56,7 +61,12 @@ function registerController(app, Controller) {
   return app;
 }
 
-export function bootstrapControllers(app: Express, controllers: any[]) {
+/**
+ * Attach controllers to express application
+ * @param {Express} app Express application
+ * @param {Controller} controllers Controllers array
+ */
+export function attachControllers(app: Express, controllers: any[]) {
   try {
     controllers.forEach(controller => {
       registerController(app, controller);
@@ -65,3 +75,9 @@ export function bootstrapControllers(app: Express, controllers: any[]) {
     console.log('Second parameter should be array of controllers', e, e.message);
   }
 }
+
+/**
+ * @deprecated
+ * @see attachControllers
+ */
+export let bootstrapControllers = attachControllers;

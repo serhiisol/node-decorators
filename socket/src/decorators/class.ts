@@ -13,7 +13,7 @@ export let Namespace = (namespace: string): ClassDecorator => {
 
 /**
  * Registers global middleware
- * @param {Function} fn
+ * @param {Function|Function[]} fn
  * @returns {(target:Function)=>void}
  * @constructor
  */
