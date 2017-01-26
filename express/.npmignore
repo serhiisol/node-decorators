@@ -2,6 +2,3 @@
 src/**/*.ts
 !src/**/*.d.ts
 index.ts
-
-# Example
-example/
