@@ -1,20 +1,89 @@
-import { getExpressMeta } from '../meta';
+import { getMeta, getMiddleware } from '../meta';
 
-function makeRouteMeta(target: ExpressClass, key: string | symbol, descriptor: any, method: string, url: string) {
-  let meta = getExpressMeta(target);
+/**
+ * Add metadata
+ * @param {ExpressClass} target Target Class
+ * @param {string|symbol} key Function name
+ * @param {PropertyDescriptor} descriptor
+ * @param {string} method
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+function addMeta(
+  target: ExpressClass,
+  key: string | symbol,
+  descriptor: any,
+  method: string,
+  url: string,
+  middleware?: Function|Function[]
+) {
+  let meta = getMeta(target);
   meta.routes[key] = <Route>{method, url};
+  if (!meta.middleware[key]) {
+    meta.middleware[key] = [];
+  }
+  meta.middleware[key].push(...getMiddleware(middleware));
   return descriptor;
 }
 
-let makeRoute = (method: string, url: string): MethodDecorator =>
-  (target: ExpressClass, key: string | symbol, descriptor: any) => makeRouteMeta(target, key, descriptor, method, url);
+/**
+ * Route decorator factory, creates decorator
+ * @param {string} method
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ * @returns { () => ParameterDecorator }
+ */
+function decoratorFactory (method: string, url: string, middleware: Function|Function[]): MethodDecorator {
+  return (target: ExpressClass, key: string | symbol, descriptor: any) => {
+    return addMeta(target, key, descriptor, method, url, middleware);
+  }
+}
 
-export let Get = (url: string): MethodDecorator => makeRoute('get', url);
+/**
+ * Get route
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Get = (url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory('get', url, middleware);
 
-export let Post = (url: string): MethodDecorator => makeRoute('post', url);
+/**
+ * Post route
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Post = (url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory('post', url, middleware);
 
-export let Put = (url: string): MethodDecorator => makeRoute('put', url);
+/**
+ * Put route
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Put = (url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory('put', url, middleware);
 
-export let Delete = (url: string): MethodDecorator => makeRoute('delete', url);
+/**
+ * Delete route
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Delete = (url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory('delete', url, middleware);
 
-export let Options = (url: string): MethodDecorator => makeRoute('options', url);
+/**
+ * Options route
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Options = (url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory('options', url, middleware);
+
+/**
+ * Specify custom route method
+ * @param {string} method
+ * @param {string} url
+ * @param {Function|Function[]} [middleware]
+ */
+export let Route = (method: string, url: string, middleware?: Function|Function[]): MethodDecorator =>
+  decoratorFactory(method, url, middleware);

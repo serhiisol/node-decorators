@@ -25,5 +25,3 @@ export function getMeta(target: SocketIOClass): SocketIOMeta {
 
   return <SocketIOMeta>target.__meta__;
 }
-
-

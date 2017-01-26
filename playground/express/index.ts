@@ -1,25 +1,26 @@
 import * as express from 'express';
-import { Express } from 'express';
+import { Express, Request } from 'express';
 
 import {
   Response,
   Params,
   Controller,
   Get,
-  bootstrapControllers,
-  Middleware
+  attachControllers
 } from '@decorators/express';
 
-@Controller('/')
-class TestController {
+@Controller('/', (req: Request, res, next) => {
+  console.log('Controller Middleware', req.path);
+  next();
+})
+class UsersController {
 
   @Get('/favicon.ico')
   getFavicon(@Response() res) {
     res.status(404).send();
   }
 
-  @Get('/:id')
-  @Middleware([(req, res, next) => {
+  @Get('/:id', [(req, res, next) => {
     console.log('First Middleware');
     next();
   }, (req, res, next) => {
@@ -35,6 +36,6 @@ class TestController {
 
 let app: Express = express();
 
-bootstrapControllers(app, [TestController]);
+attachControllers(app, [UsersController]);
 
 app.listen(3003);

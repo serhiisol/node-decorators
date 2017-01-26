@@ -14,6 +14,7 @@ interface Middleware {
 interface ExpressMeta {
   baseUrl: string;
   routes: Routes;
+  controllerMiddleware: Function[];
   middleware: Middleware;
   params: Params;
 }
