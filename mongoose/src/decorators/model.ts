@@ -5,7 +5,7 @@ import { SchemaTypeOpts } from 'mongoose';
  * @param {String} name Model name
  * @param {SchemaTypeOpts} options
  */
-export let Model = (name: string, options: SchemaTypeOpts<any>) => {
+export let Model = (name: string, options?: SchemaTypeOpts<any>) => {
   return (target: Function) => {
     const mongooseMeta = getMongooseMeta(target.prototype);
     mongooseMeta.name = name;
