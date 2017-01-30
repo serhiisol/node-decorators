@@ -1,3 +1,7 @@
+# Mongoose#1.1.2
+* New `options` parameter for `Model` decorator to pass in Schema Type options
+* `Set` and `Option` decorators are now deprecated and will be removed in a future release 
+
 # Mongoose#1.1.1
 * Automatic definitions generation
 * new **ref(collectionRef)** - helper function to define reference to another collection/model
