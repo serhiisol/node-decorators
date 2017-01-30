@@ -9,9 +9,11 @@ export let Model = (name: string, options?: SchemaTypeOpts<any>) => {
   return (target: Function) => {
     const mongooseMeta = getMongooseMeta(target.prototype);
     mongooseMeta.name = name;
-    Object.keys(options)
+    if (options) {
+      Object.keys(options)
         .forEach((key) => {
           mongooseMeta.options.push(key, options[key]);
         });
+    }
   }
 };
