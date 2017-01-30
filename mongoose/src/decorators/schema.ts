@@ -59,6 +59,8 @@ export function Index() {
  * Defines set method - options for model
  */
 export function Set() {
+  console.warn(`Deprecated: This decorator will be removed in a future release. 
+  Use the options parameter of the Model decorator instead.`);
   return (target: any, name: string) => {
     getMongooseMeta(target).options.push(name);
   }

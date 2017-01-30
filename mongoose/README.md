@@ -16,7 +16,7 @@ npm install @decorators/mongoose --save
 
 #### Decorators
 ##### Class
-* @Model(name: string)
+* @Model(name: string, options?: SchemaTypeOpts)
 
 ##### Method
 * @Static()
@@ -28,7 +28,7 @@ npm install @decorators/mongoose --save
 * @SchemaField(schemaFieldDefinition)
 * @Static()
 * @Index()
-* @Set() = @Option()
+* @Set() = @Option() (*deprecated* Use options parameter of Model decorator instead)
 
 ### Example Mongoose Model
 ```typescript
