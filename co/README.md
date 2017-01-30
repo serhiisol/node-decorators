@@ -10,9 +10,9 @@ npm install @decorators/co --save
 ### API
 #### Decorators
 ##### Method
-* @Async
+* @Async()
 ```typescript
-import { Async } from 'node-decorators/co';
+import { Async } from '@decorators/co';
 
 let testAsyncFunc = () => {
   return new Promise(resolve => {

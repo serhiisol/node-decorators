@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "declaration": true,
+    "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "commonjs",
@@ -11,24 +11,12 @@
     "rootDir": ".",
     "sourceMap": true,
     "target": "es6",
-    "inlineSources": true,
-    "typeRoots": ["node_modules/@types"],
-    "pretty": true
+    "inlineSources": true
   },
   "exclude": [
     "node_modules/**/*"
   ],
-  "include": [
-    "types/**/*",
-    "co/example/**/*",
-    "mongoose/example/**/*",
-    "express/example/**/*"
-  ],
   "files": [
-    "co/index.ts",
-    "express/index.ts",
-    "mongoose/index.ts",
-    "socket/index.ts",
-    "common/src/index.ts"
+    "index.ts"
   ]
 }

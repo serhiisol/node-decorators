@@ -1,14 +1,16 @@
 {
-  "name": "@decorators/playground-co",
-  "version": "1.1.0",
+  "name": "@decorators/playground-common",
+  "version": "1.0.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "@decorators/co": "../../co"
+    "@decorators/common": "../../common",
+    "@types/underscore": "^1.7.36",
+    "underscore": "^1.8.3"
   },
   "keywords": [
     "nodejs",
-    "cojs",
+    "socket.io",
     "node decorators",
     "typescript"
   ],
@@ -18,7 +20,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": ">=7.1.0"
+    "node": "7.1.0"
   },
   "repository": {
     "type": "git",
