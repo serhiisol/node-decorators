@@ -2,7 +2,6 @@ import { getMeta, getMiddleware } from '../meta';
 
 /**
  * Registers controller for base url
- * @deprecated
  * @param {string} baseUrl
  * @param {Function|Function[]} [middleware]
  * @returns {(target:Function)=>void}
