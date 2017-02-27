@@ -1,3 +1,4 @@
+import { ExpressClass, Route as RouteType } from '../interface';
 import { getMeta, getMiddleware } from '../meta';
 
 /**
@@ -18,7 +19,7 @@ function addMeta(
   middleware?: Function|Function[]
 ) {
   let meta = getMeta(target);
-  meta.routes[key] = <Route>{method, url};
+  meta.routes[key] = <RouteType>{method, url};
   if (!meta.middleware[key]) {
     meta.middleware[key] = [];
   }
@@ -33,10 +34,10 @@ function addMeta(
  * @param {Function|Function[]} [middleware]
  * @returns { () => ParameterDecorator }
  */
-function decoratorFactory (method: string, url: string, middleware: Function|Function[]): MethodDecorator {
+function decoratorFactory(method: string, url: string, middleware: Function|Function[]): MethodDecorator {
   return (target: ExpressClass, key: string | symbol, descriptor: any) => {
     return addMeta(target, key, descriptor, method, url, middleware);
-  }
+  };
 }
 
 /**

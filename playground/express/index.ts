@@ -3,6 +3,7 @@ import { Express, Request } from 'express';
 
 import {
   Response,
+  Request as Req,
   Params,
   Controller,
   Get,
@@ -14,6 +15,10 @@ import {
   next();
 })
 class UsersController {
+
+  constructor(...args) {
+    console.log(args);
+  }
 
   @Get('/favicon.ico')
   getFavicon(@Response() res) {
@@ -27,7 +32,7 @@ class UsersController {
     console.log('Second Middleware');
     next();
   }])
-  getData(@Response() res, @Params('id') id: string) {
+  getData(@Response() res, @Params('id') id: string, @Req('params') params) {
     console.log('Express welcomes: ' + JSON.stringify(id));
     res.send('Express welcomes: ' + JSON.stringify(id));
   }
@@ -36,6 +41,8 @@ class UsersController {
 
 let app: Express = express();
 
-attachControllers(app, [UsersController]);
+attachControllers(app, [
+  { provide: UsersController, deps: [1, 2, 3] }
+]);
 
 app.listen(3003);

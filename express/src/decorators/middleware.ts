@@ -1,3 +1,4 @@
+import { ExpressClass } from '../interface';
 import { getMeta, getMiddleware } from '../meta';
 
 /**
@@ -9,7 +10,9 @@ import { getMeta, getMiddleware } from '../meta';
  */
 export let Middleware = (middleware: Function|Function[]): MethodDecorator => {
   return (target: ExpressClass, propertyKey: string | symbol, descriptor: any) => {
-    console.warn('Deprecation: use route based middleware, @Middleware will be removed in 2.0.0, see doc -', target.constructor.name, propertyKey);
+    console.warn(
+      'Deprecation: use route based middleware, @Middleware will be removed in 2.0.0, see doc -', target.constructor.name, propertyKey
+    );
 
     let meta = getMeta(target);
 
@@ -20,5 +23,5 @@ export let Middleware = (middleware: Function|Function[]): MethodDecorator => {
     meta.middleware[propertyKey].push(...getMiddleware(middleware));
 
     return descriptor;
-  }
+  };
 };

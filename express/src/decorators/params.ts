@@ -1,5 +1,5 @@
+import { ParameterType, ExpressClass } from '../interface';
 import { getMeta } from '../meta';
-import { ParameterType } from '../interface';
 
 /**
  * Add metadata
@@ -22,7 +22,7 @@ function addMeta(target: ExpressClass, propertyKey: string | symbol, config: Par
  */
 function decoratorFactory(parameterType: ParameterType): (name?: string) => ParameterDecorator {
   return function(name?: string): ParameterDecorator {
-    return function (target: ExpressClass, propertyKey: string | symbol, index: number) {
+    return function(target: ExpressClass, propertyKey: string | symbol, index: number) {
       addMeta(target, propertyKey, {index, type: parameterType, name});
     };
   };

@@ -1,3 +1,5 @@
+import { ExpressMeta, ExpressClass } from './interface';
+
 /**
  * Get or initiate metadata on target
  * @param target

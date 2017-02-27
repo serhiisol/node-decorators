@@ -1,3 +1,8 @@
+# Express#1.3.0
+* Moved express-related types to package interfaces
+* **@Request(name?: string)** decorator accepts optional parameter name
+* Controller DI
+
 # Express#1.2.0
 * Added controller-based middleware - **@Controller(baseUrl: string, [middleware]?)**
 * moved route-based middleware to route definition decorator - **@Get(url: string, [middleware]?)**

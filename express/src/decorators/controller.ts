@@ -1,3 +1,4 @@
+import { ExpressMeta } from '../interface';
 import { getMeta, getMiddleware } from '../meta';
 
 /**
@@ -12,6 +13,5 @@ export let Controller = (baseUrl: string, middleware?: Function|Function[]): Cla
     let meta: ExpressMeta = getMeta(target.prototype);
     meta.baseUrl = baseUrl;
     meta.controllerMiddleware = getMiddleware(middleware);
-  }
+  };
 };
-

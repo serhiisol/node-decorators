@@ -1,8 +1,9 @@
 import { Router, Express, RequestHandler } from 'express';
-import { ParameterType } from './interface';
+
+import { ParameterType, Routes, Middleware, Injectable, ExpressClass } from './interface';
 
 function getParam(source: any, paramType: string, name: string) {
-  let param = source[paramType];
+  let param = source[paramType] || source;
   return param[name] || param;
 }
 
@@ -13,9 +14,9 @@ function extractParameters(req, res, next, params): any[] {
   }
   for (let item of params) {
 
-    switch(item.type) {
-      case ParameterType.RESPONSE: args[item.index] = res; break;
-      case ParameterType.REQUEST: args[item.index] = req; break;
+    switch (item.type) {
+      default: args[item.index] = res; break; // response
+      case ParameterType.REQUEST: args[item.index] = getParam(req, null, item.name); break;
       case ParameterType.NEXT: args[item.index] = next; break;
       case ParameterType.PARAMS: args[item.index] = getParam(req, 'params', item.name); break;
       case ParameterType.QUERY: args[item.index] = getParam(req, 'query', item.name); break;
@@ -28,25 +29,26 @@ function extractParameters(req, res, next, params): any[] {
   return args;
 }
 
-function registerController(app, Controller) {
-  let controller = new Controller(),
-    router: Router = Router(),
-    controllerMiddleware: RequestHandler[] = controller.__meta__.controllerMiddleware,
-    routes: Routes = controller.__meta__.routes,
-    middleware: Middleware = controller.__meta__.middleware,
-    baseUrl: string = controller.__meta__.baseUrl,
-    params: Params = controller.__meta__.params;
+function registerController(app, Controller, deps) {
+  let controller = new Controller(...deps);
+  let router: Router = Router();
+  let controllerMiddleware: RequestHandler[] = controller.__meta__.controllerMiddleware;
+  let routes: Routes = controller.__meta__.routes;
+  let middleware: Middleware = controller.__meta__.middleware;
+  let baseUrl: string = controller.__meta__.baseUrl;
+  let params: Params = controller.__meta__.params;
 
   if (controllerMiddleware.length) {
     router.use(...controllerMiddleware);
   }
 
-  for (let methodName in routes) {
-    let method: string = routes[methodName].method, fn: Function;
+  for (const methodName of Object.keys(routes)) {
+    let method: string = routes[methodName].method;
+    let fn: Function;
 
     fn = (req, res, next) => {
       let args = extractParameters(req, res, next, params[methodName]);
-      return controller[methodName].apply(controller, args)
+      return controller[methodName].apply(controller, args);
     };
 
     let routeArgs = [
@@ -66,13 +68,17 @@ function registerController(app, Controller) {
  * @param {Express} app Express application
  * @param {Controller} controllers Controllers array
  */
-export function attachControllers(app: Express, controllers: any[]) {
+export function attachControllers(app: Express, injectables: Array<Injectable | ExpressClass>) {
   try {
-    controllers.forEach(controller => {
-      registerController(app, controller);
-    })
+    injectables
+      .forEach((injectable: Injectable | ExpressClass) => {
+        const controller = (<Injectable>injectable).provide || <ExpressClass>injectable;
+        const deps = (<Injectable>injectable).deps || [];
+
+        registerController(app, controller, deps);
+      });
   } catch (e) {
-    console.log('Second parameter should be array of controllers', e, e.message);
+    console.log('Second parameter should be array of injectables: { provide: Controller, deps: any[] }', e, e.message);
   }
 }
 

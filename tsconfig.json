@@ -19,10 +19,7 @@
     "node_modules/**/*"
   ],
   "include": [
-    "types/**/*",
-    "co/example/**/*",
-    "mongoose/example/**/*",
-    "express/example/**/*"
+    "types/**/*"
   ],
   "files": [
     "co/index.ts",
