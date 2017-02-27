@@ -28,10 +28,15 @@ interface TestModelType extends mongoose.Model<TestInstance> {
 }
 
 @Model('Test')
-  class TestModelClass extends ModelClass {
+class TestModelClass extends ModelClass {
 
   @SchemaField(String)
   testField: string;
+
+  constructor(...args) {
+    super();
+    console.log(args);
+  }
 
   @Static()
   staticMethod() {
@@ -46,4 +51,6 @@ interface TestModelType extends mongoose.Model<TestInstance> {
 
 }
 
-export let TestModel = <TestModelType>bootstrapMongoose(TestModelClass);
+export let TestModel = <TestModelType>bootstrapMongoose({
+  provide: TestModelClass, deps: [1, 2, 3]
+});
