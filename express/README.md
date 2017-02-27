@@ -10,7 +10,11 @@ npm install @decorators/express --save
 
 ### API
 #### Functions
-* **attachControllers(app: Express, [ controllers ])** - attach controllers to express application
+* **attachControllers(app: Express, [ controllers || injectables ])** - attach controllers to express application, where injectable e.g.:
+```typescript
+{ provide: UserController, deps: [UserService] }
+```
+
 * **bootstrapControllers(app: Express, [ controllers ])** - attach controllers to express application - **_[deprecated, use attachControllers - will be removed in v2.0.0 of this library]_**
 
 #### Decorators
@@ -36,7 +40,7 @@ class Controller {
 * **@Route(url: string, [middleware]?)** - Registers custom type route for url with route middleware, if specified
 
 ##### Parameter
-* **@Request()** - Returns express req object
+* **@Request(name?: string)** - Returns express req object or any other object, if name was specified
 * **@Response()** - Returns express res object
 * **@Next()** - Returns express next function
 * **@Params(name?: string)** - Express req.params object or single param, if param name was specified
