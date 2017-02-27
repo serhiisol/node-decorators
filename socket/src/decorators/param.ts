@@ -1,6 +1,5 @@
-import { SocketIOClass } from '../interface';
+import { ParameterType, SocketIOClass, ParameterConfiguration } from '../interface';
 import { getMeta } from '../meta';
-import { ParameterType } from '../interface';
 
 /**
  * Add parameter to metadata

@@ -1,4 +1,4 @@
-import { ParameterType, ExpressClass } from '../interface';
+import { ParameterType, ExpressClass, ParameterConfiguration } from '../interface';
 import { getMeta } from '../meta';
 
 /**

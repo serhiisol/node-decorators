@@ -1,4 +1,12 @@
-import { ParameterType, Listener, SocketIOMeta, Injectable, SocketIOClass } from './interface';
+import {
+  ParameterType,
+  Listener,
+  SocketIOMeta,
+  Injectable,
+  SocketIOClass,
+  ParameterConfiguration,
+  Params
+} from './interface';
 
 /**
  * Dummy function to ensure, that callback exists

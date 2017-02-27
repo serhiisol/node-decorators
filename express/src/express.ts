@@ -1,6 +1,6 @@
 import { Router, Express, RequestHandler } from 'express';
 
-import { ParameterType, Routes, Middleware, Injectable, ExpressClass } from './interface';
+import { ParameterType, Routes, Middleware, Injectable, ExpressClass, Params } from './interface';
 
 function getParam(source: any, paramType: string, name: string) {
   let param = source[paramType] || source;

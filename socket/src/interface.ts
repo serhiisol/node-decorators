@@ -1,3 +1,14 @@
+export interface ParameterConfiguration {
+  index: number;
+  type: any;
+  name?: string;
+  data?: any;
+}
+
+export interface Params {
+  [key: string]: ParameterConfiguration[];
+}
+
 /**
  * Parameter types enum
  */
