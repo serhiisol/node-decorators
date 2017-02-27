@@ -1,4 +1,12 @@
-import { ParameterType } from './interface';
+import {
+  ParameterType,
+  Listener,
+  SocketIOMeta,
+  Injectable,
+  SocketIOClass,
+  ParameterConfiguration,
+  Params
+} from './interface';
 
 /**
  * Dummy function to ensure, that callback exists
@@ -53,9 +61,9 @@ function extractParameters(
    * loop through all params and put them into correct order
    */
   for (let item of params) {
-    switch(item.type) {
+    switch (item.type) {
+      default: args[item.index] = getSocket(item, socket); break; // socket
       case ParameterType.IO: args[item.index] = io; break;
-      case ParameterType.Socket: args[item.index] = getSocket(item, socket); break;
       case ParameterType.Args: args[item.index] = eventArgs.pop(); break;
       case ParameterType.Callback: args[item.index] = callback || noop; break;
     }
@@ -93,7 +101,7 @@ function applyListeners(
 
     (socket || io).on(listeners[listener].event, (...args) => {
       let handlerArgs = extractParameters(io, (socket || args[0]), params[listener], args);
-      return controller[listener].apply(controller, handlerArgs)
+      return controller[listener].apply(controller, handlerArgs);
     });
   }
 }
@@ -101,14 +109,16 @@ function applyListeners(
 /**
  * Get artifacts, instantiates controller and extract meta data
  * @param Controller
+ * @param deps
  * @returns { {controller, meta: SocketIOMeta, listeners: {io: Listener, socket: Listener}, params: Params} }
  */
-function getArtifacts(Controller) {
-  const controller = new Controller(),
-    meta: SocketIOMeta = controller.__meta__,
-    namespace: string = meta.namespace,
-    listeners = meta.listeners,
-    params = meta.params;
+function getArtifacts(Controller, deps) {
+  const controller = new Controller(...deps);
+  const meta: SocketIOMeta = controller.__meta__;
+  const namespace: string = meta.namespace;
+  const listeners = meta.listeners;
+  const params = meta.params;
+
   return { controller, meta, listeners, params, namespace };
 }
 
@@ -123,7 +133,7 @@ function _attachControllerToSocket(io, socket, artifacts) {
    * Apply all registered middleware to socket
    */
   artifacts.meta.middleware.socket.forEach(middleware => {
-    (<any>socket).use((...args) =>middleware.apply(middleware, [io, socket, ...args]));
+    (<any>socket).use((...args) => middleware.apply(middleware, [io, socket, ...args]));
   });
 
   /**
@@ -132,7 +142,7 @@ function _attachControllerToSocket(io, socket, artifacts) {
   artifacts.meta.middleware.controller.forEach(middleware => {
     (<any>socket).use((packet, next) => {
       if (artifacts.meta.listeners.all.indexOf(packet[0]) !== -1) {
-        return middleware.apply(middleware, [io, socket, packet, next])
+        return middleware.apply(middleware, [io, socket, packet, next]);
       }
       next();
     });
@@ -155,9 +165,9 @@ function _attachControllerToSocket(io, socket, artifacts) {
  * @param io
  * @param Controller
  */
-function attachController(io: SocketIO.Server, Controller) {
-  const artifacts = getArtifacts(Controller),
-    _io: SocketIO.Namespace = io.of(artifacts.namespace);
+function attachController(io: SocketIO.Server, Controller, deps) {
+  const artifacts = getArtifacts(Controller, deps);
+  const _io: SocketIO.Namespace = io.of(artifacts.namespace);
 
   /**
    * Apply all registered global middleware to io
@@ -180,12 +190,16 @@ function attachController(io: SocketIO.Server, Controller) {
 /**
  * Attaches controllers to IO server
  * @param {SocketIO.Server} io
- * @param {Object[]} Controllers
+ * @param {Array<Injectable|ExpressClass>} injectables
  */
-export function bootstrapSocketIO(io: SocketIO.Server, Controllers: any[]) {
-  Controllers.forEach(Controller => {
-    attachController(io, Controller);
-  });
+export function attachControllers(io: SocketIO.Server, injectables: Array<Injectable | SocketIOClass>) {
+  injectables
+    .forEach((injectable: Injectable | SocketIOClass) => {
+      const controller = (<Injectable>injectable).provide || <SocketIOClass>injectable;
+      const deps = (<Injectable>injectable).deps || [];
+
+      attachController(io, controller, deps);
+    });
 }
 
 /**
@@ -193,14 +207,32 @@ export function bootstrapSocketIO(io: SocketIO.Server, Controllers: any[]) {
  * With this approach you can't define global middleware, it's up to you.
  * @param {SocketIO.Server} io
  * @param {SocketIO.Socket} socket
- * @param Controllers
+ * @param {Array<Injectable|ExpressClass>} injectables
  */
-export function attachControllerToSocket(
+export function attachControllersToSocket(
   io: SocketIO.Server,
   socket: SocketIO.Socket,
-  Controllers
+  injectables: Array<Injectable | SocketIOClass>
 ) {
-  Controllers.forEach(Controller => {
-    _attachControllerToSocket(io, socket, getArtifacts(Controller));
-  });
+  injectables
+    .forEach((injectable: Injectable | SocketIOClass) => {
+      const controller = (<Injectable>injectable).provide || <SocketIOClass>injectable;
+      const deps = (<Injectable>injectable).deps || [];
+
+      _attachControllerToSocket(io, socket, getArtifacts(controller, deps));
+    });
 }
+
+/**
+ * @alias
+ * @see attachControllers
+ * @deprecated
+ */
+export let bootstrapSocketIO = attachControllers;
+
+/**
+ * @alias
+ * @see attachControllersToSocket
+ * @deprecated
+ */
+export let attachControllerToSocket = attachControllersToSocket;

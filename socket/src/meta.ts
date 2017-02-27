@@ -1,3 +1,5 @@
+import { SocketIOClass, SocketIOMeta } from './interface';
+
 /**
  * Get or initiate metadata on target
  * @param target

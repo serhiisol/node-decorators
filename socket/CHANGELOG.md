@@ -1,3 +1,10 @@
+# Socket#1.4.0
+* Controller DI
+```typescript
+{ provide: UserController, deps: [UserService] }
+```
+* Renamed methods **bootstrapSocketIO** and **attachControllerToSocket** (see README for details)
+
 # Socket#1.3.3
 * Added possibility to pass array of middleware funcs into:
    * **@ServerMiddleware**

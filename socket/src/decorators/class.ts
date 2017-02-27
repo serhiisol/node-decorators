@@ -1,3 +1,4 @@
+import { SocketIOMeta } from '../interface';
 import { getMeta } from '../meta';
 
 /**

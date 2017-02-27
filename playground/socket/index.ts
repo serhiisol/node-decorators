@@ -35,6 +35,10 @@ class SocketWrapper {
 @Namespace('/messaging')
 class FirstController {
 
+  constructor(...args) {
+    console.log(args);
+  }
+
   @Event('message', (io, socket, packet, next) => {
     console.log('Message middleware');
     next();
@@ -46,4 +50,6 @@ class FirstController {
 
 }
 
-bootstrapSocketIO(server, [ FirstController ]);
+bootstrapSocketIO(server, [
+  { provide: FirstController, deps: [1, 2, 3]}
+]);

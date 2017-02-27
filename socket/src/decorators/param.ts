@@ -1,5 +1,5 @@
+import { ParameterType, SocketIOClass, ParameterConfiguration } from '../interface';
 import { getMeta } from '../meta';
-import { ParameterType } from '../interface';
 
 /**
  * Add parameter to metadata
@@ -22,7 +22,7 @@ function addParameterMeta(target: SocketIOClass, propertyKey: string | symbol, c
  */
 function parameterDecoratorFactory(parameterType: ParameterType): () => ParameterDecorator {
   return function(): ParameterDecorator {
-    return function (target: SocketIOClass, propertyKey: string | symbol, index: number) {
+    return function(target: SocketIOClass, propertyKey: string | symbol, index: number) {
       addParameterMeta(target, propertyKey, {index, type: parameterType});
     };
   };
@@ -40,7 +40,7 @@ export const IO = parameterDecoratorFactory(ParameterType.IO);
  * @type { (WrapperClass?: any) => ParameterDecorator }
  */
 export const Socket = function(WrapperClass?: any): ParameterDecorator {
-  return function (target: SocketIOClass, propertyKey: string | symbol, index: number) {
+  return function(target: SocketIOClass, propertyKey: string | symbol, index: number) {
     addParameterMeta(target, propertyKey, {
       index, type: ParameterType.Socket, data: WrapperClass
     });
