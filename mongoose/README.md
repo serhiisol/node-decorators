@@ -10,25 +10,28 @@ npm install @decorators/mongoose --save
 
 ### API
 #### Functions
-* **bootstrapMongoose(MongooseModel)** - Function to generate model for class.
+* **bootstrapMongoose(MongooseModel || Injectable)** - Function to generate model for class, where Injectable:
+```typescript
+{ provide: MongooseModel, deps: [UserService] }
+```
 * **ref(collectionRef)** - helper function to define reference to another collection/model
 * **ModelClass** - interface provides all properties and functions to the class
 
 #### Decorators
 ##### Class
-* @Model(name: string, options?: SchemaTypeOpts)
+* **@Model(name: string, options?: SchemaTypeOpts)** - registers model with defined name and options
 
 ##### Method
-* @Static()
-* @Query()
-* @Instance()
-* @Virtual()
+* **@Static()** - registers static method
+* **@Query()** - registers query
+* **@Instance()** - registers instance method 
+* **@Virtual()** - registers virtual property
 
 ##### Property
-* @SchemaField(schemaFieldDefinition)
-* @Static()
-* @Index()
-* @Set() = @Option() (*deprecated* Use options parameter of Model decorator instead)
+* **@SchemaField(schemaFieldDefinition)** - registers schema field
+* **@Static()** - registers static property
+* **@Index()** - registers index property
+* **@Set()** = **@Option()** (*deprecated* Use options parameter of Model decorator instead)
 
 ### Example Mongoose Model
 ```typescript

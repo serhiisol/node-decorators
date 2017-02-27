@@ -1,3 +1,5 @@
+import { MongooseClass, MongooseMeta } from './interfaces';
+
 export function getMongooseMeta(target: MongooseClass): MongooseMeta {
   if (!target.__meta__) {
     target.__meta__ = <MongooseMeta> {

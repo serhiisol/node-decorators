@@ -1,4 +1,6 @@
 import { Schema, model as Model, Model as IModel, Document } from 'mongoose';
+
+import { MongooseClass, Injectable, MongooseMeta } from './interfaces';
 import { getMongooseMeta, extend } from './meta';
 
 /**
@@ -15,13 +17,16 @@ export function ref(collectionRef: string): { type: any, ref: string } {
  * @param DecoratedClass
  * @returns {Object} Mongoose model itself
  */
-export function bootstrapMongoose<T extends Document>(DecoratedClass): IModel<T> {
-  let meta: MongooseMeta = getMongooseMeta(DecoratedClass.prototype),
-    classInstance = new DecoratedClass(),
-    schema: Schema = new Schema(meta.schema),
-    statics = {},
-    indexes = {},
-    model;
+export function bootstrapMongoose<T extends Document>(injectable: Injectable | Function): IModel<T> {
+  let DecoratedModel: any = (<Injectable>injectable).provide || <MongooseClass>injectable;
+  let deps = (<Injectable>injectable).deps || [];
+
+  let meta: MongooseMeta = getMongooseMeta(DecoratedModel.prototype);
+  let classInstance = new DecoratedModel(...deps);
+  let schema: Schema = new Schema(meta.schema);
+  let statics = {};
+  let indexes = {};
+  let model;
 
   meta.statics.forEach((stat: [string, Function] | string) => {
     if (typeof stat[1] === 'function') {

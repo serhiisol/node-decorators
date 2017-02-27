@@ -1,3 +1,6 @@
+# Mongoose#1.2.0
+* Model DI
+
 # Mongoose#1.1.2
 * New `options` parameter for `Model` decorator to pass in Schema Type options
 * `Set` and `Option` decorators are now deprecated and will be removed in a future release 
