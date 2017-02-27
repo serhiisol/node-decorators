@@ -1,3 +1,4 @@
+import { SocketIOClass, SocketIOMeta } from '../interface';
 import { getMeta } from '../meta';
 
 /**
