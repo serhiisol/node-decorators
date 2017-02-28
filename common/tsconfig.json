@@ -10,21 +10,13 @@
     "noImplicitAny": false,
     "rootDir": ".",
     "sourceMap": true,
-    "target": "es6",
-    "inlineSources": true,
-    "typeRoots": ["node_modules/@types"],
-    "pretty": true
+    "target": "es5",
+    "pretty": true,
+    "lib": [
+      "es2015"
+    ]
   },
-  "exclude": [
-    "node_modules/**/*"
-  ],
-  "include": [
-    "types/**/*"
-  ],
   "files": [
-    "co/index.ts",
-    "express/index.ts",
-    "mongoose/index.ts",
-    "socket/index.ts"
+    "src/index.ts"
   ]
 }
