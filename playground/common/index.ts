@@ -1,30 +1,20 @@
-import { Log, Bind } from '@decorators/common';
+import { Catch } from '@decorators/common';
 
-@Log()
 class Animal {
 
   constructor(
     public name: string
   ) {}
 
-  @Bind()
+  @Catch((volume: number, err: Error) => {
+    console.log(volume);
+    console.log(err);
+  })
   sound(volume: number) {
-    console.log(this.name, ': Auuuu', volume);
+    throw new Error(volume.toString());
   }
 
 }
 
 let rabbit: Animal = new Animal('Rabbit');
-
-function exec(fn, arg) {
-  //some heavy logic
-  return fn(arg);
-}
-
-
-
-rabbit.sound = function () {
-  console.log(this.name);
-};
-
-exec(rabbit.sound, 500);
+rabbit.sound(10);

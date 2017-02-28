@@ -1,3 +1,5 @@
+import { CommonClass, CommonMeta } from './interface';
+
 /**
  * Get or initiate metadata on target
  * @param target

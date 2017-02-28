@@ -6,7 +6,7 @@ export function Catch(catchFn: Function) {
   return function Catch(target, key, descriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = function (...args) {
+    descriptor.value = function(...args) {
       try {
         let value = originalMethod.apply(this, args);
         if (value !== undefined && value.catch) {
@@ -14,9 +14,9 @@ export function Catch(catchFn: Function) {
         }
         return value;
       } catch (error) {
-        catchFn(error);
+        catchFn(...args, error);
       }
     };
 
-  }
+  };
 }

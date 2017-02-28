@@ -1,3 +1,13 @@
+# Common#1.1.0
+* Moved project back to es5
+* **@Catch()** now accepts all passed arguments of the original function and error, e.g.:
+```typescript
+@Catch((volume: number, e: Error) => {
+  // ...
+})
+sound(volume: number) {}
+```
+
 # Common#1.0.0
 * New common decorators
   * **@Log(loggerFn?: Function)**

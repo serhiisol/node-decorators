@@ -106,12 +106,12 @@ class Animal {
   }
 }
 ```
-* **@Catch(func: (e) => void)** - Catches unhandled error in the function, passes error in input function
+* **@Catch(func: (...args: any, e: Error) => void)** - Catches unhandled error in the function, passes all arguments came to the function with error in input function
 ```typescript
 class Animal {
-  @Catch((e) => {
+  @Catch((volume: number, e: Error) => {
     console.log(e); //ReferenceError: name is not defined...
-  });
+  })
   sound(volume: number) {
     console.log(name, ': Auuuu', volume);
   }
