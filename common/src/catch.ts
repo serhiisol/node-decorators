@@ -10,7 +10,7 @@ export function Catch(catchFn: Function) {
       try {
         let value = originalMethod.apply(this, args);
         if (value !== undefined && value.catch) {
-          value.catch(catchFn);
+          value.catch(error => catchFn(...args, error));
         }
         return value;
       } catch (error) {

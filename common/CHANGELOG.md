@@ -1,3 +1,6 @@
+# Common#1.1.1
+* Fix for **@Catch()** to provide proper arguments if original function returns Promise (async function)
+
 # Common#1.1.0
 * Moved project back to es5
 * **@Catch()** now accepts all passed arguments of the original function and error, e.g.:
