@@ -31,26 +31,27 @@ npm install @decorators/mongoose --save
 * **@SchemaField(schemaFieldDefinition)** - registers schema field
 * **@Static()** - registers static property
 * **@Index()** - registers index property
+
 * **@Set()** = **@Option()** (*deprecated* Use options parameter of Model decorator instead)
 
 ### Example Mongoose Model
 ```typescript
-import {
-  SchemaField, Model, bootstrapMongoose,
-  Static, Instance
-} from 'node-decorators/mongoose';
-
-@Model('Test')
-class TestModelClass {
+@Model('Animal')
+class Animal extends ModelClass {
   @SchemaField(String)
-  testField: string;
+  name: string;
 
   @Static()
-  testMethod() {
+  spawn() {
   }
 
   @Instance()
-  instanceMethod() {
+  scream() {
+  }
+
+  @Query()
+  byName(name: string): Promise<Animal> {
+    return this.find({ name });
   }
 }
 

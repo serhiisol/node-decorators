@@ -20,6 +20,7 @@ mongoose.connect('192.168.99.100:27017/test', {
 interface TestInstance extends mongoose.Document {
   testField: string;
   instanceMethod();
+  setField();
 }
 
 interface TestModelType extends mongoose.Model<TestInstance> {
@@ -33,9 +34,11 @@ class TestModelClass extends ModelClass {
   @SchemaField(String)
   testField: string;
 
+  args: any;
+
   constructor(...args) {
     super();
-    console.log(args);
+    this.args = args;
   }
 
   @Static()
@@ -44,8 +47,15 @@ class TestModelClass extends ModelClass {
   }
 
   @Instance()
+  setField() {
+    this.testField = 'World';
+    console.log(this.testField, this.args);
+  }
+
+  @Instance()
   instanceMethod() {
-    console.log(this.testField);
+    console.log(this.testField, this.args);
+
     this.save();
   }
 

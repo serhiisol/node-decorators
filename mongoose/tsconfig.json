@@ -15,15 +15,8 @@
     "typeRoots": ["node_modules/@types"],
     "pretty": true
   },
-  "exclude": [
-    "node_modules/**/*"
-  ],
-  "include": [
-    "types/**/*"
-  ],
+  "exclude": ["node_modules"],
   "files": [
-    "co/index.ts",
-    "express/index.ts",
-    "socket/index.ts"
+    "src/index.ts"
   ]
 }

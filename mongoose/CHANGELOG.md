@@ -1,3 +1,6 @@
+# Mongoose#1.2.1
+* Fixed model ctx for DI
+
 # Mongoose#1.2.0
 * Model DI
 

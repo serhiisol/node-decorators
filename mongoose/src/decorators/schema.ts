@@ -5,36 +5,36 @@ import { getMongooseMeta } from '../meta';
  * @param type Field type
  */
 export function SchemaField(type: any): PropertyDecorator {
-  return (target: any, name:string) => {
+  return (target: any, name: string) => {
     Object.assign(getMongooseMeta(target).schema, {[name]: type});
-  }
+  };
 }
 
 /**
  * Defines static method or property
  */
 export function Static() {
-  return (target:any, name:string, descriptor?:TypedPropertyDescriptor<any>) => {
+  return (target: any, name: string, descriptor?: TypedPropertyDescriptor<any>) => {
     getMongooseMeta(target).statics.push(descriptor ? [name, target[name]] : name);
-  }
+  };
 }
 
 /**
  * Defines query method
  */
 export function Query() {
-  return (target: any, name:string, descriptor:TypedPropertyDescriptor<any>) => {
+  return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
     getMongooseMeta(target).queries.push([name, target[name]]);
-  }
+  };
 }
 
 /**
  * Defines instance method
  */
 export function Instance() {
-  return (target: any, name:string, descriptor:TypedPropertyDescriptor<any>) => {
+  return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
     getMongooseMeta(target).instances.push([name, target[name]]);
-  }
+  };
 }
 
 /**
@@ -43,27 +43,27 @@ export function Instance() {
 export function Virtual() {
   return (target: any, name: string, descriptor: PropertyDescriptor) => {
     getMongooseMeta(target).virtuals.push([name, descriptor]);
-  }
+  };
 }
 
 /**
  * Defines index
  */
 export function Index() {
-  return (target: any, name:string) => {
+  return (target: any, name: string) => {
     getMongooseMeta(target).indexes.push(name);
-  }
+  };
 }
 
 /**
  * Defines set method - options for model
  */
 export function Set() {
-  console.warn(`Deprecated: This decorator will be removed in a future release. 
+  console.warn(`Deprecated: This decorator will be removed in a future release.
   Use the options parameter of the Model decorator instead.`);
   return (target: any, name: string) => {
     getMongooseMeta(target).options.push(name);
-  }
+  };
 }
 /**
  * Alias of Set

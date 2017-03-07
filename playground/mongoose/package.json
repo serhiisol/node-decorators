@@ -6,6 +6,9 @@
   "dependencies": {
     "@decorators/mongoose": "../../mongoose"
   },
+  "devDependencies": {
+     "@types/mongoose": "4.7.2"
+  },
   "keywords": [
     "nodejs",
     "socket.io",
