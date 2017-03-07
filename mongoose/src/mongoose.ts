@@ -13,6 +13,22 @@ export function ref(collectionRef: string): { type: any, ref: string } {
 }
 
 /**
+ * Wrap function with correct context
+ *
+ * @param {Function} fn
+ * @param {any} instance
+ * @returns {Function}
+ */
+function wrapFunction(fn: Function, instance): Function {
+  return function(...args) {
+    const fullCtx = Object.assign({}, instance, this);
+    Object.setPrototypeOf(fullCtx, Object.getPrototypeOf(this));
+
+    return fn.apply(fullCtx, args);
+  };
+}
+
+/**
  * Bootstrap decorated class to native mongoose
  * @param DecoratedClass
  * @returns {Object} Mongoose model itself
@@ -30,27 +46,26 @@ export function bootstrapMongoose<T extends Document>(injectable: Injectable | F
 
   meta.statics.forEach((stat: [string, Function] | string) => {
     if (typeof stat[1] === 'function') {
-      schema.statics[<string>stat[0]] = <Function>stat[1]
-    } else {
-      statics[<string>stat] = classInstance[<string>stat];
+      return schema.statics[<string>stat[0]] = wrapFunction(<Function>stat[1], classInstance);
     }
+    statics[<string>stat] = classInstance[<string>stat];
   });
 
-  meta.queries.forEach((query: [string, Function]) => {
-    schema['query'][query[0]] = query[1];
+  meta.queries.forEach(([name, fn]: [string, Function]) => {
+    schema['query'][name] = wrapFunction(fn, classInstance);
   });
 
-  meta.instances.forEach((instance: [string, Function]) => {
-    schema.methods[instance[0]] = instance[1];
+  meta.instances.forEach(([name, fn]: [string, Function]) => {
+    schema.methods[name] = wrapFunction(fn, classInstance);
   });
 
-  meta.virtuals.forEach((virtual: [string, PropertyDescriptor]) => {
-    let v = schema.virtual(virtual[0]);
-    if (virtual[1].get) {
-      v.get(virtual[1].get);
+  meta.virtuals.forEach(([name, descriptor]: [string, PropertyDescriptor]) => {
+    let v = schema.virtual(name);
+    if (descriptor.get) {
+      v.get(wrapFunction(descriptor.get, classInstance));
     }
-    if (virtual[1].set) {
-      v.set(virtual[1].set);
+    if (descriptor.set) {
+      v.set(wrapFunction(descriptor.set, classInstance));
     }
   });
 
