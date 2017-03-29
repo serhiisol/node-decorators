@@ -10,12 +10,25 @@ npm install @decorators/mongoose --save
 
 ### API
 #### Functions
-* **bootstrapMongoose(MongooseModel || Injectable)** - Function to generate model for class, where Injectable:
+* **model(MongooseModel | { provide: MongooseModel, deps: [UserService] })** - Helper function to generate model for class
+* **schema(MongooseModel | { provide: MongooseModel, deps: [UserService] })** - Helper function to generate plain schema
+* **ref(collectionRef)** - Helper function to define reference to another collection/model
+
+Note: In order to get access to all proper methods, you can create custom **AbstractModel** like so:
 ```typescript
-{ provide: MongooseModel, deps: [UserService] }
+import { MongooseDocument, Model, Document } from 'mongoose';
+
+export interface AbstractModel extends MongooseDocument {
+  __v?: number;
+  update(data: any);
+  increment?(): this;
+  model?(name: string): Model<Document>;
+  remove?(fn?: (err: any, product: this) => void): Promise<this>;
+  save?(fn?: (err: any, product: this, numAffected: number) => void): Promise<this>;
+}
+
+export abstract class AbstractModel {}
 ```
-* **ref(collectionRef)** - helper function to define reference to another collection/model
-* **ModelClass** - interface provides all properties and functions to the class
 
 #### Decorators
 ##### Class
@@ -32,22 +45,18 @@ npm install @decorators/mongoose --save
 * **@Static()** - registers static property
 * **@Index()** - registers index property
 
-* **@Set()** = **@Option()** (*deprecated* Use options parameter of Model decorator instead)
-
 ### Example Mongoose Model
 ```typescript
 @Model('Animal')
-class Animal extends ModelClass {
+class Animal extends AbstractModel {
   @SchemaField(String)
   name: string;
 
   @Static()
-  spawn() {
-  }
+  spawn() {}
 
   @Instance()
-  scream() {
-  }
+  scream() {}
 
   @Query()
   byName(name: string): Promise<Animal> {
@@ -55,7 +64,7 @@ class Animal extends ModelClass {
   }
 }
 
-export let TestModel = bootstrapMongoose(TestModelClass);
+export let TestModel = model(TestModelClass);
 ```
 
 ### License

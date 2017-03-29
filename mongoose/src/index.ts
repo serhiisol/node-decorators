@@ -9,5 +9,4 @@ export {
   Set,
   Option
 } from './decorators';
-export { bootstrapMongoose, ref } from './mongoose';
-export { ModelClass } from './model-class';
+export { model, ref } from './mongoose';

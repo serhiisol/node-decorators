@@ -1,8 +1,8 @@
-import { TestModel } from './model';
+import { Animal } from './model';
 
 
-TestModel.staticMethod();
-let test = new TestModel({testField: "Hello World"});
+Animal.staticMethod();
+let test = new Animal({testField: "Hello World"});
 console.log('Model = ' + test.toString());
 test.setField();
 

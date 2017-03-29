@@ -2,39 +2,32 @@ import * as mongoose from 'mongoose';
 import {
   SchemaField,
   Model,
-  bootstrapMongoose,
+  model,
   Static,
-  Instance,
-  ModelClass
+  Instance
 } from '@decorators/mongoose';
+
+import { AbstractModel } from './abstract.model';
 
 (<any>mongoose).Promise = Promise;
 mongoose.connect('192.168.99.100:27017/test', {
-  "server": {
-    "socketOptions": {
-      "keepAlive": 1
+  server: {
+    socketOptions: {
+      keepAlive: 1
     }
   }
 });
 
-interface TestInstance extends mongoose.Document {
-  testField: string;
-  instanceMethod();
-  setField();
-}
-
-interface TestModelType extends mongoose.Model<TestInstance> {
-  new (args?: any): TestInstance;
-  staticMethod();
-}
-
-@Model('Test')
-class TestModelClass extends ModelClass {
+@Model('Animal')
+class AnimalClass extends AbstractModel {
 
   @SchemaField(String)
   testField: string;
 
   args: any;
+
+  @Static()
+  staticField = true;
 
   constructor(...args) {
     super();
@@ -61,6 +54,8 @@ class TestModelClass extends ModelClass {
 
 }
 
-export let TestModel = <TestModelType>bootstrapMongoose({
-  provide: TestModelClass, deps: [1, 2, 3]
+export type AnimalType = AnimalClass & mongoose.Document;
+export type AnimalModel = mongoose.Model<AnimalType>;
+export const Animal = model<AnimalType>({
+  provide: AnimalClass, deps: [1, 2, 3]
 });
