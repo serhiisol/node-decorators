@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmitOnError": false,
+    "noEmitOnError": true,
     "noImplicitAny": false,
     "rootDir": ".",
     "sourceMap": true,
