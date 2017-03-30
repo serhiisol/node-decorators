@@ -4,8 +4,6 @@ export {
   Query,
   Instance,
   Virtual,
-  Index,
-  Set,
-  Option
+  Index
 } from './schema';
 export { Model } from './model';

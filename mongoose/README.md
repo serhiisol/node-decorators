@@ -14,23 +14,8 @@ npm install @decorators/mongoose --save
 * **schema(MongooseModel | { provide: MongooseModel, deps: [UserService] })** - Helper function to generate plain schema
 * **ref(collectionRef)** - Helper function to define reference to another collection/model
 
-Note: In order to get access to all proper methods, you can create custom **AbstractModel** like so:
-```typescript
-import { MongooseDocument, Model, Document } from 'mongoose';
-
-export interface AbstractModel extends MongooseDocument {
-  __v?: number;
-  update(data: any);
-  increment?(): this;
-  model?(name: string): Model<Document>;
-  remove?(fn?: (err: any, product: this) => void): Promise<this>;
-  save?(fn?: (err: any, product: this, numAffected: number) => void): Promise<this>;
-}
-
-export abstract class AbstractModel {}
-```
-
 #### Decorators
+
 ##### Class
 * **@Model(name: string, options?: SchemaTypeOpts)** - registers model with defined name and options
 
@@ -46,6 +31,22 @@ export abstract class AbstractModel {}
 * **@Index()** - registers index property
 
 ### Example Mongoose Model
+> Note: In order to get access to all proper methods, you can create custom **AbstractModel** like so:
+```typescript
+import { MongooseDocument, Model, Document } from 'mongoose';
+
+export interface AbstractModel extends MongooseDocument {
+  __v?: number;
+  update(data: any);
+  increment?(): this;
+  model?(name: string): Model<Document>;
+  remove?(fn?: (err: any, product: this) => void): Promise<this>;
+  save?(fn?: (err: any, product: this, numAffected: number) => void): Promise<this>;
+}
+
+export abstract class AbstractModel {}
+```
+
 ```typescript
 @Model('Animal')
 class Animal extends AbstractModel {

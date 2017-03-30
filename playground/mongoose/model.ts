@@ -2,9 +2,10 @@ import * as mongoose from 'mongoose';
 import {
   SchemaField,
   Model,
-  model,
   Static,
-  Instance
+  Instance,
+  model,
+  schema
 } from '@decorators/mongoose';
 
 import { AbstractModel } from './abstract.model';
@@ -27,7 +28,7 @@ class AnimalClass extends AbstractModel {
   args: any;
 
   @Static()
-  staticField = true;
+  staticField = 'static test field';
 
   constructor(...args) {
     super();
@@ -56,6 +57,6 @@ class AnimalClass extends AbstractModel {
 
 export type AnimalType = AnimalClass & mongoose.Document;
 export type AnimalModel = mongoose.Model<AnimalType>;
-export const Animal = model<AnimalType>({
-  provide: AnimalClass, deps: [1, 2, 3]
-});
+export const Animal = model<AnimalType>({ provide: AnimalClass, deps: [ 'dep' ] });
+
+export const AnimalSchema = schema({ provide: AnimalClass, deps: [ 'another dep' ]});
