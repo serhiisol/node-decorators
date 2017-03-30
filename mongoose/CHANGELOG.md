@@ -1,3 +1,12 @@
+# Mongoose#2.0.0
+### FEATURES
+* **schema()** helper function added in order to reach mongoose schema in the same way, with @decorators/mongoose class
+
+### BREAKING CHANGES
+* removed deprecated **@Set()** = **@Option()**
+* renamed **bootstrapMongoose** to **model(...)**
+* renamed **ModelClass**
+
 # Mongoose#1.2.1
 * Fixed model ctx for DI
 

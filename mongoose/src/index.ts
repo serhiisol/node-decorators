@@ -5,9 +5,6 @@ export {
   Query,
   Instance,
   Virtual,
-  Index,
-  Set,
-  Option
+  Index
 } from './decorators';
-export { bootstrapMongoose, ref } from './mongoose';
-export { ModelClass } from './model-class';
+export { model, schema, ref } from './mongoose';
