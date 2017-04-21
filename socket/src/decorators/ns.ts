@@ -1,5 +1,5 @@
 import { Meta } from '../interface';
-import { getMeta } from '../meta';
+import { getMeta } from '../utils';
 
 /**
  * Defines namespace for the controller

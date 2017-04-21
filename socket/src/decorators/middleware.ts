@@ -1,6 +1,5 @@
 import { Meta, MiddlewareType } from '../interface';
-import { getMeta } from '../meta';
-import { prepareMiddleware } from '../utils';
+import { getMeta, prepareMiddleware } from '../utils';
 
 /**
  * Registers global middleware

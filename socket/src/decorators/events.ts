@@ -1,6 +1,5 @@
 import { SocketIOClass, Meta, EventType } from '../interface';
-import { getMeta } from '../meta';
-import { prepareMiddleware } from '../utils';
+import { getMeta, prepareMiddleware } from '../utils';
 
 /**
  * Add listener to metadata

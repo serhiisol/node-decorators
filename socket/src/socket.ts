@@ -11,8 +11,7 @@ import {
   SocketIOClass,
   DecoratorsArtifacts
 } from './interface';
-import { getMeta } from './meta';
-import { noop } from './utils';
+import { getMeta, noop } from './utils';
 
 /**
  * Attaches controllers to IO server
@@ -123,9 +122,8 @@ function extractArguments(
  *
  * @param {SocketIO.Server|SocketIO.Namespace} io
  * @param {SocketIO.Socket} Socket
- * @param {SocketIOClass} controller
+ * @param {DecoratorsArtifacts} artifacts
  * @param {string|symbol} method Handler name
- * @param {Param[]} params
  *
  * @returns {Function} Returns new handler, which serves event, extracts
  * proper arguments and executes original function
@@ -133,10 +131,13 @@ function extractArguments(
 function makeEventListener(
   io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
-  controller: SocketIOClass,
-  method: string | symbol,
-  params: Param[]
+  artifacts: DecoratorsArtifacts,
+  method: string | symbol
 ): Function {
+  const params: Param[] = artifacts.meta.params
+    .filter((param: Param) => param.method === method);
+  const controller: SocketIOClass = artifacts.controller;
+
   return function(...args) {
     const newArgs: any[] = extractArguments(io, socket, params, args);
 
@@ -157,7 +158,21 @@ function eachMiddleware(
 ): Function[] {
   return artifacts.meta.middleware
     .filter((md: Middleware) => md.type === type)
-    .reduce((acc: Function[], md: Middleware) => [...acc, ...md.middleware], []);
+    .reduce((acc: Function[], md: Middleware) =>
+      [...acc, ...md.middleware], []
+    );
+}
+
+function eventMiddleware(io, socket, event, md: Function) {
+  return function(packet, next) {
+    const [incoming] = packet;
+
+    if (event === incoming) {
+      return md(io, socket, packet, next);
+    }
+
+    next();
+  };
 }
 
 /**
@@ -168,33 +183,23 @@ function eachMiddleware(
  * @param {DecoratorsArtifacts} artifacts
  * @param {EventType} type
  */
-function applyListeners(
+function applyEvents(
   io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
   artifacts: DecoratorsArtifacts,
   type: EventType
 ) {
+  const ioSock: any = socket || io;
+
   artifacts.meta.listeners
     .filter((listener: Listener) => listener.type === type)
     .forEach((listener: Listener) => {
       listener.middleware
         .forEach((md: Function) => {
-          (<any>socket).use((packet, next) => {
-            const [event] = packet;
-
-            if (listener.event === event) {
-              return md(io, socket, packet, next);
-            }
-
-            next();
-          });
+          (<any>socket).use(eventMiddleware(io, socket, listener.event, md));
         });
 
-      const params: Param[] = artifacts.meta.params
-        .filter((param: Param) => param.method === listener.method);
-
-      (<any>socket || io)
-        .on(listener.event, makeEventListener(io, socket, artifacts.controller, listener.method, params));
+      ioSock.on(listener.event, makeEventListener(io, socket, artifacts, listener.method));
     });
 }
 
@@ -224,12 +229,16 @@ function attachControllerToSocket(
   socket: SocketIO.Socket,
   artifacts: DecoratorsArtifacts
 ) {
+  const controller: SocketIOClass = artifacts.controller;
+
   /**
-   * Apply all registered middleware to socket
+   * Apply all registered socket based middleware
    */
   eachMiddleware(artifacts, MiddlewareType.Socket)
     .forEach((fn: Function) => {
-      (<any>socket).use((...args) => fn.call(fn, io, socket, ...args));
+      (<any>socket).use((...args) =>
+        fn.call(controller, io, socket, ...args)
+      );
     });
 
   /**
@@ -237,22 +246,15 @@ function attachControllerToSocket(
    */
   eachMiddleware(artifacts, MiddlewareType.Controller)
     .forEach((fn: Function) => {
-      (<any>socket).use((packet, next) => {
-        const [event] = packet;
-        const listener = artifacts.meta.listeners.find(ls => ls.event === event);
-
-        if (listener) {
-          return fn.call(fn, io, socket, packet, next);
-        }
-
-        next();
-      });
+      (<any>socket).use((packet, next) =>
+        fn.call(controller, io, socket, packet, next)
+      );
     });
 
   /**
-   * Apply socket listeners (socket based)
+   * Apply socket based events
    */
-  applyListeners(io, socket, artifacts, EventType.Socket);
+  applyEvents(io, socket, artifacts, EventType.Socket);
 }
 
 /**
@@ -269,6 +271,7 @@ function attachController(
 ) {
   const artifacts = getArtifacts(Controller, deps);
   const io: SocketIO.Namespace = IO.of(artifacts.meta.ns || DEFAULT_NAMESPACE);
+  const controller: SocketIOClass = artifacts.controller;
 
   /**
    * Filter all registered middleware and find IO middleware
@@ -277,13 +280,15 @@ function attachController(
    */
   eachMiddleware(artifacts, MiddlewareType.IO)
     .forEach((fn: Function) => {
-      io.use((...args) => fn.call(fn, io, ...args));
+      io.use((...args) =>
+        fn.call(controller, io, ...args)
+      );
     });
 
   /**
-   * Apply global listeners (io based)
+   * Apply io based events
    */
-  applyListeners(io, null, artifacts, EventType.IO);
+  applyEvents(io, null, artifacts, EventType.IO);
 
   /**
    * Apply local listeners (socket based)
