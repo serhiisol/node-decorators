@@ -182,11 +182,13 @@ function socketMiddlewareHandler(
       .find((lst: Listener) => lst.event === event);
 
     if (listener) {
-      loopFns(socketMds, args)
+      return loopFns(socketMds, args)
         .then(() => loopFns(listener.middleware, args))
         .then(() => next())
         .catch(err => next(err));
     }
+
+    next();
   };
 }
 
