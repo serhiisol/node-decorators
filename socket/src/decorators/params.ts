@@ -3,6 +3,7 @@ import { getMeta } from '../utils';
 
 /**
  * Add parameter to metadata
+ *
  * @param {SocketIOClass} target Target Class
  * @param {string|symbol} key Function name, parameters owner
  * @param {ParameterType} type

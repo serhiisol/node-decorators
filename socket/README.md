@@ -15,10 +15,10 @@ where Injectable:
 ```typescript
 { provide: UserController, deps: [UserService] }
 ```
- 
+
 #### Decorators
 ##### Class
-* **@Namespace(namespace: string)** - registers controller for namespace
+* **@Controller(namespace?: string, middleware?: Function | Function[])** - registers controller for namespace
 
 * **@ServerMiddleware(middleware: Function | Function[])** - registers global server (io) middleware
 ```typescript
@@ -29,9 +29,7 @@ function middleware(
 ) {}
 ```
 
-* **@GlobalMiddleware(middleware: Function | Function[]) => {})** - registers socket global middleware
-* **@Middleware(middleware: Function | Function[])** - registers controller-based middleware, 
-will handle only socket events registered in controller
+* **@Middleware(middleware: Function | Function[]) => {})** - registers socket global middleware
 ```typescript
 function middleware(
   io: SocketIO.Server | SocketIO.Namespace,
@@ -42,9 +40,9 @@ function middleware(
 ```
 
 ##### Method
-* **@GlobalEvent(event: string)** - register global event (**io.on**)
 * **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
 * **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
+* **@GlobalEvent(event: string)** - register global event (**io.on**)
 
 * **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
 where middleware is a function which accepts four parameters:
@@ -59,7 +57,7 @@ function middleware(
 
 ##### Parameter
 * **@IO()** - returns server itself
-* **@Socket(WrapperClass?: Class)** - returns socket, if **WrapperClass** provided, returns instance 
+* **@Socket(WrapperClass?: Class)** - returns socket, if **WrapperClass** provided, returns instance
 of **WrapperClass**, passes **socket** as dependency into **WrapperClass**
 ```typescript
 class SocketWrapper {
@@ -76,7 +74,7 @@ The middleware order :
 * Global Socket middleware
 * Controller based middleware
 * Event based middleware
-Additionally to this order depends on the order how you've registered appropriate types of middleware 
+Additionally to this order depends on the order how you've registered appropriate types of middleware
 
 ### Quick Example:
 ```typescript
@@ -95,8 +93,5 @@ class MessageController {
 
 bootstrapSocketIO(server, [ MessageController ]);
 ```
-
-### License
-MIT
 
 [Socket.IO]:http://socket.io/

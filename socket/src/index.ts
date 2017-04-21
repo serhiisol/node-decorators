@@ -1,7 +1,6 @@
 export {
-  Namespace,
+  Controller,
   ServerMiddleware,
-  GlobalMiddleware,
   Middleware,
   Connection,
   Disconnect,

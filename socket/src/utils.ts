@@ -40,23 +40,24 @@ export function noop() {}
  *
  * @description middleware approach
  * @param {Function[]} fns
- * @param {Function} done
+ * @param {any[]} args Arguments to pass in
+ * @returns {Promise<any>}
  */
-export function loopFns(fns: Function[], done: (err?: Error) => void) {
-  function iteratee(i = 0) {
+export function loopFns(fns: Function[], args: any[]): Promise<any> {
+  function iteratee(done: (err: Error) => void, i = 0) {
     const fn = fns[i];
 
     try {
-      fn((err, res) => {
+      fn(...args, (err, res) => {
         if (err) {
           return done(err);
         }
 
         if (i === fns.length - 1) {
-          return done();
+          return done(null);
         }
 
-        iteratee(++i);
+        iteratee(done, ++i);
       });
     } catch(e) {
       done(e);
@@ -64,5 +65,7 @@ export function loopFns(fns: Function[], done: (err?: Error) => void) {
 
   }
 
-  return iteratee();
+  return new Promise((resolve, reject) => {
+    iteratee((err: Error) => err ? reject(err) : resolve());
+  });
 }

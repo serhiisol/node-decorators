@@ -26,24 +26,6 @@ export const ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let GlobalMiddleware = (fn: Function|Function[]): ClassDecorator  => {
-  return (target: Function): void => {
-    const meta: Meta = getMeta(target.prototype);
-    const middleware: Function[] = prepareMiddleware(fn);
-
-    meta.middleware.push({
-      middleware,
-      type: MiddlewareType.Socket
-    });
-  };
-};
-
-/**
- * Registers socket middleware
- * @param {Function} fn
- * @returns {(target:Function)=>void}
- * @constructor
- */
 export let Middleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
     const meta: Meta = getMeta(target.prototype);
@@ -51,7 +33,7 @@ export let Middleware = (fn: Function|Function[]): ClassDecorator  => {
 
     meta.middleware.push({
       middleware,
-      type: MiddlewareType.Controller
+      type: MiddlewareType.Socket
     });
   };
 };
