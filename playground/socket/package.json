@@ -4,7 +4,8 @@
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "@decorators/socket": "../../socket"
+    "@decorators/socket": "../../socket",
+    "@types/socket.io": "1.4.29"
   },
   "keywords": [
     "nodejs",

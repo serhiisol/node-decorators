@@ -78,7 +78,7 @@ function getSocket(item: Param, socket: SocketIO.Socket) {
 }
 
 /**
- * Extract parameters for new handler
+ * Map parameters for new handler
  *
  * @param {SocketIO.Server|SocketIO.Namespace} io
  * @param {SocketIO.Socket} socket
@@ -86,7 +86,7 @@ function getSocket(item: Param, socket: SocketIO.Socket) {
  * @param {any[]} args Event handler arguments
  * @returns {Array} returns arguments array, or io and socket, event args by default
  */
-function extractArguments(
+function mapArguments(
   io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
   params: Param[],
@@ -139,23 +139,11 @@ function makeEventListener(
   const controller: SocketIOClass = artifacts.controller;
 
   return function(...args) {
-    const newArgs: any[] = extractArguments(io, socket, params, args);
+    const newArgs: any[] = mapArguments(io, socket, params, args);
 
     return controller[method].apply(controller, newArgs);
   };
 }
-
-// function eventMiddleware(io, socket, event, md: Function) {
-//   return function(packet, next) {
-//     const [incoming] = packet;
-
-//     if (event === incoming) {
-//       return md(io, socket, packet, next);
-//     }
-
-//     next();
-//   };
-// }
 
 /**
  * Apply listeners to socket or io
@@ -176,11 +164,6 @@ function applyEvents(
   artifacts.meta.listeners
     .filter((listener: Listener) => listener.type === type)
     .forEach((listener: Listener) => {
-      // listener.middleware
-      //   .forEach((md: Function) => {
-      //     (<any>socket).use(eventMiddleware(io, socket, listener.event, md));
-      //   });
-
       ioSock.on(listener.event, makeEventListener(io, socket, artifacts, listener.method));
     });
 }
@@ -232,13 +215,6 @@ function attachControllerToSocket(
   /**
    * Apply all registered controller-based middleware to socket
    */
-  // eachMiddleware(artifacts, MiddlewareType.Controller)
-  //   .forEach((fn: Function) => {
-  //     (<any>socket).use((packet, next) =>
-  //       fn.call(controller, io, socket, packet, next)
-  //     );
-  //   });
-
   (<any>socket).use(socketMiddlewareHandler(io, socket, artifacts));
 
   /**

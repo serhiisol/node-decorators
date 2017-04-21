@@ -4,7 +4,8 @@
   "description": "node decorators",
   "main": "index.js",
   "scripts": {
-    "compile": "tsc"
+    "compile": "tsc",
+    "clean-tsc": "find . -name \"*.js\" -name \"*.js.map\" -name \"*.d.ts\" -type f -not -path \"./lib/config/config.*\" -not -path \"./node_modules/*\" -delete"
   },
   "dependencies": {
     "co": "4.6.0",
