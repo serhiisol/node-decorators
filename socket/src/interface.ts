@@ -1,7 +1,14 @@
+export const DEFAULT_NAMESPACE = '/';
+
 export enum MiddlewareType {
   IO,
   Socket,
   Controller
+}
+
+export interface Middleware {
+  type: MiddlewareType;
+  middleware: Function[];
 }
 
 /**
@@ -26,21 +33,11 @@ export enum EventType {
   Socket
 }
 
-export interface Middleware {
-  type: MiddlewareType;
-  middleware: Function[];
-}
-
 export interface Listener {
   event: string;
   type: EventType;
   method: string | symbol;
   middleware: Function[];
-}
-
-export interface Injectable {
-  provide: SocketIOClass;
-  deps: any[];
 }
 
 export class Meta {
@@ -74,9 +71,12 @@ export interface SocketIOClass extends Object {
   new (...deps: any[]);
 }
 
+export interface Injectable {
+  provide: SocketIOClass;
+  deps: any[];
+}
+
 export interface DecoratorsArtifacts {
   controller: SocketIOClass;
   meta: Meta;
 }
-
-export const DEFAULT_NAMESPACE = '/';
