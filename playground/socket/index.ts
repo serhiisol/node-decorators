@@ -5,7 +5,7 @@ import {
   ServerMiddleware,
   Event,
   Args,
-  bootstrapSocketIO,
+  attachControllers,
   Namespace,
   Socket
 } from '@decorators/socket';
@@ -50,6 +50,6 @@ class FirstController {
 
 }
 
-bootstrapSocketIO(server, [
+attachControllers(server, [
   { provide: FirstController, deps: [1, 2, 3]}
 ]);

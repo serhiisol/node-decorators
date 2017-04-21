@@ -1,29 +1,14 @@
-import { SocketIOClass, SocketIOMeta } from './interface';
+import { Meta, SocketIOClass } from './interface';
 
 /**
  * Get or initiate metadata on target
  * @param target
  * @returns {SocketIOMeta}
  */
-export function getMeta(target: SocketIOClass): SocketIOMeta {
-  if (!target.__meta__) {
-    target.__meta__ = <SocketIOMeta> {
-      serverOrPort: undefined,
-      options: undefined,
-      namespace: '/',
-      middleware: {
-        io: [],
-        socket: [],
-        controller: []
-      },
-      listeners: {
-        all: [],
-        io: {},
-        socket: {}
-      },
-      params: {}
-    };
+export function getMeta(target: SocketIOClass): Meta {
+  if (!target.__socket_meta__) {
+    target.__socket_meta__ = new Meta();
   }
 
-  return <SocketIOMeta>target.__meta__;
+  return target.__socket_meta__;
 }
