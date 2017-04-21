@@ -13,6 +13,3 @@ export {
   Callback
 } from './decorators';
 export { attachControllers, attachControllersToSocket } from './socket';
-
-/** @deprecated */
-export { bootstrapSocketIO, attachControllerToSocket } from './socket';

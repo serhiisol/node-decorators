@@ -1,3 +1,8 @@
+# Socket#2.0.0
+* Removed deprecated methods
+  * **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - use **attachControllers** instead
+  * **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - use **attachControllersToSocket** instead
+
 # Socket#1.4.0
 * Controller DI
 ```typescript

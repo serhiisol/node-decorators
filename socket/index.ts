@@ -14,6 +14,3 @@ export {
   attachControllers,
   attachControllersToSocket
 } from './src';
-
-/** @deprecated */
-export { bootstrapSocketIO, attachControllerToSocket } from './src';

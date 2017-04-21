@@ -1,12 +1,7 @@
-export interface ParameterConfiguration {
-  index: number;
-  type: any;
-  name?: string;
-  data?: any;
-}
-
-export interface Params {
-  [key: string]: ParameterConfiguration[];
+export enum MiddlewareType {
+  IO,
+  Socket,
+  Controller
 }
 
 /**
@@ -19,39 +14,69 @@ export enum ParameterType {
   Callback
 }
 
-export interface Listener {
-  [key: string]: {
-    event: string;
-    middleware: Function[];
-  };
+export interface Param {
+  method: string | symbol;
+  type: ParameterType;
+  index: number;
+  data?: any;
 }
 
-export interface SocketIOMeta {
-  serverOrPort: any;
-  options: any;
-  namespace: string;
+export enum EventType {
+  IO,
+  Socket
+}
 
-  middleware: {
-    io: Function[];
-    socket: Function[];
-    controller: Function[];
-  }
+export interface Middleware {
+  type: MiddlewareType;
+  middleware: Function[];
+}
 
-  listeners: {
-    all: string[],
-    io: Listener;
-    socket: Listener;
-  };
-
-  params: Params;
+export interface Listener {
+  event: string;
+  type: EventType;
+  method: string | symbol;
+  middleware: Function[];
 }
 
 export interface Injectable {
-  provide: Function;
+  provide: SocketIOClass;
   deps: any[];
 }
+
+export class Meta {
+
+  serverOrPort: number| SocketIO.Server;
+
+  options: any;
+
+  /**
+   * Namespace
+   * @type {string}
+   */
+  ns: string;
+
+  /**
+   * Middleware
+   */
+  middleware: Middleware[] = [];
+
+  /**
+   * Event listeners
+   */
+  listeners: Listener[] = [];
+
+  params: Param[] = [];
+}
+
 export interface SocketIOClass extends Object {
-  __meta__: SocketIOMeta;
+  __socket_meta__: Meta;
 
   new (...deps: any[]);
 }
+
+export interface DecoratorsArtifacts {
+  controller: SocketIOClass;
+  meta: Meta;
+}
+
+export const DEFAULT_NAMESPACE = '/';

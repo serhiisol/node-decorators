@@ -15,9 +15,6 @@ where Injectable:
 ```typescript
 { provide: UserController, deps: [UserService] }
 ```
-
-* **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - **_[deprecated, use attachControllers - will be removed in v2.0.0 of this library]_**
-* **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - **_[deprecated, use attachControllersToSocket - will be removed in v2.0.0 of this library]_**
  
 #### Decorators
 ##### Class
