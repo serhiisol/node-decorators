@@ -44,22 +44,12 @@ class MessagingController {
   }
 
 }
-
-@ServerMiddleware([makeMiddleware('GLOBAL_SERVER 2-1'), makeMiddleware('GLOBAL_SERVER 2-2')])
-@Middleware([makeMiddleware('GLOBAL_SOCKET 2-1'), makeMiddleware('GLOBAL_SOCKET 2-2')])
-@Controller('/messaging', [makeMiddleware('CONTROLLER 2-1'), makeMiddleware('CONTROLLER 2-2')])
+@Controller('/messaging')
 class PushController {
 
-  deps: any[];
-
-  constructor(...args) {
-    console.log('2. Controller Instantiation', args);
-    this.deps = args;
-  }
-
-  @Event('push', [makeMiddleware('EVENT 2-3'), makeMiddleware('EVENT 2-4')])
+  @Event('push', [makeMiddleware('EVENT 2-1'), makeMiddleware('EVENT 2-2')])
   onPush(@Args() message, @Socket(SocketWrapper) socket: SocketWrapper) {
-    socket.log(`2. push:  ${message} ${this.deps.toString()}`);
+    socket.log(`2. push:  ${message}`);
   }
 
 }

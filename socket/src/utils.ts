@@ -66,6 +66,12 @@ export function loopFns(fns: Function[], args: any[]): Promise<any> {
   }
 
   return new Promise((resolve, reject) => {
+
+    if (!Array.isArray(fns) || !fns.length) {
+      return resolve();
+    }
+
     iteratee((err: Error) => err ? reject(err) : resolve());
+
   });
 }
