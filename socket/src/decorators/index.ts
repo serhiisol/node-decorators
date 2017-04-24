@@ -1,3 +1,4 @@
-export { Namespace, ServerMiddleware, GlobalMiddleware, Middleware } from './class';
-export { Connection, Disconnect, GlobalEvent, Event } from './property';
-export { IO, Socket, Args, Callback } from './param';
+export { Controller } from './controller';
+export { ServerMiddleware, Middleware } from './middleware';
+export { Connection, Disconnect, GlobalEvent, Event } from './events';
+export { IO, Socket, Args, Ack } from './params';

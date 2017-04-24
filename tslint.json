@@ -2,6 +2,9 @@
   "extends": "tslint:latest",
   "rules": {
     "class-name": true,
+    "max-classes-per-file": [
+      0
+    ],
     "comment-format": [
       true,
       "check-space"
@@ -45,6 +48,9 @@
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
+    "no-unused-variable": [
+      true
+    ],
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,

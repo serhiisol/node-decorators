@@ -1,3 +1,15 @@
+# Socket#2.0.0
+* Features
+  * Added wrap option for **@IO(WrapperClass?)** decorator, see **@Socket()** decorator for details
+* Renamed
+  * **@Callback()** to **@Ack()**
+  * **@GlobalMiddleware()** for socket global middleware to **@Middleware()**
+  * Renamed **@Namespace()** to **@Controller(namespace: string, middleware?: Function | Function[])**
+* Removed
+  * **@Middleware(middleware: Function | Function[])** - use Controller based middleware
+  * deprecated **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - use **attachControllers()** instead
+  * deprecated **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - use **attachControllersToSocket()** instead
+
 # Socket#1.4.0
 * Controller DI
 ```typescript
@@ -71,7 +83,7 @@ class SocketWrapper {
   * **bootstrapSocketIO(rootController: Controller)**
   ##### Class
   * **@Connect(serverOrPort: number | string | HttpServer, opts?: any)**
-  * **@Middleware(fn: Function)** 
+  * **@Middleware(fn: Function)**
   ##### Method
   * **@OnIO(event: string)**
   * **@OnConnect()**

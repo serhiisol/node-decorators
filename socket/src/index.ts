@@ -1,7 +1,6 @@
 export {
-  Namespace,
+  Controller,
   ServerMiddleware,
-  GlobalMiddleware,
   Middleware,
   Connection,
   Disconnect,
@@ -10,9 +9,6 @@ export {
   IO,
   Socket,
   Args,
-  Callback
+  Ack
 } from './decorators';
 export { attachControllers, attachControllersToSocket } from './socket';
-
-/** @deprecated */
-export { bootstrapSocketIO, attachControllerToSocket } from './socket';

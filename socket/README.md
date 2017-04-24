@@ -1,27 +1,16 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
-Project implements decorators for modern tools for NodeJS like:
-- [Socket.IO]
+Project implements decorators for [Socket.IO]
 
 ### Installation
 ```
 npm install @decorators/socket --save
 ```
 ### API
-#### Functions
-* **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
-* **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
-where Injectable:
-```typescript
-{ provide: UserController, deps: [UserService] }
-```
 
-* **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - **_[deprecated, use attachControllers - will be removed in v2.0.0 of this library]_**
-* **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - **_[deprecated, use attachControllersToSocket - will be removed in v2.0.0 of this library]_**
- 
 #### Decorators
 ##### Class
-* **@Namespace(namespace: string)** - registers controller for namespace
+* **@Controller(namespace?: string, middleware?: Function | Function[])** - registers controller for controller
 
 * **@ServerMiddleware(middleware: Function | Function[])** - registers global server (io) middleware
 ```typescript
@@ -32,9 +21,7 @@ function middleware(
 ) {}
 ```
 
-* **@GlobalMiddleware(middleware: Function | Function[]) => {})** - registers socket global middleware
-* **@Middleware(middleware: Function | Function[])** - registers controller-based middleware, 
-will handle only socket events registered in controller
+* **@Middleware(middleware: Function | Function[]) => {})** - registers socket global middleware
 ```typescript
 function middleware(
   io: SocketIO.Server | SocketIO.Namespace,
@@ -45,11 +32,11 @@ function middleware(
 ```
 
 ##### Method
-* **@GlobalEvent(event: string)** - register global event (**io.on**)
 * **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
 * **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
+* **@GlobalEvent(event: string)** - register global event (**io.on**)
 
-* **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
+* **@Event(event: string, middleware?: Function | Function[])** - register socket event (**socket.on**),
 where middleware is a function which accepts four parameters:
 ```typescript
 function middleware(
@@ -61,45 +48,60 @@ function middleware(
 ```
 
 ##### Parameter
-* **@IO()** - returns server itself
-* **@Socket(WrapperClass?: Class)** - returns socket, if **WrapperClass** provided, returns instance 
-of **WrapperClass**, passes **socket** as dependency into **WrapperClass**
+* **@IO(WrapperClass?: Class)** - returns server itself
+* **@Socket(WrapperClass?: Class)** - returns socket
+
+If **WrapperClass** provided, returns instance
+of **WrapperClass**, passes **socket** or **server** as dependency into **WrapperClass**
+
 ```typescript
 class SocketWrapper {
-  constructor(private socket: SocketIO.Socket) {}
+  constructor(private ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket) {}
 }
 ```
-* **@Args()** - returns event arguments (excluding callback)(if it exists)
-* **@Callback()** - returns callback function (if it exists)
+
+* **@Args()** - returns event arguments (excluding callback, if it exists)
+* **@Ack()** - returns ack callback function (if it exists)
+
+#### Helper Functions
+* **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
+* **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
+
+where Injectable:
+```typescript
+{ provide: UserController, deps: [UserService] }
+```
 
 ### Details
 #### Middleware
 The middleware order :
-* Global Server Middleware
-* Global Socket middleware
-* Controller based middleware
-* Event based middleware
-Additionally to this order depends on the order how you've registered appropriate types of middleware 
+* Global Server Middleware (**io.use(...)**)
+* Global Socket middleware (**socket.use(...)**)
+* Controller based middleware (**@Controller(...)**)
+* Event based middleware (**@Event(...)**)
+
+Additionally to this order depends on the order how you've registered appropriate types of middleware
 
 ### Quick Example:
 ```typescript
 import { listen } from 'socket.io';
-import { Event, Args, bootstrapSocketIO, Namespace } from '@decorators/socket';
+import { Event, Args, attachControllers, Controller } from '@decorators/socket';
 
 const server = listen(3000);
 
-@Namespace('/messaging')
+@Controller('/')
 class MessageController {
+
   @Event('message')
   onMessage(@Args() message) {
-    console.log(`Message:  ${message}`);
+    console.log(
+      `Message:  ${message}`
+    );
   }
+
 }
 
-bootstrapSocketIO(server, [ MessageController ]);
+attachControllers(server, [ MessageController ]);
 ```
-
-### License
-MIT
 
 [Socket.IO]:http://socket.io/

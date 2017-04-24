@@ -1,55 +1,32 @@
 import { listen } from 'socket.io';
 import {
-  Middleware,
-  GlobalMiddleware,
-  ServerMiddleware,
   Event,
+  attachControllers,
+  Controller,
+  Socket,
   Args,
-  bootstrapSocketIO,
-  Namespace,
-  Socket
+  IO,
+  Ack
 } from '@decorators/socket';
 
 const server = listen(3000);
 
-class SocketWrapper {
-  constructor(private socket: SocketIO.Socket) {}
-
-  log() {
-    console.log('Log');
+class Wrapper {
+  constructor(data: any) {
+    console.log('Wrapper');
   }
 }
 
-@ServerMiddleware((io, socket, next) => {
-  console.log('Global Server Middleware');
-  next();
-})
-@GlobalMiddleware((io, socket, packet, next) => {
-  console.log('Global socket middleware');
-  next();
-})
-@Middleware((io, socket, packet, next) => {
-  console.log('Controller based middleware');
-  next();
-})
-@Namespace('/messaging')
-class FirstController {
+@Controller('/')
+class MessagingController {
 
-  constructor(...args) {
-    console.log(args);
-  }
-
-  @Event('message', (io, socket, packet, next) => {
-    console.log('Message middleware');
-    next();
-  })
-  onMessage(@Args() message, @Socket(SocketWrapper) socket: SocketWrapper) {
-    socket.log();
-    console.log(`Message:  ${message}`);
+  @Event('message')
+  onMessage(@Args() message: string) {
+    console.log(
+      `Message: ${message}`
+    );
   }
 
 }
 
-bootstrapSocketIO(server, [
-  { provide: FirstController, deps: [1, 2, 3]}
-]);
+attachControllers(server, [ MessagingController ]);

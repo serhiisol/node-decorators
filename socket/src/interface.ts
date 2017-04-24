@@ -1,57 +1,135 @@
-export interface ParameterConfiguration {
-  index: number;
-  type: any;
-  name?: string;
-  data?: any;
+/**
+ * All possible middleware types
+ *
+ * @export
+ * @enum {number}
+ */
+export enum MiddlewareType {
+  IO,
+  Socket,
+  Controller
 }
 
-export interface Params {
-  [key: string]: ParameterConfiguration[];
+/**
+ * Middleware
+ *
+ * @export
+ * @interface Middleware
+ */
+export interface Middleware {
+  type: MiddlewareType;
+  middleware: Function[];
 }
 
 /**
  * Parameter types enum
+ *
+ * @export
+ * @enum {number}
  */
 export enum ParameterType {
   IO,
   Socket,
   Args,
-  Callback
+  Ack
 }
 
+/**
+ * Registered params
+ *
+ * @export
+ * @interface Param
+ */
+export interface Param {
+  method: string | symbol;
+  type: ParameterType;
+  index: number;
+  data?: any;
+}
+
+/**
+ * Event types
+ *
+ * @export
+ * @enum {number}
+ */
+export enum EventType {
+  IO,
+  Socket
+}
+
+/**
+ * Event listener
+ *
+ * @export
+ * @interface Listener
+ */
 export interface Listener {
-  [key: string]: {
-    event: string;
-    middleware: Function[];
-  };
+  event: string;
+  type: EventType;
+  method: string | symbol;
+  middleware: Function[];
 }
 
-export interface SocketIOMeta {
-  serverOrPort: any;
-  options: any;
-  namespace: string;
+/**
+ * Metadata class
+ *
+ * @export
+ * @class Meta
+ */
+export class SocketMeta {
+  /**
+   * Namespace
+   */
+  ns: string;
 
-  middleware: {
-    io: Function[];
-    socket: Function[];
-    controller: Function[];
-  }
+  /**
+   * Middleware
+   */
+  middleware: Middleware[] = [];
 
-  listeners: {
-    all: string[],
-    io: Listener;
-    socket: Listener;
-  };
+  /**
+   * Event listeners
+   */
+  listeners: Listener[] = [];
 
-  params: Params;
+  /**
+   * Event listener params
+   */
+  params: Param[] = [];
 }
 
-export interface Injectable {
-  provide: Function;
-  deps: any[];
-}
+/**
+ * Socket IO Class
+ *
+ * @export
+ * @interface SocketIOClass
+ * @extends {Object}
+ */
 export interface SocketIOClass extends Object {
-  __meta__: SocketIOMeta;
+  __socket_meta__: SocketMeta;
 
   new (...deps: any[]);
+}
+
+/**
+ * Injectable
+ *
+ * @export
+ * @interface Injectable
+ */
+export interface Injectable {
+  provide: SocketIOClass;
+  deps: any[];
+}
+
+/**
+ * Artifacts
+ *
+ * @export
+ * @interface DecoratorsArtifacts
+ */
+export interface DecoratorsArtifacts {
+  controller: SocketIOClass;
+  meta: SocketMeta;
 }
