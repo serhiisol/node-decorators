@@ -1,4 +1,4 @@
-import { Meta, MiddlewareType } from '../interface';
+import { SocketMeta, MiddlewareType } from '../interface';
 import { getMeta, prepareMiddleware } from '../utils';
 
 /**
@@ -6,9 +6,9 @@ import { getMeta, prepareMiddleware } from '../utils';
  *
  * @param {string} ns
  */
-export const Controller = (ns: string, fn: Function|Function[]): ClassDecorator => {
+export const Controller = (ns: string, fn?: Function|Function[]): ClassDecorator => {
   return (target: Function): void => {
-    const meta: Meta = getMeta(target.prototype);
+    const meta: SocketMeta = getMeta(target.prototype);
     const middleware: Function[] = prepareMiddleware(fn);
 
     meta.ns = ns;
@@ -17,6 +17,5 @@ export const Controller = (ns: string, fn: Function|Function[]): ClassDecorator 
       middleware,
       type: MiddlewareType.Controller
     });
-
   };
 };

@@ -1,4 +1,4 @@
-import { Meta, ParameterType, SocketIOClass } from '../interface';
+import { SocketMeta, ParameterType, SocketIOClass } from '../interface';
 import { getMeta } from '../utils';
 
 /**
@@ -17,7 +17,7 @@ function addParameter(
   index: number,
   data?: any
 ) {
-  const meta: Meta = getMeta(target);
+  const meta: SocketMeta = getMeta(target);
 
   meta.params.push({ type, method, index, data });
 }

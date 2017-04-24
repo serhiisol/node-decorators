@@ -82,10 +82,9 @@ export interface Listener {
  * @export
  * @class Meta
  */
-export class Meta {
+export class SocketMeta {
   /**
    * Namespace
-   * @type {string}
    */
   ns: string;
 
@@ -99,6 +98,9 @@ export class Meta {
    */
   listeners: Listener[] = [];
 
+  /**
+   * Event listener params
+   */
   params: Param[] = [];
 }
 
@@ -110,7 +112,7 @@ export class Meta {
  * @extends {Object}
  */
 export interface SocketIOClass extends Object {
-  __socket_meta__: Meta;
+  __socket_meta__: SocketMeta;
 
   new (...deps: any[]);
 }
@@ -134,5 +136,5 @@ export interface Injectable {
  */
 export interface DecoratorsArtifacts {
   controller: SocketIOClass;
-  meta: Meta;
+  meta: SocketMeta;
 }

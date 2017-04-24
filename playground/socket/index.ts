@@ -26,8 +26,8 @@ class SocketWrapper {
   }
 }
 
-@ServerMiddleware([makeMiddleware('GLOBAL_SERVER 1-1'), makeMiddleware('GLOBAL_SERVER 1-2')])
-@Middleware([makeMiddleware('GLOBAL_SOCKET 1-1'), makeMiddleware('GLOBAL_SOCKET 1-2')])
+// @ServerMiddleware([makeMiddleware('GLOBAL_SERVER 1-1'), makeMiddleware('GLOBAL_SERVER 1-2')])
+// @Middleware([makeMiddleware('GLOBAL_SOCKET 1-1'), makeMiddleware('GLOBAL_SOCKET 1-2')])
 @Controller('/messaging', [makeMiddleware('CONTROLLER 1-1', true), makeMiddleware('CONTROLLER 1-2')])
 class MessagingController {
 
@@ -45,9 +45,10 @@ class MessagingController {
 
 }
 @Controller('/messaging')
+@ServerMiddleware([makeMiddleware('GLOBAL_SERVER 2-1'), makeMiddleware('GLOBAL_SERVER 2-2')])
 class PushController {
 
-  @Event('push', [makeMiddleware('EVENT 2-1'), makeMiddleware('EVENT 2-2')])
+  @Event('push')
   onPush(@Args() message, @Socket(SocketWrapper) socket: SocketWrapper) {
     socket.log(`2. push:  ${message}`);
   }

@@ -1,13 +1,13 @@
-import { Meta, SocketIOClass } from './interface';
+import { SocketMeta, SocketIOClass } from './interface';
 
 /**
  * Get or initiate metadata on target
  * @param target
  * @returns {SocketIOMeta}
  */
-export function getMeta(target: SocketIOClass): Meta {
+export function getMeta(target: SocketIOClass): SocketMeta {
   if (!target.__socket_meta__) {
-    target.__socket_meta__ = new Meta();
+    target.__socket_meta__ = new SocketMeta();
   }
 
   return target.__socket_meta__;
@@ -31,19 +31,14 @@ export function prepareMiddleware(fn: Function|Function[]): Function[] {
 }
 
 /**
- * Dummy empty function, to ensure that callback exists
- */
-export function noop() {}
-
-/**
- * Custom functions loop
+ * Loops through all registered middlewares
  *
  * @description middleware approach
- * @param {Function[]} fns
- * @param {any[]} args Arguments to pass in
+ * @param {Function[]} fns Array of middleware functions
+ * @param {any[]} [args = []] Arguments to pass in
  * @returns {Promise<any>}
  */
-export function loopFns(fns: Function[], args: any[]): Promise<any> {
+export function loopFns(fns: Function[], args: any[] = []): Promise<any> {
   function iteratee(done: (err: Error) => void, i = 0) {
     const fn = fns[i];
 
@@ -75,3 +70,8 @@ export function loopFns(fns: Function[], args: any[]): Promise<any> {
 
   });
 }
+
+/**
+ * Dummy empty function, to ensure that callback exists
+ */
+export function noop() {}

@@ -1,4 +1,4 @@
-import { SocketIOClass, Meta, EventType } from '../interface';
+import { SocketIOClass, SocketMeta, EventType } from '../interface';
 import { getMeta, prepareMiddleware } from '../utils';
 
 /**
@@ -18,7 +18,7 @@ function addListener(
   event: string,
   middleware: Function | Function[]
 ) {
-  const meta: Meta = getMeta(target);
+  const meta: SocketMeta = getMeta(target);
 
   meta.listeners.push({
     event,

@@ -1,4 +1,4 @@
-import { Meta, MiddlewareType } from '../interface';
+import { SocketMeta, MiddlewareType } from '../interface';
 import { getMeta, prepareMiddleware } from '../utils';
 
 /**
@@ -10,7 +10,7 @@ import { getMeta, prepareMiddleware } from '../utils';
  */
 export const ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
-    const meta: Meta = getMeta(target.prototype);
+    const meta: SocketMeta = getMeta(target.prototype);
     const middleware: Function[] = prepareMiddleware(fn);
 
     meta.middleware.push({
@@ -28,7 +28,7 @@ export const ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
  */
 export let Middleware = (fn: Function|Function[]): ClassDecorator  => {
   return (target: Function): void => {
-    const meta: Meta = getMeta(target.prototype);
+    const meta: SocketMeta = getMeta(target.prototype);
     const middleware: Function[] = prepareMiddleware(fn);
 
     meta.middleware.push({
