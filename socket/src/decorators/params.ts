@@ -55,7 +55,7 @@ export const Socket = makeDecorator(ParameterType.Socket);
 export const Args = makeDecorator(ParameterType.Args);
 
 /**
- * Returns callback function (if it exists)
+ * Returns ack callback function (if it exists)
  * @type {() => ParameterDecorator}
  */
-export const Callback = makeDecorator(ParameterType.Callback);
+export const Ack = makeDecorator(ParameterType.Ack);

@@ -1,9 +1,4 @@
 /**
- * Default controller namespace
- */
-export const DEFAULT_NAMESPACE = '/';
-
-/**
  * All possible middleware types
  *
  * @export
@@ -36,7 +31,7 @@ export enum ParameterType {
   IO,
   Socket,
   Args,
-  Callback
+  Ack
 }
 
 /**

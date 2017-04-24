@@ -1,5 +1,4 @@
 import {
-  DEFAULT_NAMESPACE,
   MiddlewareType,
   Middleware,
   ParameterType,
@@ -67,12 +66,11 @@ function attachController(
   deps: any[]
 ) {
   const artifacts = getArtifacts(Controller, deps);
-  const io: SocketIO.Namespace = IO.of(artifacts.meta.ns || DEFAULT_NAMESPACE);
+  const io: SocketIO.Namespace = IO.of(artifacts.meta.ns);
   const controller: SocketIOClass = artifacts.controller;
 
   /**
    * Filter all registered middleware and find IO middleware
-   * Construct flat array of functions
    * Apply all middleware functions to io
    */
   findMiddleware(artifacts, MiddlewareType.IO)
@@ -205,38 +203,15 @@ function makeEventListener(
   artifacts: DecoratorsArtifacts,
   method: string | symbol
 ): Function {
+  const controller: SocketIOClass = artifacts.controller;
   const params: Param[] = artifacts.meta.params
     .filter((param: Param) => param.method === method);
-  const controller: SocketIOClass = artifacts.controller;
 
   return function(...args) {
     const newArgs: any[] = mapArguments(io, socket, params, args);
 
     return controller[method].apply(controller, newArgs);
   };
-}
-
-/**
- * Get ack callback function
- *
- * @description extract callback function, it it exists
- * @param {any[]} args Event arguments, passed to handler function
- */
-function getAck(args: any[]) {
-  const ackExists: boolean = typeof args[args.length - 1] === 'function';
-
-  return ackExists ? args.pop() : noop;
-}
-
-/**
- * Get original socket, or create instance of passed WrapperClass (data)
- *
- * @param {ParameterConfiguration} item
- * @param {SocketIO.Socket} socket
- * @returns {SocketIO.Socket}
- */
-function getSocket(item: Param, socket: SocketIO.Socket) {
-  return item.data ? new item.data(socket) : socket;
 }
 
 /**
@@ -273,7 +248,7 @@ function mapArguments(
       switch (param.type) {
         case ParameterType.IO: return io;
         case ParameterType.Socket: return getSocket(param, socket);
-        case ParameterType.Args: return args.pop(); // TODO: check args, not sure that it works correctly
+        case ParameterType.Args: return getArgs(args);
         default: return ack;
       }
     });
@@ -309,4 +284,38 @@ function getArtifacts(Controller: SocketIOClass, deps: any[]): DecoratorsArtifac
   const meta: SocketMeta = getMeta(controller);
 
   return { controller, meta };
+}
+
+/**
+ * Get ack callback function
+ *
+ * @description extract callback function, it it exists
+ * @param {any[]} args Event arguments, passed to handler function
+ */
+function getAck(args: any[]) {
+  const ackExists: boolean = typeof args[args.length - 1] === 'function';
+
+  return ackExists ? args.pop() : noop;
+}
+
+/**
+ * Get original socket, or create instance of passed WrapperClass (data)
+ *
+ * @param {ParameterConfiguration} item
+ * @param {SocketIO.Socket} socket
+ * @returns {SocketIO.Socket}
+ */
+function getSocket(item: Param, socket: SocketIO.Socket) {
+  return item.data ? new item.data(socket) : socket;
+}
+
+/**
+ * Get proper message data
+ *
+ * @param {any[]} args
+ * @returns {*}
+ */
+function getArgs(args: any[]): any {
+  return typeof args[args.length - 1] === 'function' ?
+    args[args.length - 2] : args[args.length - 1];
 }

@@ -9,6 +9,6 @@ export {
   IO,
   Socket,
   Args,
-  Callback
+  Ack
 } from './decorators';
 export { attachControllers, attachControllersToSocket } from './socket';

@@ -1,10 +1,12 @@
 # Socket#2.0.0
-* Renamed **GlobalMiddleware** for socket global middleware into **Middleware**
-* Renamed **Namespace** to **@Controller(namespace: string, middleware?: Function | Function[])**
-* Removed **@Middleware(middleware: Function | Function[])** - use Controller based middleware
-* Removed deprecated methods
-  * **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - use **attachControllers** instead
-  * **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - use **attachControllersToSocket** instead
+* Renamed
+  * **@Callback()** to **@Ack()**
+  * **@GlobalMiddleware()** for socket global middleware to **@Middleware()**
+  * Renamed **@Namespace()** to **@Controller(namespace: string, middleware?: Function | Function[])**
+* Removed
+  * **@Middleware(middleware: Function | Function[])** - use Controller based middleware
+  * deprecated **bootstrapSocketIO(io: SocketIO.Server, Controllers)** -  Attaches controllers to IO server - use **attachControllers()** instead
+  * deprecated **attachControllerToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controllers)** -  Attaches controllers to Socket - use **attachControllersToSocket()** instead
 
 # Socket#1.4.0
 * Controller DI

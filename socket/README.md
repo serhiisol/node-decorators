@@ -1,24 +1,16 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
-Project implements decorators for modern tools for NodeJS like:
-- [Socket.IO]
+Project implements decorators for [Socket.IO]
 
 ### Installation
 ```
 npm install @decorators/socket --save
 ```
 ### API
-#### Functions
-* **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
-* **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
-where Injectable:
-```typescript
-{ provide: UserController, deps: [UserService] }
-```
 
 #### Decorators
 ##### Class
-* **@Controller(namespace?: string, middleware?: Function | Function[])** - registers controller for namespace
+* **@Controller(namespace?: string, middleware?: Function | Function[])** - registers controller for controller
 
 * **@ServerMiddleware(middleware: Function | Function[])** - registers global server (io) middleware
 ```typescript
@@ -44,7 +36,7 @@ function middleware(
 * **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
 * **@GlobalEvent(event: string)** - register global event (**io.on**)
 
-* **@Event(event: string, middleware || \[middleware\])** - register socket event (**socket.on**),
+* **@Event(event: string, middleware?: Function | Function[])** - register socket event (**socket.on**),
 where middleware is a function which accepts four parameters:
 ```typescript
 function middleware(
@@ -65,7 +57,15 @@ class SocketWrapper {
 }
 ```
 * **@Args()** - returns event arguments (excluding callback)(if it exists)
-* **@Callback()** - returns callback function (if it exists)
+* **@Ack()** - returns ack callback function (if it exists)
+
+#### Helper Functions
+* **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
+* **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
+where Injectable:
+```typescript
+{ provide: UserController, deps: [UserService] }
+```
 
 ### Details
 #### Middleware
@@ -79,11 +79,11 @@ Additionally to this order depends on the order how you've registered appropriat
 ### Quick Example:
 ```typescript
 import { listen } from 'socket.io';
-import { Event, Args, bootstrapSocketIO, Namespace } from '@decorators/socket';
+import { Event, Args, attachControllers, Controller } from '@decorators/socket';
 
 const server = listen(3000);
 
-@Namespace('/messaging')
+@Controller('/messaging')
 class MessageController {
   @Event('message')
   onMessage(@Args() message) {
@@ -91,7 +91,7 @@ class MessageController {
   }
 }
 
-bootstrapSocketIO(server, [ MessageController ]);
+attachControllers(server, [ MessageController ]);
 ```
 
 [Socket.IO]:http://socket.io/
