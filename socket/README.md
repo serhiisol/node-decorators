@@ -48,20 +48,25 @@ function middleware(
 ```
 
 ##### Parameter
-* **@IO()** - returns server itself
-* **@Socket(WrapperClass?: Class)** - returns socket, if **WrapperClass** provided, returns instance
-of **WrapperClass**, passes **socket** as dependency into **WrapperClass**
+* **@IO(WrapperClass?: Class)** - returns server itself
+* **@Socket(WrapperClass?: Class)** - returns socket
+
+If **WrapperClass** provided, returns instance
+of **WrapperClass**, passes **socket** or **server** as dependency into **WrapperClass**
+
 ```typescript
 class SocketWrapper {
-  constructor(private socket: SocketIO.Socket) {}
+  constructor(private ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket) {}
 }
 ```
-* **@Args()** - returns event arguments (excluding callback)(if it exists)
+
+* **@Args()** - returns event arguments (excluding callback, if it exists)
 * **@Ack()** - returns ack callback function (if it exists)
 
 #### Helper Functions
 * **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
 * **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
+
 where Injectable:
 ```typescript
 { provide: UserController, deps: [UserService] }
@@ -70,10 +75,11 @@ where Injectable:
 ### Details
 #### Middleware
 The middleware order :
-* Global Server Middleware
-* Global Socket middleware
-* Controller based middleware
-* Event based middleware
+* Global Server Middleware (**io.use(...)**)
+* Global Socket middleware (**socket.use(...)**)
+* Controller based middleware (**@Controller(...)**)
+* Event based middleware (**@Event(...)**)
+
 Additionally to this order depends on the order how you've registered appropriate types of middleware
 
 ### Quick Example:
@@ -83,12 +89,16 @@ import { Event, Args, attachControllers, Controller } from '@decorators/socket';
 
 const server = listen(3000);
 
-@Controller('/messaging')
+@Controller('/')
 class MessageController {
+
   @Event('message')
   onMessage(@Args() message) {
-    console.log(`Message:  ${message}`);
+    console.log(
+      `Message:  ${message}`
+    );
   }
+
 }
 
 attachControllers(server, [ MessageController ]);

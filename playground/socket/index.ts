@@ -11,30 +11,22 @@ import {
 
 const server = listen(3000);
 
+class Wrapper {
+  constructor(data: any) {
+    console.log('Wrapper');
+  }
+}
+
 @Controller('/')
 class MessagingController {
 
   @Event('message')
-  onMessage(
-    @Args() args,
-    @Socket() socket,
-    @Ack() ack,
-    @IO() io,
-  ) {
+  onMessage(@Args() message: string) {
     console.log(
-      io.constructor.name,
-      socket.constructor.name,
-      args,
-      ack
+      `Message: ${message}`
     );
   }
 
 }
 
-class TestClass {
-  constructor() {
-    console.log('Test Class');
-  }
-}
-
-attachControllers(server, [ MessagingController, TestClass ]);
+attachControllers(server, [ MessagingController ]);

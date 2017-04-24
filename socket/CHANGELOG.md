@@ -1,4 +1,6 @@
 # Socket#2.0.0
+* Features
+  * Added wrap option for **@IO(WrapperClass?)** decorator, see **@Socket()** decorator for details
 * Renamed
   * **@Callback()** to **@Ack()**
   * **@GlobalMiddleware()** for socket global middleware to **@Middleware()**

@@ -246,8 +246,8 @@ function mapArguments(
     .sort((param: Param) => param.index)
     .map((param: Param) => {
       switch (param.type) {
-        case ParameterType.IO: return io;
-        case ParameterType.Socket: return getSocket(param, socket);
+        case ParameterType.IO: return getWrapper(param, io);
+        case ParameterType.Socket: return getWrapper(param, socket);
         case ParameterType.Args: return getArgs(args);
         default: return ack;
       }
@@ -299,14 +299,14 @@ function getAck(args: any[]) {
 }
 
 /**
- * Get original socket, or create instance of passed WrapperClass (data)
+ * Get original socket or io server, or create instance of passed WrapperClass (data)
  *
  * @param {ParameterConfiguration} item
- * @param {SocketIO.Socket} socket
+ * @param {SocketIO.Server|SocketIO.Namespace|SocketIO.Socket} ioSock
  * @returns {SocketIO.Socket}
  */
-function getSocket(item: Param, socket: SocketIO.Socket) {
-  return item.data ? new item.data(socket) : socket;
+function getWrapper(item: Param, ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket) {
+  return item.data ? new item.data(ioSock) : ioSock;
 }
 
 /**
