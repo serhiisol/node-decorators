@@ -6,7 +6,7 @@ export interface MongooseMeta {
   instances: [ [string, Function] ];
   virtuals:  [ [string, PropertyDescriptor] ];
   indexes:   string[];
-  options:   string[];
+  options:   [ [string, any] ];
 }
 
 export interface MongooseClass extends Object {
