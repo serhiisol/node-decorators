@@ -88,8 +88,8 @@ function buildSchema(meta: MongooseMeta, classInstance): Schema {
   });
   schema.index(indexes);
 
-  meta.options.forEach((option: string) => {
-    schema.set(option, classInstance[option]);
+  meta.options.forEach(([option, value]: [string, any]) => {
+    schema.set(option, value);
   });
 
   return schema;
