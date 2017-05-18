@@ -12,7 +12,7 @@ export let Model = (name: string, options?: SchemaTypeOpts<any>) => {
     if (options) {
       Object.keys(options)
         .forEach((key) => {
-          mongooseMeta.options.push(key, options[key]);
+          mongooseMeta.options.push([key, options[key]]);
         });
     }
   }
