@@ -1,7 +1,5 @@
 /**
- * Suppress console methods to be executed, prevents logs. Suppresses sync and async (promises) code. 
- * But be aware of possible side effects caused by promises, e.g. if promise will be unresolved,
- * SuppressConsole won't add methods back to console.
+ * Suppress console methods to be executed, prevents logs. Suppresses sync and async (promise) code.
  * @param {string[]} methods Methods to be suppressed
  */
 export function SuppressConsole(methods: string[] = ['log']) {
@@ -29,14 +27,22 @@ export function SuppressConsole(methods: string[] = ['log']) {
     descriptor.value = function (...args) {
       lock();
 
-      const result = originalMethod.apply(this, args);
-
-      if (result.then) {
-        result.then(unlock);
-      } else {
+      let result: any;
+      try {
+        result = originalMethod.apply(this, args);
+      } catch (ex) {
         unlock();
+        throw ex;
       }
 
+      if (result.then) {
+        return result.then(unlock, ex => {
+          unlock();
+          throw ex;
+        });
+      }
+
+      unlock();
       return result;
     };
   }
