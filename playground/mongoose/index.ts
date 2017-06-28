@@ -1,6 +1,6 @@
 import { Animal, AnimalSchema } from './model';
 
-console.log(AnimalSchema.create);
+console.log(Animal.create);
 
 Animal.staticMethod();
 console.log(Animal.staticField);
