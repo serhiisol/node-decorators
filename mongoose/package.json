@@ -1,14 +1,14 @@
 {
   "name": "@decorators/mongoose",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "node decorators",
   "main": "src/index.js",
   "dependencies": {
     "mongoose": "^4.7.0"
   },
   "devDependencies": {
-    "@types/mongoose": "4.7.2",
-    "typescript": "2.2.2"
+    "@types/mongoose": "4.7.18",
+    "typescript": "2.4.1"
   },
   "keywords": [
     "nodejs",
@@ -28,5 +28,8 @@
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
-  "types": "index.d.ts"
+  "types": "index.d.ts",
+  "scripts": {
+    "compile": "tsc"
+  }
 }

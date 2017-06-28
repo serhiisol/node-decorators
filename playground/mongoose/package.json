@@ -1,13 +1,14 @@
 {
   "name": "@decorators/playground-mongoose",
-  "version": "1.1.1",
+  "version": "2.0.1",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
     "@decorators/mongoose": "../../mongoose"
   },
   "devDependencies": {
-     "@types/mongoose": "4.7.2"
+     "@types/mongoose": "4.7.18",
+     "typescript": "2.4.1"
   },
   "keywords": [
     "nodejs",
@@ -26,5 +27,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
+  },
+  "scripts": {
+    "compile": "tsc"
   }
 }
