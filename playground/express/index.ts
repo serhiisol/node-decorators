@@ -16,19 +16,15 @@ import {
 })
 class UsersController {
 
-  constructor(...args) {
-    console.log(args);
-  }
-
   @Get('/favicon.ico')
   getFavicon(@Response() res) {
     res.status(404).send();
   }
 
-  @Get('/:id', [(req, res, next) => {
+  @Get('/:id', [(req, _res, next) => {
     console.log('First Middleware');
     next();
-  }, (req, res, next) => {
+  }, (req, _res, next) => {
     console.log('Second Middleware');
     next();
   }])
@@ -41,8 +37,6 @@ class UsersController {
 
 let app: Express = express();
 
-attachControllers(app, [
-  { provide: UsersController, deps: [1, 2, 3] }
-]);
+attachControllers(app, [ UsersController ]);
 
 app.listen(3003);

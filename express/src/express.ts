@@ -30,13 +30,13 @@ function extractParameters(req, res, next, params): any[] {
 }
 
 function registerController(app, Controller, deps) {
-  let controller = new Controller(...deps);
+  let controller: ExpressClass = new Controller(...deps);
   let router: Router = Router();
-  let controllerMiddleware: RequestHandler[] = controller.__meta__.controllerMiddleware;
-  let routes: Routes = controller.__meta__.routes;
-  let middleware: Middleware = controller.__meta__.middleware;
-  let baseUrl: string = controller.__meta__.baseUrl;
-  let params: Params = controller.__meta__.params;
+  let controllerMiddleware: RequestHandler[] = controller.__express_meta__.controllerMiddleware;
+  let routes: Routes = controller.__express_meta__.routes;
+  let middleware: Middleware = controller.__express_meta__.middleware;
+  let baseUrl: string = controller.__express_meta__.baseUrl;
+  let params: Params = controller.__express_meta__.params;
 
   if (controllerMiddleware.length) {
     router.use(...controllerMiddleware);

@@ -31,7 +31,7 @@ export interface ExpressMeta {
 }
 
 export interface ExpressClass extends Object {
-  __meta__: ExpressMeta;
+  __express_meta__?: ExpressMeta;
 
   new (...deps: any[]);
 }

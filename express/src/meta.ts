@@ -6,8 +6,8 @@ import { ExpressMeta, ExpressClass } from './interface';
  * @returns {SocketIOMeta}
  */
 export function getMeta(target: ExpressClass): ExpressMeta {
-  if (!target.__meta__) {
-    target.__meta__ = <ExpressMeta>{
+  if (!target.__express_meta__) {
+    target.__express_meta__ = {
       baseUrl: '',
       controllerMiddleware: [],
       routes: {},
@@ -15,18 +15,19 @@ export function getMeta(target: ExpressClass): ExpressMeta {
       params: {}
     };
   }
-  return <ExpressMeta>target.__meta__;
+  return target.__express_meta__;
 }
 
 /**
  * Get array of given middleware
  */
 export function getMiddleware(middleware: Function|Function[]): Function[] {
-  if (typeof middleware === 'function') {
-    return [middleware];
-  } else if (Array.isArray(middleware)){
+  if (Array.isArray(middleware)) {
     return (<Function[]>middleware)
       .filter(md => typeof md === 'function');
+  } else if (typeof middleware === 'function') {
+    return [middleware];
   }
+
   return [];
 }
