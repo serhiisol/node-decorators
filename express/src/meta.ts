@@ -1,3 +1,5 @@
+import { RequestHandler } from 'express';
+
 import { ExpressMeta, ExpressClass } from './interface';
 
 /**
@@ -21,9 +23,9 @@ export function getMeta(target: ExpressClass): ExpressMeta {
 /**
  * Get array of given middleware
  */
-export function getMiddleware(middleware: Function|Function[]): Function[] {
+export function getMiddleware(middleware: RequestHandler|RequestHandler[]): RequestHandler[] {
   if (Array.isArray(middleware)) {
-    return (<Function[]>middleware)
+    return (<RequestHandler[]>middleware)
       .filter(md => typeof md === 'function');
   } else if (typeof middleware === 'function') {
     return [middleware];

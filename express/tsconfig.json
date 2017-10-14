@@ -13,8 +13,10 @@
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
-    "pretty": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+    "pretty": true
+  },
+  "exclude": ["node_modules"],
+  "files": [
+    "src/index.ts"
+  ]
 }

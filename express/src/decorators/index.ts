@@ -17,6 +17,3 @@ export {
   Headers,
   Cookies
 } from './params';
-
-/** @deprecated */
-export { Middleware } from './middleware';

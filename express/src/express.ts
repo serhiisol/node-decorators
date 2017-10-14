@@ -81,9 +81,3 @@ export function attachControllers(app: Express, injectables: Array<Injectable | 
     console.log('Second parameter should be array of injectables: { provide: Controller, deps: any[] }', e, e.message);
   }
 }
-
-/**
- * @deprecated
- * @see attachControllers
- */
-export let bootstrapControllers = attachControllers;

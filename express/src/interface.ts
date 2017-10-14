@@ -1,3 +1,5 @@
+import { RequestHandler } from 'express';
+
 export interface ParameterConfiguration {
   index: number;
   type: any;
@@ -19,13 +21,13 @@ export interface Routes {
 }
 
 export interface Middleware {
-  [key: string]: Function[];
+  [key: string]: RequestHandler[];
 }
 
 export interface ExpressMeta {
   baseUrl: string;
   routes: Routes;
-  controllerMiddleware: Function[];
+  controllerMiddleware: RequestHandler[];
   middleware: Middleware;
   params: Params;
 }

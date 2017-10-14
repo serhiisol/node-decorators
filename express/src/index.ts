@@ -19,7 +19,3 @@ export {
   Headers,
   Cookies
 } from './decorators';
-
-/** @deprecated */
-export { bootstrapControllers } from './express';
-export { Middleware } from './decorators';

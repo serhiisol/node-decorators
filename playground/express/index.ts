@@ -1,42 +1,34 @@
 import * as express from 'express';
-import { Express, Request } from 'express';
 
 import {
-  Response,
-  Request as Req,
-  Params,
   Controller,
+  Response,
   Get,
   attachControllers
 } from '@decorators/express';
 
-@Controller('/', (req: Request, res, next) => {
-  console.log('Controller Middleware', req.path);
-  next();
-})
-class UsersController {
+@Controller('/')
+class UserController {
 
-  @Get('/favicon.ico')
-  getFavicon(@Response() res) {
-    res.status(404).send();
-  }
-
-  @Get('/:id', [(req, _res, next) => {
-    console.log('First Middleware');
-    next();
-  }, (req, _res, next) => {
-    console.log('Second Middleware');
-    next();
-  }])
-  getData(@Response() res, @Params('id') id: string, @Req('params') params) {
-    console.log('Express welcomes: ' + JSON.stringify(id));
-    res.send('Express welcomes: ' + JSON.stringify(id));
+  @Get('/user')
+  public getData(@Response() res): void {
+    res.send('Express welcomes user');
   }
 
 }
 
-let app: Express = express();
+@Controller('/')
+class TextController {
 
-attachControllers(app, [ UsersController ]);
+  @Get('/text')
+  public getData(@Response() res): void {
+    res.send('Express gives some text');
+  }
+
+}
+
+let app: express.Express = express();
+
+attachControllers(app, [ UserController, TextController ]);
 
 app.listen(3003);

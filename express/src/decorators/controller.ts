@@ -1,3 +1,5 @@
+import { RequestHandler } from 'express';
+
 import { ExpressMeta } from '../interface';
 import { getMeta, getMiddleware } from '../meta';
 
@@ -8,7 +10,7 @@ import { getMeta, getMiddleware } from '../meta';
  * @returns {(target:Function)=>void}
  * @constructor
  */
-export let Controller = (baseUrl: string, middleware?: Function|Function[]): ClassDecorator  => {
+export let Controller = (baseUrl: string, middleware?: RequestHandler|RequestHandler[]): ClassDecorator  => {
   return (target: Function): void => {
     let meta: ExpressMeta = getMeta(target.prototype);
     meta.baseUrl = baseUrl;

@@ -15,8 +15,6 @@ npm install @decorators/express --save
 { provide: UserController, deps: [UserService] }
 ```
 
-* **bootstrapControllers(app: Express, [ controllers ])** - attach controllers to express application - **_[deprecated, use attachControllers - will be removed in v2.0.0 of this library]_**
-
 #### Decorators
 ##### Class
 * **@Controller(baseUrl: string, [middleware]?)** - Registers controller for base url
