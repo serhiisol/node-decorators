@@ -8,19 +8,18 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "rootDir": ".",
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
     "pretty": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "outDir": "out"
   },
   "include": [
-    "types/**/*"
-  ],
-  "files": [
-    "express/index.ts"
+    "**/*.ts",
+    "test.ts"
   ]
 }

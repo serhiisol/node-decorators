@@ -3,14 +3,12 @@ node_modules/
 
 # IDEs and editors
 .idea/
-.vscode/
 
 # misc
 npm-debug.log
 
 # compiled
 **/*.d.ts
-!types/**/*.d.ts
 **/*.js
 **/*.map
 
