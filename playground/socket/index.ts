@@ -1,32 +1,22 @@
 import { listen } from 'socket.io';
 import {
-  Event,
+  Connect,
   attachControllers,
   Controller,
   Socket,
-  Args,
-  IO,
-  Ack
+  Args
 } from '@decorators/socket';
 
 const server = listen(3000);
 
-class Wrapper {
-  constructor(data: any) {
-    console.log('Wrapper');
-  }
-}
-
 @Controller('/')
-class MessagingController {
+class ConnectionController {
 
-  @Event('message')
-  onMessage(@Args() message: string) {
-    console.log(
-      `Message: ${message}`
-    );
+  @Connect()
+  public connect(@Socket() socket: SocketIO.Socket) {
+    console.log('Socket.id=', socket.id);
   }
 
 }
 
-attachControllers(server, [ MessagingController ]);
+attachControllers(server, [ ConnectionController ]);

@@ -33,6 +33,7 @@ function middleware(
 
 ##### Method
 * **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
+* **@Connect()** - alias of **@Connection()**
 * **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
 * **@GlobalEvent(event: string)** - register global event (**io.on**)
 

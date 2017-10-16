@@ -1,17 +1,15 @@
-import { SocketMeta, MiddlewareType } from '../interface';
+import { SocketMeta, MiddlewareType, MiddlewareFunction } from '../interface';
 import { getMeta, prepareMiddleware } from '../utils';
 
 /**
  * Registers global middleware
  *
- * @param {Function|Function[]} fn
- * @returns {(target:Function)=>void}
- * @constructor
+ * @param {MiddlewareFunction|MiddlewareFunction[]} fn
  */
-export const ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
-  return (target: Function): void => {
+export const ServerMiddleware = (fn: MiddlewareFunction|MiddlewareFunction[]): ClassDecorator  => {
+  return (target): void => {
     const meta: SocketMeta = getMeta(target.prototype);
-    const middleware: Function[] = prepareMiddleware(fn);
+    const middleware: MiddlewareFunction[] = prepareMiddleware(fn);
 
     meta.middleware.push({
       middleware,
@@ -22,14 +20,13 @@ export const ServerMiddleware = (fn: Function|Function[]): ClassDecorator  => {
 
 /**
  * Registers socket middleware
- * @param {Function} fn
- * @returns {(target:Function)=>void}
- * @constructor
+ *
+ * @param {MiddlewareFunction|MiddlewareFunction[]} fn
  */
-export let Middleware = (fn: Function|Function[]): ClassDecorator  => {
-  return (target: Function): void => {
+export let Middleware = (fn: MiddlewareFunction|MiddlewareFunction[]): ClassDecorator  => {
+  return (target): void => {
     const meta: SocketMeta = getMeta(target.prototype);
-    const middleware: Function[] = prepareMiddleware(fn);
+    const middleware: MiddlewareFunction[] = prepareMiddleware(fn);
 
     meta.middleware.push({
       middleware,

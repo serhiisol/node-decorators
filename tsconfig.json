@@ -15,9 +15,6 @@
     "typeRoots": ["node_modules/@types"],
     "pretty": true
   },
-  "exclude": [
-    "node_modules/**/*"
-  ],
   "include": [
     "types/**/*"
   ],

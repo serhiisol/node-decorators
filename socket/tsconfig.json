@@ -9,13 +9,12 @@
     "noEmitOnError": true,
     "noImplicitAny": false,
     "rootDir": ".",
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
     "pretty": true
   },
-  "exclude": ["node_modules"],
   "files": [
     "src/index.ts"
   ]

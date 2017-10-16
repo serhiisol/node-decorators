@@ -1,3 +1,8 @@
+# Socket#2.0.1
+* Fixed availability of **@Socket** in `connection` event
+* Updated typescript to latest
+* Fixed types for latest typescript
+
 # Socket#2.0.0
 * Features
   * Added wrap option for **@IO(WrapperClass?)** decorator, see **@Socket()** decorator for details
