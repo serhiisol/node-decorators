@@ -1,8 +1,10 @@
-import { SocketMeta, SocketIOClass } from './interface';
+import { SocketMeta, SocketIOClass, MiddlewareFunction } from './interface';
 
 /**
  * Get or initiate metadata on target
+ *
  * @param target
+ *
  * @returns {SocketIOMeta}
  */
 export function getMeta(target: SocketIOClass): SocketMeta {
@@ -17,14 +19,15 @@ export function getMeta(target: SocketIOClass): SocketMeta {
  * Check middleware and return array of middlewares by default
  *
  * @export
- * @param {(Function|Function[])} fn
- * @returns {Function[]}
+ * @param {(MiddlewareFunction|MiddlewareFunction[])} fn
+ *
+ * @returns {MiddlewareFunction[]}
  */
-export function prepareMiddleware(fn: Function|Function[]): Function[] {
+export function prepareMiddleware(fn: MiddlewareFunction|MiddlewareFunction[]): MiddlewareFunction[] {
   if (typeof fn === 'function') {
     return [ fn ];
   } else if (Array.isArray(fn)) {
-    return (<Function[]>fn).filter(md => typeof md === 'function');
+    return (<MiddlewareFunction[]>fn).filter(md => typeof md === 'function');
   }
 
   return [];
@@ -34,11 +37,12 @@ export function prepareMiddleware(fn: Function|Function[]): Function[] {
  * Loops through all registered middlewares
  *
  * @description middleware approach
- * @param {Function[]} fns Array of middleware functions
+ * @param {MiddlewareFunction[]} fns Array of middleware functions
  * @param {any[]} [args = []] Arguments to pass in
- * @returns {Promise<any>}
+ *
+ * @returns {Promise<*>}
  */
-export function loopFns(fns: Function[], args: any[] = []): Promise<any> {
+export function loopFns(fns: MiddlewareFunction[], args: any[] = []): Promise<any> {
   function iteratee(done: (err: Error) => void, i = 0) {
     const fn = fns[i];
 
@@ -54,7 +58,7 @@ export function loopFns(fns: Function[], args: any[] = []): Promise<any> {
 
         iteratee(done, ++i);
       });
-    } catch(e) {
+    } catch (e) {
       done(e);
     }
 

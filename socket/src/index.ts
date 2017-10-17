@@ -3,6 +3,7 @@ export {
   ServerMiddleware,
   Middleware,
   Connection,
+  Connect,
   Disconnect,
   GlobalEvent,
   Event,

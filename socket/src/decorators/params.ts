@@ -16,7 +16,7 @@ function addParameter(
   type: ParameterType,
   index: number,
   data?: any
-) {
+): void {
   const meta: SocketMeta = getMeta(target);
 
   meta.params.push({ type, method, index, data });
@@ -24,7 +24,9 @@ function addParameter(
 
 /**
  * Parameter decorator factory, creates parameter decorator
+ *
  * @param parameterType Parameter Type
+ *
  * @returns { (WrapperClass?: any) => ParameterDecorator }
  */
 function makeDecorator(parameterType: ParameterType): (WrapperClass?: any) => ParameterDecorator {
@@ -37,12 +39,14 @@ function makeDecorator(parameterType: ParameterType): (WrapperClass?: any) => Pa
 
 /**
  * Returns server itself
+ *
  * @type { () => ParameterDecorator }
  */
 export const IO = makeDecorator(ParameterType.IO);
 
 /**
  * Returns socket
+ *
  * @param WrapperClass Class, that will get plain socket object as dependency to add new functionality on top of standard one
  * @type {(WrapperClass?: any) => ParameterDecorator}
  */
@@ -50,12 +54,14 @@ export const Socket = makeDecorator(ParameterType.Socket);
 
 /**
  * Returns event arguments (excluding callback)(if it exists)
+ *
  * @type {() => ParameterDecorator}
  */
 export const Args = makeDecorator(ParameterType.Args);
 
 /**
  * Returns ack callback function (if it exists)
+ *
  * @type {() => ParameterDecorator}
  */
 export const Ack = makeDecorator(ParameterType.Ack);

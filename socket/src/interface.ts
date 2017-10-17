@@ -1,3 +1,5 @@
+export type MiddlewareFunction = ( ...args ) => void;
+
 /**
  * All possible middleware types
  *
@@ -18,7 +20,7 @@ export enum MiddlewareType {
  */
 export interface Middleware {
   type: MiddlewareType;
-  middleware: Function[];
+  middleware: MiddlewareFunction[];
 }
 
 /**
@@ -68,7 +70,7 @@ export interface Listener {
   event: string;
   type: EventType;
   method: string | symbol;
-  middleware: Function[];
+  middleware: MiddlewareFunction[];
 }
 
 /**

@@ -1,14 +1,14 @@
 {
   "name": "@decorators/socket",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "node decorators - decorators for socket.io library",
   "main": "src/index.js",
   "dependencies": {
     "socket.io": ">=1.7.3"
   },
   "devDependencies": {
-    "@types/socket.io": "1.4.29",
-    "typescript": "2.2.2"
+    "@types/socket.io": "1.4.31",
+    "typescript": "2.5.3"
   },
   "keywords": [
     "nodejs",
@@ -27,5 +27,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "clean-tsc": "find . -name \"*.js\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.js.map\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts\" -type f -not -path \"./node_modules/*\" -not -path \"./types/*\" -delete"
   }
 }

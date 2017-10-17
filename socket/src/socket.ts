@@ -8,7 +8,8 @@ import {
   SocketMeta,
   Injectable,
   SocketIOClass,
-  DecoratorsArtifacts
+  DecoratorsArtifacts,
+  MiddlewareFunction
 } from './interface';
 import { getMeta, noop, loopFns } from './utils';
 
@@ -74,7 +75,7 @@ function attachController(
    * Apply all middleware functions to io
    */
   findMiddleware(artifacts, MiddlewareType.IO)
-    .forEach((fn: Function) =>
+    .forEach((fn: MiddlewareFunction) =>
       io.use((...args) => fn.call(controller, io, ...args))
     );
 
@@ -109,7 +110,7 @@ function attachControllerToSocket(
    * Apply all registered global socket based middleware (@Middleware)
    */
   findMiddleware(artifacts, MiddlewareType.Socket)
-    .forEach((fn: Function) => {
+    .forEach((fn: MiddlewareFunction) => {
       (<any>socket).use((...args) => fn.call(controller, io, socket, ...args));
     });
 
@@ -202,13 +203,14 @@ function makeEventListener(
   socket: SocketIO.Socket,
   artifacts: DecoratorsArtifacts,
   method: string | symbol
-): Function {
+): () => any {
   const controller: SocketIOClass = artifacts.controller;
   const params: Param[] = artifacts.meta.params
     .filter((param: Param) => param.method === method);
 
   return function(...args) {
-    const newArgs: any[] = mapArguments(io, socket, params, args);
+    const _socket: SocketIO.Socket = socket || args[0];
+    const newArgs: any[] = mapArguments(io, _socket, params, args);
 
     return controller[method].apply(controller, newArgs);
   };
@@ -237,7 +239,7 @@ function mapArguments(
     return [io, socket, ...args];
   }
 
-  const ack: Function = getAck(args);
+  const ack: () => void = getAck(args);
 
   /**
    * loop through all params and put them into correct order
@@ -259,15 +261,16 @@ function mapArguments(
  *
  * @param {Middleware[]} middleware
  * @param {MiddlewareType} type
- * @returns {Function[]}
+ *
+ * @returns {MiddlewareFunction[]}
  */
 function findMiddleware(
   artifacts: DecoratorsArtifacts,
   type: MiddlewareType
-): Function[] {
+): MiddlewareFunction[] {
   return artifacts.meta.middleware
     .filter((md: Middleware) => md.type === type)
-    .reduce((acc: Function[], md: Middleware) =>
+    .reduce((acc: MiddlewareFunction[], md: Middleware) =>
       [...acc, ...md.middleware], []
     );
 }
@@ -277,6 +280,7 @@ function findMiddleware(
  *
  * @param {SocketIOClass} Controller
  * @param {any[]} deps
+ *
  * @returns {DecoratorsArtifacts}
  */
 function getArtifacts(Controller: SocketIOClass, deps: any[]): DecoratorsArtifacts {
@@ -288,8 +292,8 @@ function getArtifacts(Controller: SocketIOClass, deps: any[]): DecoratorsArtifac
 
 /**
  * Get ack callback function
- *
  * @description extract callback function, it it exists
+ *
  * @param {any[]} args Event arguments, passed to handler function
  */
 function getAck(args: any[]) {
@@ -303,6 +307,7 @@ function getAck(args: any[]) {
  *
  * @param {ParameterConfiguration} item
  * @param {SocketIO.Server|SocketIO.Namespace|SocketIO.Socket} ioSock
+ *
  * @returns {SocketIO.Socket}
  */
 function getWrapper(item: Param, ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket) {
@@ -313,6 +318,7 @@ function getWrapper(item: Param, ioSock: SocketIO.Server|SocketIO.Namespace|Sock
  * Get proper message data
  *
  * @param {any[]} args
+ *
  * @returns {*}
  */
 function getArgs(args: any[]): any {
