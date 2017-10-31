@@ -4,7 +4,7 @@ import {
   Container,
   InjectionToken,
   Optional
-} from './src';
+} from '@decorators/di';
 
 const TEST_STRING = new InjectionToken('TEST_STRING');
 const TEST_STRING2 = new InjectionToken('TEST_STRING2');

@@ -1,4 +1,4 @@
 # TS Files
 src/**/*.ts
+src/**/*.spec.ts
 !src/**/*.d.ts
-index.ts

@@ -5,18 +5,18 @@
   "scripts": {
     "compile": "tsc",
     "test": "mocha test.ts --require ts-node/register test.ts",
-    "playground": "ts-node playground.ts"
+    "clean-tsc": "find . -name \"*.js\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.js.map\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts\" -type f -not -path \"./node_modules/*\" -not -path \"./types/*\" -delete"
   },
   "dependencies": {
     "reflect-metadata": "0.1.10"
   },
   "devDependencies": {
-    "typescript": "2.5.3",
-    "mocha": "4.0.1",
-    "chai": "4.1.2",
-    "ts-node": "3.3.0",
     "@types/mocha": "2.2.44",
-    "@types/chai": "4.0.4"
+    "@types/chai": "4.0.4",
+    "chai": "4.1.2",
+    "mocha": "4.0.1",
+    "ts-node": "3.3.0",
+    "typescript": "2.5.3"
   },
   "main": "src/index.js"
 }

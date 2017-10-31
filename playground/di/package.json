@@ -1,0 +1,32 @@
+{
+  "name": "@decorators/playground-di",
+  "version": "1.0.0",
+  "description": "node decorators",
+  "main": "index.js",
+  "dependencies": {
+    "@decorators/di": "../../di"
+  },
+  "devDependencies": {
+    "typescript": "2.6.1"
+  },
+  "keywords": [
+    "nodejs",
+    "node decorators",
+    "typescript"
+  ],
+  "author": "Serhii Sol",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/serhiiso/node-decorators/issues"
+  },
+  "engines": {
+    "node": "7.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serhiiso/node-decorators.git"
+  },
+  "scripts": {
+    "compile": "tsc"
+  }
+}
