@@ -1,1 +1,0 @@
-export { Async } from './src';

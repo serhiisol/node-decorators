@@ -8,7 +8,6 @@
     "clean-tsc": "find . -name \"*.js\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.js.map\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts\" -type f -not -path \"./node_modules/*\" -not -path \"./types/*\" -delete"
   },
   "dependencies": {
-    "co": "4.6.0",
     "express": "4.14.0"
   },
   "devDependencies": {

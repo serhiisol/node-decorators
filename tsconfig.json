@@ -19,7 +19,6 @@
     "types/**/*"
   ],
   "files": [
-    "co/index.ts",
     "express/index.ts"
   ]
 }
