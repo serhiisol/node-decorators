@@ -41,8 +41,8 @@ class HttpService {
 ```
 
 * **Container** - Container interface
-  * **provide(providers: Providers[])** - Registers an array of providers.
-  * **get<T>(injectable: Injectable)** - Retrieves an instance of the injectable, throws:
+  * **.provide(providers: Providers[])** - Registers an array of providers.
+  * **.get<T>(injectable: Injectable)** - Retrieves an instance of the injectable, throws:
     * **MissingProviderError** if dependency provider wasn't found
     * **RecursiveProviderError** in case of recursive dependency injector
 
