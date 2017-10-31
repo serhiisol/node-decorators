@@ -44,7 +44,7 @@ class HttpService {
   * **.provide(providers: Providers[])** - Registers an array of providers.
   * **.get<T>(injectable: Injectable)** - Retrieves an instance of the injectable, throws:
     * **MissingProviderError** if dependency provider wasn't found
-    * **RecursiveProviderError** in case of recursive dependency injector
+    * **RecursiveProviderError** in case of recursive dependency injection
 
 ### Full example
 ```typescript
@@ -53,7 +53,7 @@ import {
   Inject,
   Container,
   InjectionToken
-} from './src';
+} from '@decorators/di';
 
 const API_URL = new InjectionToken('API_URL');
 
