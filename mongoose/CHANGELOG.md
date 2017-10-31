@@ -48,7 +48,6 @@
 ### BREAKING CHANGES
 * Moved project to scoped packages
 ```
-npm install @decorators/co --save
 npm install @decorators/express --save
 npm install @decorators/mongoose --save
 ```
