@@ -10,18 +10,17 @@ import {
   Factory
 } from './types';
 import { Store } from './store';
+import { MissingProviderError, RecursiveProviderError } from './errors';
 
 export class Container {
 
   /**
-   * Register new or replace provider
+   * Register new or replace providers
    *
    * @static
-   * @param {(Provider | Provider[])} provider
+   * @param {Provider[]} providers
    */
-  public static provide(provider: Provider | Provider[]) {
-    const providers: Provider[] = Array.isArray(provider) ? provider : [provider];
-
+  public static provide(providers: Provider[]) {
     providers
       .filter((_provider: ClassProvider) => _provider.useClass)
       .forEach((_provider: ClassProvider) => this.registerClassProvider(_provider));
@@ -61,35 +60,28 @@ export class Container {
       return provider.value;
     }
 
+    requesters.push(provider);
+
     const deps = provider
       .deps.map((dep: Dependency) => {
         const requesterProvider: StoreProvider =
           requesters.find((requester: StoreProvider) => requester.id === dep.id);
 
         if (requesterProvider) {
-          const circular: string = requesters
-            .map((requester: StoreProvider) => requester.id.toString())
-            .join('=>');
-
-          throw new Error(`
-            DI recursive dependency: ${circular} => ${dep.id.toString()} => ${requesterProvider.id.toString()}
-          `);
+          throw new RecursiveProviderError(requesters, requesterProvider);
         }
 
-        const depService = Store.findProvider(dep.id);
+        const depService: StoreProvider = Store.findProvider(dep.id);
 
         if (!depService && !dep.optional) {
-          throw new Error(`
-            In order to get DI working, you have to provide Injectable.
-            DI attempt for ${provider.id.toString()} and dependency ${dep.id.toString()}
-          `);
+          throw new MissingProviderError(provider, dep);
         }
 
         if (!depService && dep.optional) {
           return null;
         }
 
-        return this.resolveProvider(depService, requesters.concat(provider));
+        return this.resolveProvider(depService, requesters);
       });
 
     provider.value = provider.factory ?
@@ -108,7 +100,7 @@ export class Container {
   private static registerClassProvider(provider: ClassProvider): void {
     const id: InjectableId = Store.providerId(provider.provide);
     const classProvider: StoreProvider = Store.findProvider(provider.useClass);
-    const deps: Dependency[] = classProvider.deps || provider.deps
+    const deps: Dependency[] = classProvider ? classProvider.deps : (provider.deps || [])
       .map((dep: Injectable) => ({ id: Store.providerId(dep) }));
 
     Store.replaceProvider(provider.provide, { id, deps, type: provider.useClass });

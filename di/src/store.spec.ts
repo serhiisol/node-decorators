@@ -7,11 +7,7 @@ import { Injectable } from './decorators';
 
 @Injectable()
 class TestInjectable {
-  constructor(private test: string) {}
-
-  public toString(): string {
-    return `TestInjectable + ${this.test}`;
-  }
+  constructor(public str: string) {}
 }
 
 describe('Store', () => {
@@ -90,11 +86,25 @@ describe('Store', () => {
 
   describe('.replaceProvider(injectable: Injectable, provider: StoreProvider)', () => {
 
-    it('should find provider', () => {
+    it('should find and replace provider', () => {
+      const id: InjectionToken = new InjectionToken('test-token');
       Store.provider(TestInjectable);
-      const provider: StoreProvider = Store.findProvider(TestInjectable);
+
+      expect(Store.providers.length).to.equal(1);
+
+      let provider: StoreProvider = Store.findProvider(TestInjectable);
 
       expect(provider).to.be;
+
+      Store.replaceProvider(TestInjectable, { id });
+
+      expect(Store.providers.length).to.equal(1);
+
+      provider = Store.findProvider(id);
+
+      expect(Store.providers[0]).to.equal(provider);
+      expect(Store.providers.length).to.equal(1);
+      expect(provider.id).to.equal(id);
     });
 
   });
