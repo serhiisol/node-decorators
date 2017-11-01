@@ -1,5 +1,6 @@
 import * as express from 'express';
 
+import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
 import {
   Controller,
   Response,
@@ -7,28 +8,27 @@ import {
   attachControllers
 } from '@decorators/express';
 
+const MESSAGE = new InjectionToken('MESSAGE');
+
 @Controller('/')
+@Injectable()
 class UserController {
+
+  constructor(@Inject(MESSAGE) private message: string) {}
 
   @Get('/user')
   public getData(@Response() res): void {
-    res.send('Express welcomes user');
-  }
-
-}
-
-@Controller('/')
-class TextController {
-
-  @Get('/text')
-  public getData(@Response() res): void {
-    res.send('Express gives some text');
+    res.send(this.message);
   }
 
 }
 
 let app: express.Express = express();
 
-attachControllers(app, [ UserController, TextController ]);
+Container.provide([
+  { provide: MESSAGE, useValue: 'Express welcomes user' }
+]);
+
+attachControllers(app, [ UserController ]);
 
 app.listen(3003);

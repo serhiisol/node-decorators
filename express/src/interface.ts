@@ -1,5 +1,7 @@
 import { RequestHandler } from 'express';
 
+export type Func = (...args: any[]) => any;
+
 export interface ParameterConfiguration {
   index: number;
   type: any;
@@ -36,11 +38,6 @@ export interface ExpressClass extends Object {
   __express_meta__?: ExpressMeta;
 
   new (...deps: any[]);
-}
-
-export interface Injectable {
-  provide: Function;
-  deps: any[];
 }
 
 export enum ParameterType {
