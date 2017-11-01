@@ -10,13 +10,24 @@ import {
 
 const MESSAGE = new InjectionToken('MESSAGE');
 
+@Injectable()
+class Middleware {
+  constructor(@Inject(MESSAGE) private message: string) {}
+
+  public use(req, res, next) {
+    console.log('middleware', this.message);
+
+    next();
+  }
+}
+
 @Controller('/')
 @Injectable()
 class UserController {
 
   constructor(@Inject(MESSAGE) private message: string) {}
 
-  @Get('/user')
+  @Get('/user', Middleware)
   public getData(@Response() res): void {
     res.send(this.message);
   }

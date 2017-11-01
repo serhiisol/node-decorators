@@ -17,7 +17,7 @@ function addMeta(
   descriptor: any,
   method: string,
   url: string,
-  middleware?: Middleware|Middleware[]
+  middleware: Middleware|Middleware[] = []
 ): any {
   const meta: ExpressMeta = getMeta(target);
 

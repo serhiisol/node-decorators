@@ -10,32 +10,46 @@ npm install @decorators/express --save
 
 ### API
 #### Functions
-* **attachControllers(app: Express, [ controllers || injectables ])** - attach controllers to express application, where injectable e.g.:
-```typescript
-{ provide: UserController, deps: [UserService] }
-```
+* **attachControllers(app: Express, controllers)** - attach controllers to express application
 
 #### Decorators
 ##### Class
 * **@Controller(baseUrl: string, [middleware]?)** - Registers controller for base url
 
 ##### Method
-* **@Middleware(middleware: Function | Function[])** - Registers route-based middleware - **_[deprecated, use route middleware - will be removed in v2.0.0 of this library]_**
-```typescript
-class Controller {
-  @Delete('/:id')
-  @Middleware([FirstMiddleware, SecondMiddleware])
-  remove(@Request() req, @Response() res, @Params('id') id) {
-  }
-}
-```
-
 * **@Get(url: string, [middleware]?)** - Registers get route for url with route middleware, if specified
 * **@Post(url: string, [middleware]?)** - Registers post route for url with route middleware, if specified
 * **@Put(url: string, [middleware]?)** - Registers put route for url with route middleware, if specified
 * **@Delete(url: string, [middleware]?)** - Registers delete route for url with route middleware, if specified
 * **@Options(url: string, [middleware]?)** - Registers options route for url with route middleware, if specified
 * **@Route(url: string, [middleware]?)** - Registers custom type route for url with route middleware, if specified
+
+where middleware is:
+
+```typescript
+interface RequestHandler {
+    (req: Request, res: Response, next: NextFunction): any;
+}
+```
+
+or
+
+```typescript
+export abstract class Middleware {
+  public abstract use(request: Request, response: Response, next: NextFunction): void;
+}
+```
+
+To use class, import `Middleware` interface and implement it, like so:
+```typescript
+import { Middleware } from '@decorators/express';
+
+export class UserMiddleware implements Middleware {
+  public use(request: Request, response: Response, next: NextFunction) {
+    next();
+  }
+}
+```
 
 ##### Parameter
 * **@Request(name?: string)** - Returns express req object or any other object, if name was specified
@@ -47,31 +61,30 @@ class Controller {
 * **@Headers(name?: string)** - Express req.headers object or single headers param, if headers param name was specified
 * **@Cookies(name?: string)** - Express req.body object or single cookies param, if cookies param name was specified
 
+#### Dependency injection
+This module supports dependency injection provided by `@decorators/di` module. For example, see the full example below.
+
 ### Example Express Application and Controller:
 ```typescript
 import {
   Response, Params, Controller, Get,
-  bootstrapControllers, Middleware
+  attachControllers, Middleware
 } from '@decorators/express';
 
 @Controller('/')
 class UsersController {
+
+  constructor(userService: UserService) {}
+
   @Get('/users/:id')
-  @Middleware((req, res, next) => {
-    console.log('route middleware');
-    next();
-  })
   getData(@Response() res, @Params('id') id: string) {
-    res.send(Users.findById(id));
+    res.send(userService.findById(id));
   }
 }
 
 let app = express();
-bootstrapControllers(app, [UsersController]);
+attachControllers(app, [UsersController]);
 app.listen(3000);
 ```
-
-### License
-MIT
 
 [ExpressJS]:http://expressjs.com

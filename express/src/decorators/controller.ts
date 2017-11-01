@@ -7,7 +7,7 @@ import { Middleware } from '../middleware';
  * @param {string} url
  * @param {Middleware|Middleware[]} [middleware]
  */
-export function Controller(url: string, middleware?: Middleware | Middleware[]) {
+export function Controller(url: string, middleware: Middleware | Middleware[] = []) {
   return (target): void => {
     const meta: ExpressMeta = getMeta(target.prototype);
 

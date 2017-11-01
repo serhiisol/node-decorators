@@ -19,3 +19,5 @@ export {
   Headers,
   Cookies
 } from './decorators';
+
+export { MiddlewareClass as Middleware } from './middleware';
