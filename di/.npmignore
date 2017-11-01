@@ -1,0 +1,5 @@
+# TS Files
+**/*.ts
+**/*.spec.ts
+!src/**/*.d.ts
+tsconfig.json
