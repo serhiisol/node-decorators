@@ -8,6 +8,8 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "rootDir": ".",
     "inlineSourceMap": true,
     "target": "es6",

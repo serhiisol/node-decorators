@@ -1,6 +1,47 @@
-import { RequestHandler } from 'express';
+import { Middleware } from './middleware';
 
-import { ExpressMeta, ExpressClass } from './interface';
+export enum ParameterType {
+  REQUEST,
+  RESPONSE,
+  PARAMS,
+  QUERY,
+  BODY,
+  HEADERS,
+  COOKIES,
+  NEXT
+}
+
+export interface ParameterConfiguration {
+  index: number;
+  type: ParameterType;
+  name?: string;
+  data?: any;
+}
+
+export interface ExpressMeta {
+  url: string;
+
+  routes: {
+    [key: string]: {
+      method: string;
+      url: string;
+    }
+  }
+
+  routerMiddleware: Middleware[];
+
+  routeMiddleware: {
+    [key: string]: Middleware[];
+  }
+
+  params: {
+    [key: string]: ParameterConfiguration[];
+  }
+}
+
+export abstract class ExpressClass {
+  abstract __express_meta__?: ExpressMeta;
+}
 
 /**
  * Get or initiate metadata on target
@@ -10,26 +51,12 @@ import { ExpressMeta, ExpressClass } from './interface';
 export function getMeta(target: ExpressClass): ExpressMeta {
   if (!target.__express_meta__) {
     target.__express_meta__ = {
-      baseUrl: '',
-      controllerMiddleware: [],
+      url: '',
+      routerMiddleware: [],
       routes: {},
-      middleware: {},
+      routeMiddleware: {},
       params: {}
     };
   }
   return target.__express_meta__;
-}
-
-/**
- * Get array of given middleware
- */
-export function getMiddleware(middleware: RequestHandler|RequestHandler[]): RequestHandler[] {
-  if (Array.isArray(middleware)) {
-    return (<RequestHandler[]>middleware)
-      .filter(md => typeof md === 'function');
-  } else if (typeof middleware === 'function') {
-    return [middleware];
-  }
-
-  return [];
 }
