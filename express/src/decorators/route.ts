@@ -2,32 +2,6 @@ import { ExpressMeta, ExpressClass, getMeta } from '../meta';
 import { Middleware } from '../middleware';
 
 /**
- * Add metadata
- *
- * @param {ExpressClass} target Target Class
- * @param {string|symbol} key Function name
- * @param {PropertyDescriptor} descriptor
- * @param {string} method
- * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
- */
-function addMeta(
-  target: ExpressClass,
-  key: string | symbol,
-  descriptor: any,
-  method: string,
-  url: string,
-  middleware: Middleware|Middleware[] = []
-): any {
-  const meta: ExpressMeta = getMeta(target);
-
-  meta.routes[key] = { method, url };
-  meta.routeMiddleware[key] = Array.isArray(middleware) ? middleware : [middleware];
-
-  return descriptor;
-}
-
-/**
  * Route decorator factory, creates decorator
  *
  * @param {string} method
@@ -36,7 +10,11 @@ function addMeta(
  */
 function decoratorFactory(method: string, url: string, middleware: Middleware|Middleware[]) {
   return (target: ExpressClass, key: string | symbol, descriptor: any) => {
-    return addMeta(target, key, descriptor, method, url, middleware);
+    const meta: ExpressMeta = getMeta(target);
+
+    meta.routes[key] = { method, url, middleware };
+
+    return descriptor;
   };
 }
 

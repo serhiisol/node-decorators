@@ -18,21 +18,20 @@ export interface ParameterConfiguration {
   data?: any;
 }
 
+export interface Route {
+  method: string;
+  url: string;
+  middleware: Middleware | Middleware[];
+}
+
 export interface ExpressMeta {
   url: string;
 
   routes: {
-    [key: string]: {
-      method: string;
-      url: string;
-    }
+    [key: string]: Route;
   }
 
-  routerMiddleware: Middleware[];
-
-  routeMiddleware: {
-    [key: string]: Middleware[];
-  }
+  middleware: Middleware | Middleware[];
 
   params: {
     [key: string]: ParameterConfiguration[];
@@ -52,9 +51,8 @@ export function getMeta(target: ExpressClass): ExpressMeta {
   if (!target.__express_meta__) {
     target.__express_meta__ = {
       url: '',
-      routerMiddleware: [],
+      middleware: [],
       routes: {},
-      routeMiddleware: {},
       params: {}
     };
   }

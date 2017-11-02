@@ -1,59 +1,17 @@
 import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
 import { Container } from '@decorators/di';
 
-import { ExpressMeta, getMeta, ParameterType, ExpressClass } from './meta';
-import { getMiddleware } from './middleware';
+import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
+import { middlewareHandler, Middleware } from './middleware';
 
 /**
- * Get parameter value from the source object
+ * Attach controllers to express application
  *
- * @param {*} source
- * @param {string} paramType
- * @param {string} name
- *
- * @returns {*}
+ * @param {Express} app Express application
+ * @param {ExpressClass[]} controllers Controllers array
  */
-function getParam(source: any, paramType: string, name: string): any {
-  let param = source[paramType] || source;
-
-  return param[name] || param;
-}
-
-/**
- * Extract parameters for handlers
- *
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * @param {any[]} params
- *
- * @returns {any[]}
- */
-function extractParameters(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  params: any[]
-): any[] {
-  let args = [];
-  if (!params || !params.length) {
-    return [req, res, next];
-  }
-  for (let item of params) {
-
-    switch (item.type) {
-      default: args[item.index] = res; break; // response
-      case ParameterType.REQUEST: args[item.index] = getParam(req, null, item.name); break;
-      case ParameterType.NEXT: args[item.index] = next; break;
-      case ParameterType.PARAMS: args[item.index] = getParam(req, 'params', item.name); break;
-      case ParameterType.QUERY: args[item.index] = getParam(req, 'query', item.name); break;
-      case ParameterType.BODY: args[item.index] = getParam(req, 'body', item.name); break;
-      case ParameterType.HEADERS: args[item.index] = getParam(req, 'headers', item.name); break;
-      case ParameterType.COOKIES: args[item.index] = getParam(req, 'cookies', item.name); break;
-    }
-
-  }
-  return args;
+export function attachControllers(app: Express, controllers: ExpressClass[]) {
+  controllers.forEach((controller: ExpressClass) => registerController(app, controller));
 }
 
 /**
@@ -72,27 +30,39 @@ function registerController(app: Application, Controller: ExpressClass) {
   const url: string = meta.url;
   const params: object = meta.params;
 
-  const routerMiddleware: RequestHandler[] = meta.routerMiddleware
-    .map((_middleware) => getMiddleware(_middleware));
-  const routeMiddleware = meta.routeMiddleware
+  /**
+   * Wrap all registered middleware with helper function
+   * that can instantiate or get from the container instance of the class
+   * or execute given middleware function
+   * @see getMiddleware
+   */
+  const routerMiddleware: RequestHandler[] = getMiddleware(meta.middleware)
+    .map(middleware => middlewareHandler(middleware, controller));
 
+  /**
+   * Apply router middleware
+   */
   if (routerMiddleware.length) {
     router.use(...routerMiddleware);
   }
 
+  /**
+   * Applying registered routes
+   */
   for (const methodName of Object.keys(routes)) {
-    const method: string = routes[methodName].method;
+    const route: Route = routes[methodName];
+
     const routeHandler = (req, res, next) => {
       const args = extractParameters(req, res, next, params[methodName]);
 
       return controller[methodName].apply(controller, args);
     };
 
-    const normalizedRouteMiddleware: RequestHandler[] = (routeMiddleware[methodName] || [])
-      .map((_middleware) => getMiddleware(_middleware));
+    const routeMiddleware: RequestHandler[] = getMiddleware(route.middleware)
+      .map(middleware => middlewareHandler(middleware, controller));
 
-    router[method].apply(router, [
-      routes[methodName].url, ...normalizedRouteMiddleware, routeHandler
+    router[route.method].apply(router, [
+      route.url, ...routeMiddleware, routeHandler
     ]);
   }
 
@@ -102,11 +72,82 @@ function registerController(app: Application, Controller: ExpressClass) {
 }
 
 /**
- * Attach controllers to express application
+ * Extract parameters for handlers
  *
- * @param {Express} app Express application
- * @param {ExpressClass[]} controllers Controllers array
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @param {ParameterConfiguration[]} params
+ *
+ * @returns {any[]}
  */
-export function attachControllers(app: Express, controllers: ExpressClass[]) {
-  controllers.forEach((controller: ExpressClass) => registerController(app, controller));
+function extractParameters(req: Request, res: Response, next: NextFunction, params: ParameterConfiguration[]): any[] {
+  if (!params || !params.length) {
+    return [ req, res, next ];
+  }
+
+  const args = [];
+
+  for (let { name, index, type } of params) {
+
+    switch (type) {
+      case ParameterType.RESPONSE:
+        args[index] = res;
+        break;
+      case ParameterType.REQUEST:
+        args[index] = getParam(req, null, name);
+        break;
+      case ParameterType.NEXT:
+        args[index] = next;
+        break;
+      case ParameterType.PARAMS:
+        args[index] = getParam(req, 'params', name);
+        break;
+      case ParameterType.QUERY:
+        args[index] = getParam(req, 'query', name);
+        break;
+      case ParameterType.BODY:
+        args[index] = getParam(req, 'body', name);
+        break;
+      case ParameterType.HEADERS:
+        args[index] = getParam(req, 'headers', name);
+        break;
+      case ParameterType.COOKIES:
+        args[index] = getParam(req, 'cookies', name);
+        break;
+    }
+
+  }
+
+  return args;
+}
+
+/**
+ * Get parameter value from the source object
+ *
+ * @param {*} source
+ * @param {string} paramType
+ * @param {string} name
+ *
+ * @returns {*}
+ */
+function getParam(source: any, paramType: string, name: string): any {
+  let param = source[paramType] || source;
+
+  return param[name] || param;
+}
+
+/**
+ * Get array of middleware functions or classes
+ *
+ * @param {Middleware | Middleware[]} middleware
+ *
+ * @returns {Middleware[]}
+ */
+function getMiddleware(middleware: Middleware | Middleware[]): Middleware[] {
+  if (middleware) {
+    return Array.isArray(middleware) ? middleware : [middleware];
+  }
+
+  return [];
 }

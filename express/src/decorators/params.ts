@@ -7,18 +7,15 @@ import { ExpressMeta, ParameterType, getMeta, ExpressClass } from '../meta';
  */
 function decoratorFactory(type: ParameterType) {
   return function(name?: string): ParameterDecorator {
-
     return function(target: ExpressClass, propertyKey: string | symbol, index: number) {
-
       const meta: ExpressMeta = getMeta(target);
-      if (!meta.params[propertyKey]) {
+
+      if (meta.params[propertyKey] === undefined) {
         meta.params[propertyKey] = [];
       }
 
       meta.params[propertyKey].push({ index, type, name });
-
     };
-
   };
 }
 
