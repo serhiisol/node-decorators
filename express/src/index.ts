@@ -1,4 +1,4 @@
-export { attachControllers } from './express';
+export { attachControllers, ERROR_MIDDLEWARE } from './express';
 
 export {
   Controller,
@@ -20,4 +20,4 @@ export {
   Cookies
 } from './decorators';
 
-export { MiddlewareClass as Middleware } from './middleware';
+export { MiddlewareClass as Middleware, ErrorMiddleware } from './middleware';

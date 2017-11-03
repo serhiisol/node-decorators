@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { Request, Response, NextFunction, RequestHandler, ErrorRequestHandler } from 'express';
 import { Container } from '@decorators/di';
 
 export interface MiddlewareClass {
@@ -8,6 +8,14 @@ export interface MiddlewareClass {
 }
 
 export type Middleware = MiddlewareClass | RequestHandler;
+
+export interface ErrorMiddlewareClass {
+  new (...args: any[]);
+
+  use(error: any, request: Request, response: Response, next: NextFunction): void;
+}
+
+export type ErrorMiddleware = ErrorMiddlewareClass | ErrorRequestHandler;
 
 /**
  * Create request middleware handler that uses class or function provided as middleware

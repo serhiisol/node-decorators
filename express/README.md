@@ -61,6 +61,41 @@ export class UserMiddleware implements Middleware {
 * **@Headers(name?: string)** - Express req.headers object or single headers param, if headers param name was specified
 * **@Cookies(name?: string)** - Express req.body object or single cookies param, if cookies param name was specified
 
+#### Error middleware
+To add error middleware, that handles unhandled errors simply implement new middleware class using `ErrorMiddleware` interface and provided it using `ERROR_MIDDLEWARE` token, like so:
+
+```typescript
+import { ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
+
+class ServerErrorMiddleware implements ErrorMiddleware {
+  public use(error: Error, request: Request, response: Response, next: NextFunction) {
+    next();
+  }
+}
+
+Container.provide([
+  { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
+]);
+```
+
+Or use function via `useValue`
+```typescript
+type ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => any;
+```
+
+```typescript
+import { ERROR_MIDDLEWARE } from '@decorators/express';
+
+function serverErrorMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
+  next();
+}
+
+Container.provide([
+  { provide: ERROR_MIDDLEWARE, useValue: serverErrorMiddleware }
+]);
+```
+
+
 #### Dependency injection
 This module supports dependency injection provided by `@decorators/di` module. For example, see the full example below.
 

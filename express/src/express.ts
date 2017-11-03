@@ -1,8 +1,10 @@
-import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
-import { Container } from '@decorators/di';
+import { RequestHandler, ErrorRequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
+import { Container, InjectionToken } from '@decorators/di';
 
 import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
-import { middlewareHandler, Middleware } from './middleware';
+import { middlewareHandler, Middleware, ErrorMiddleware, ErrorMiddlewareClass } from './middleware';
+
+export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
 
 /**
  * Attach controllers to express application
@@ -12,6 +14,7 @@ import { middlewareHandler, Middleware } from './middleware';
  */
 export function attachControllers(app: Express, controllers: ExpressClass[]) {
   controllers.forEach((controller: ExpressClass) => registerController(app, controller));
+  applyErrorMiddleware(app);
 }
 
 /**
@@ -69,6 +72,29 @@ function registerController(app: Application, Controller: ExpressClass) {
   app.use(url, router);
 
   return app;
+}
+
+/**
+ * Add error middleware to the app
+ *
+ * @param {Express} app
+ */
+function applyErrorMiddleware(app: Express): void {
+  try {
+    const errorMiddleware: ErrorMiddleware = Container.get(ERROR_MIDDLEWARE);
+    const handler = (errorMiddleware as ErrorMiddlewareClass).use ?
+      (errorMiddleware as ErrorMiddlewareClass).use.bind(errorMiddleware) : errorMiddleware as ErrorRequestHandler;
+
+    app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+      try {
+        handler(error, req, res, next);
+      } catch (error) {
+        next(error);
+      }
+    });
+  } catch (e) {
+    console.info('Error middleware wasn\'t registered');
+  }
 }
 
 /**
