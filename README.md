@@ -6,6 +6,7 @@ Project implements decorators for modern tools for NodeJS like
 ## Installation
 
 ```
+npm install @decorators/di --save
 npm install @decorators/express --save
 npm install @decorators/mongoose --save
 npm install @decorators/socket --save
@@ -17,19 +18,21 @@ Here's example of usage with Express framework. It uses TypeScript and `@decorat
 
 ```typescript
 import { Response, Params, Controller, Get, attachControllers } from '@decorators/express';
+import { Injectable } from '@decorators/di';
 
 @Controller('/')
+@Injectable()
 class UsersController {
-  @Get('/users/:id', (req, res, next) => {
-    console.log('route middleware');
-    next();
-  })
+
+  constructor(userService: UserService) {}
+
+  @Get('/users/:id')
   getData(@Response() res, @Params('id') id: string) {
-    res.send(Users.findById(id));
+    res.send(this.userService.findById(id));
   }
 }
 
-let app = express();
+let app: Express = express();
 
 attachControllers(app, [UsersController]);
 

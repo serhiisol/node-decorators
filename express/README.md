@@ -50,7 +50,7 @@ class UserMiddleware implements Middleware {
 * **@Cookies(param?: string)** - Express req.body object or single cookies param, if cookies param name was specified
 
 #### Error middleware
-To add error middleware, that handles unhandled errors simply implement new middleware class using `ErrorMiddleware` interface and provided it using `ERROR_MIDDLEWARE` token, like so:
+To add error middleware, that handles unhandled errors simply implement `ErrorMiddleware` interface and provide it using `ERROR_MIDDLEWARE` token, like so:
 
 ```typescript
 import { ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
