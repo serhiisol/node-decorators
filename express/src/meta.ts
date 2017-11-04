@@ -21,7 +21,7 @@ export interface ParameterConfiguration {
 export interface Route {
   method: string;
   url: string;
-  middleware: Middleware | Middleware[];
+  middleware: Middleware[];
 }
 
 export interface ExpressMeta {
@@ -31,7 +31,7 @@ export interface ExpressMeta {
     [key: string]: Route;
   }
 
-  middleware: Middleware | Middleware[];
+  middleware: Middleware[];
 
   params: {
     [key: string]: ParameterConfiguration[];

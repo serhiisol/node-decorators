@@ -10,56 +10,44 @@ npm install @decorators/express --save
 
 ### API
 #### Functions
-* **attachControllers(app: Express, controllers)** - attach controllers to express application
+* **attachControllers(app: Express, controllers: Controller[])** - attach controllers to express application
 
 #### Decorators
 ##### Class
-* **@Controller(baseUrl: string, [middleware]?)** - Registers controller for base url
+* **@Controller(baseUrl: string, middleware?: Middleware[])** - Registers controller for base url
 
 ##### Method
-* **@Get(url: string, [middleware]?)** - Registers get route for url with route middleware, if specified
-* **@Post(url: string, [middleware]?)** - Registers post route for url with route middleware, if specified
-* **@Put(url: string, [middleware]?)** - Registers put route for url with route middleware, if specified
-* **@Delete(url: string, [middleware]?)** - Registers delete route for url with route middleware, if specified
-* **@Options(url: string, [middleware]?)** - Registers options route for url with route middleware, if specified
-* **@Route(url: string, [middleware]?)** - Registers custom type route for url with route middleware, if specified
+* **@All(url: string, middleware?: Middleware[])** - Registers all routes
+* **@Get(url: string, middleware?: Middleware[])** - Registers get route
+* **@Post(url: string, middleware?: Middleware[])** - Registers post route
+* **@Put(url: string, middleware?: Middleware[])** - Registers put route
+* **@Delete(url: string, middleware?: Middleware[])** - Registers delete route
+* **@Patch(url: string, middleware?: Middleware[])** - Registers patch route
+* **@Options(url: string, middleware?: Middleware[])** - Registers options route
+* **@Head(url: string, middleware?: Middleware[])** - Registers head route
 
-where middleware is:
-
-```typescript
-interface RequestHandler {
-    (req: Request, res: Response, next: NextFunction): any;
-}
-```
-
-or
-
-```typescript
-export abstract class Middleware {
-  public abstract use(request: Request, response: Response, next: NextFunction): void;
-}
-```
+where middleware is the class that implements `Middleware` interface.
 
 To use class, import `Middleware` interface and implement it, like so:
 ```typescript
 import { Middleware } from '@decorators/express';
 
-export class UserMiddleware implements Middleware {
-  public use(request: Request, response: Response, next: NextFunction) {
+class UserMiddleware implements Middleware {
+  public use(request: Request, response: Response, next: NextFunction): void {
     next();
   }
 }
 ```
 
 ##### Parameter
-* **@Request(name?: string)** - Returns express req object or any other object, if name was specified
+* **@Request(property?: string)** - Returns express req object or any other object, if name was specified
 * **@Response()** - Returns express res object
 * **@Next()** - Returns express next function
-* **@Params(name?: string)** - Express req.params object or single param, if param name was specified
-* **@Query(name?: string)** - Express req.query object or single query param, if query param name was specified
-* **@Body(name?: string)** - Express req.body object or single body param, if body param name was specified
-* **@Headers(name?: string)** - Express req.headers object or single headers param, if headers param name was specified
-* **@Cookies(name?: string)** - Express req.body object or single cookies param, if cookies param name was specified
+* **@Params(param?: string)** - Express req.params object or single param, if param name was specified
+* **@Query(param?: string)** - Express req.query object or single query param, if query param name was specified
+* **@Body(param?: string)** - Express req.body object or single body param, if body param name was specified
+* **@Headers(property?: string)** - Express req.headers object or single headers param, if headers param name was specified
+* **@Cookies(param?: string)** - Express req.body object or single cookies param, if cookies param name was specified
 
 #### Error middleware
 To add error middleware, that handles unhandled errors simply implement new middleware class using `ErrorMiddleware` interface and provided it using `ERROR_MIDDLEWARE` token, like so:
@@ -67,6 +55,7 @@ To add error middleware, that handles unhandled errors simply implement new midd
 ```typescript
 import { ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
 
+@Injectable()
 class ServerErrorMiddleware implements ErrorMiddleware {
   public use(error: Error, request: Request, response: Response, next: NextFunction) {
     next();
@@ -77,24 +66,6 @@ Container.provide([
   { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
 ]);
 ```
-
-Or use function via `useValue`
-```typescript
-type ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => any;
-```
-
-```typescript
-import { ERROR_MIDDLEWARE } from '@decorators/express';
-
-function serverErrorMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
-  next();
-}
-
-Container.provide([
-  { provide: ERROR_MIDDLEWARE, useValue: serverErrorMiddleware }
-]);
-```
-
 
 #### Dependency injection
 This module supports dependency injection provided by `@decorators/di` module. For example, see the full example below.

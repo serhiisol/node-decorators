@@ -2,8 +2,11 @@ import { RequestHandler, ErrorRequestHandler, Application, Router, Express, Requ
 import { Container, InjectionToken } from '@decorators/di';
 
 import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
-import { middlewareHandler, Middleware, ErrorMiddleware, ErrorMiddlewareClass } from './middleware';
+import { middlewareHandler, ErrorMiddleware } from './middleware';
 
+/**
+ * Error Middleware class registration DI token
+ */
 export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
 
 /**
@@ -14,7 +17,8 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
  */
 export function attachControllers(app: Express, controllers: ExpressClass[]) {
   controllers.forEach((controller: ExpressClass) => registerController(app, controller));
-  applyErrorMiddleware(app);
+
+  app.use(errorMiddlewareHandler());
 }
 
 /**
@@ -39,8 +43,8 @@ function registerController(app: Application, Controller: ExpressClass) {
    * or execute given middleware function
    * @see getMiddleware
    */
-  const routerMiddleware: RequestHandler[] = getMiddleware(meta.middleware)
-    .map(middleware => middlewareHandler(middleware, controller));
+  const routerMiddleware: RequestHandler[] = (meta.middleware || [])
+    .map(middleware => middlewareHandler(middleware));
 
   /**
    * Apply router middleware
@@ -61,8 +65,8 @@ function registerController(app: Application, Controller: ExpressClass) {
       return controller[methodName].apply(controller, args);
     };
 
-    const routeMiddleware: RequestHandler[] = getMiddleware(route.middleware)
-      .map(middleware => middlewareHandler(middleware, controller));
+    const routeMiddleware: RequestHandler[] = (route.middleware || [])
+      .map(middleware => middlewareHandler(middleware));
 
     router[route.method].apply(router, [
       route.url, ...routeMiddleware, routeHandler
@@ -79,21 +83,14 @@ function registerController(app: Application, Controller: ExpressClass) {
  *
  * @param {Express} app
  */
-function applyErrorMiddleware(app: Express): void {
-  try {
-    const errorMiddleware: ErrorMiddleware = Container.get(ERROR_MIDDLEWARE);
-    const handler = (errorMiddleware as ErrorMiddlewareClass).use ?
-      (errorMiddleware as ErrorMiddlewareClass).use.bind(errorMiddleware) : errorMiddleware as ErrorRequestHandler;
-
-    app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-      try {
-        handler(error, req, res, next);
-      } catch (error) {
-        next(error);
-      }
-    });
-  } catch (e) {
-    console.info('Error middleware wasn\'t registered');
+function errorMiddlewareHandler(): ErrorRequestHandler {
+  return function(error: Error, req: Request, res: Response, next: NextFunction): void {
+    try {
+      const errorMiddleware: ErrorMiddleware = Container.get(ERROR_MIDDLEWARE);
+      errorMiddleware.use(error, req, res, next);
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
@@ -161,19 +158,4 @@ function getParam(source: any, paramType: string, name: string): any {
   let param = source[paramType] || source;
 
   return param[name] || param;
-}
-
-/**
- * Get array of middleware functions or classes
- *
- * @param {Middleware | Middleware[]} middleware
- *
- * @returns {Middleware[]}
- */
-function getMiddleware(middleware: Middleware | Middleware[]): Middleware[] {
-  if (middleware) {
-    return Array.isArray(middleware) ? middleware : [middleware];
-  }
-
-  return [];
 }

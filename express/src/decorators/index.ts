@@ -1,11 +1,13 @@
 export { Controller } from './controller';
 export {
+  All,
   Get,
   Post,
   Put,
   Delete,
+  Patch,
   Options,
-  Route
+  Head
 } from './route';
 export {
   Request,

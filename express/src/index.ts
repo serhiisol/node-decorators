@@ -1,14 +1,19 @@
-export { attachControllers, ERROR_MIDDLEWARE } from './express';
+export {
+  attachControllers,
+  ERROR_MIDDLEWARE
+} from './express';
 
 export {
   Controller,
 
+  All,
   Get,
   Post,
   Put,
   Delete,
+  Patch,
   Options,
-  Route,
+  Head,
 
   Request,
   Response,
@@ -20,4 +25,7 @@ export {
   Cookies
 } from './decorators';
 
-export { MiddlewareClass as Middleware, ErrorMiddleware } from './middleware';
+export {
+  Middleware,
+  ErrorMiddleware
+} from './middleware';

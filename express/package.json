@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "dependencies": {
     "express": "^4.14.0",
-    "@decorators/di": "1.0.0"
+    "@decorators/di": ">=1.0.0"
   },
   "devDependencies": {
-    "@types/express": "4.0.34"
+    "@types/express": "4.0.39"
   },
   "keywords": [
     "nodejs",

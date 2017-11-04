@@ -6,9 +6,9 @@ import { Middleware } from '../middleware';
  *
  * @param {string} method
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} middleware
  */
-function decoratorFactory(method: string, url: string, middleware: Middleware|Middleware[]) {
+function decoratorFactory(method: string, url: string, middleware: Middleware[]) {
   return (target: ExpressClass, key: string | symbol, descriptor: any) => {
     const meta: ExpressMeta = getMeta(target);
 
@@ -19,12 +19,25 @@ function decoratorFactory(method: string, url: string, middleware: Middleware|Mi
 }
 
 /**
+ * All routes
+ *
+ * Special-cased "all" method, applying the given route `path`,
+ * middleware, and callback to _every_ HTTP method.
+ *
+ * @param {string} url
+ * @param {Middleware[]} [middleware]
+ */
+export function All(url: string, middleware?: Middleware[]) {
+  return decoratorFactory('all', url, middleware)
+};
+
+/**
  * Get route
  *
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Get(url: string, middleware?: Middleware|Middleware[]) {
+export function Get(url: string, middleware?: Middleware[]) {
   return decoratorFactory('get', url, middleware)
 };
 
@@ -32,18 +45,19 @@ export function Get(url: string, middleware?: Middleware|Middleware[]) {
  * Post route
  *
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Post(url: string, middleware?: Middleware|Middleware[]) {
+export function Post(url: string, middleware?: Middleware[]) {
   return decoratorFactory('post', url, middleware);
 }
 
 /**
  * Put route
+ *
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Put(url: string, middleware?: Middleware|Middleware[]) {
+export function Put(url: string, middleware?: Middleware[]) {
   return decoratorFactory('put', url, middleware);
 }
 
@@ -51,29 +65,38 @@ export function Put(url: string, middleware?: Middleware|Middleware[]) {
  * Delete route
  *
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Delete(url: string, middleware?: Middleware|Middleware[]) {
+export function Delete(url: string, middleware?: Middleware[]) {
   return decoratorFactory('delete', url, middleware);
+}
+
+/**
+ * Patch route
+ *
+ * @param {string} url
+ * @param {Middleware[]} [middleware]
+ */
+export function Patch(url: string, middleware?: Middleware[]) {
+  return decoratorFactory('patch', url, middleware);
 }
 
 /**
  * Options route
  *
  * @param {string} url
- * @param {Middleware|Middleware[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Options(url: string, middleware?: Middleware|Middleware[]) {
+export function Options(url: string, middleware?: Middleware[]) {
   return decoratorFactory('options', url, middleware);
 }
 
 /**
- * Specify custom route method
+ * Head route
  *
- * @param {string} method
  * @param {string} url
- * @param {Function|Function[]} [middleware]
+ * @param {Middleware[]} [middleware]
  */
-export function Route(method: string, url: string, middleware?: Middleware|Middleware[]) {
-  return decoratorFactory(method, url, middleware);
+export function Head(url: string, middleware?: Middleware[]) {
+  return decoratorFactory('head', url, middleware);
 }
