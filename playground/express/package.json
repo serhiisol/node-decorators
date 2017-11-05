@@ -4,7 +4,8 @@
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
-    "@decorators/express": "../../express"
+    "@decorators/di": "1.0.0",
+    "@decorators/express": "file:../../express"
   },
   "keywords": [
     "nodejs",
@@ -23,5 +24,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
+  },
+  "scripts": {
+    "compile": "tsc"
   }
 }

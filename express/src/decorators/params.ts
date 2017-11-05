@@ -1,29 +1,20 @@
-import { ParameterType, ExpressClass, ParameterConfiguration } from '../interface';
-import { getMeta } from '../meta';
-
-/**
- * Add metadata
- * @param {ExpressClass} target Target Class
- * @param {string|symbol} propertyKey Function name, parameters owner
- * @param {ParameterConfiguration} config Parameter configuration
- */
-function addMeta(target: ExpressClass, propertyKey: string | symbol, config: ParameterConfiguration) {
-  let meta = getMeta(target);
-  if (!meta.params[propertyKey]) {
-    meta.params[propertyKey] = [];
-  }
-  meta.params[propertyKey].push(config);
-}
+import { ExpressMeta, ParameterType, getMeta, ExpressClass } from '../meta';
 
 /**
  * Parameter decorator factory, creates parameter decorator
+ *
  * @param {ParameterType} parameterType Parameter Type
- * @returns { () => ParameterDecorator }
  */
-function decoratorFactory(parameterType: ParameterType): (name?: string) => ParameterDecorator {
+function decoratorFactory(type: ParameterType) {
   return function(name?: string): ParameterDecorator {
-    return function(target: ExpressClass, propertyKey: string | symbol, index: number) {
-      addMeta(target, propertyKey, {index, type: parameterType, name});
+    return function(target: ExpressClass, methodName: string | symbol, index: number) {
+      const meta: ExpressMeta = getMeta(target);
+
+      if (meta.params[methodName] === undefined) {
+        meta.params[methodName] = [];
+      }
+
+      meta.params[methodName].push({ index, type, name });
     };
   };
 }

@@ -1,33 +1,91 @@
-import { ExpressMeta, ExpressClass } from './interface';
+import { Middleware } from './middleware';
 
 /**
- * Get or initiate metadata on target
- * @param target
- * @returns {SocketIOMeta}
+ * All possible parameter decorator types
+ *
+ * @export
+ * @enum {number}
+ */
+export enum ParameterType {
+  REQUEST,
+  RESPONSE,
+  PARAMS,
+  QUERY,
+  BODY,
+  HEADERS,
+  COOKIES,
+  NEXT
+}
+
+/**
+ * Cached(meta) parameter configuration
+ *
+ * @export
+ * @interface ParameterConfiguration
+ */
+export interface ParameterConfiguration {
+  index: number;
+  type: ParameterType;
+  name?: string;
+  data?: any;
+}
+
+/**
+ * Cached(meta) route configuration
+ *
+ * @export
+ * @interface Route
+ */
+export interface Route {
+  method: string;
+  url: string;
+  middleware: Middleware[];
+}
+
+/**
+ * Express decorators controller metadata
+ *
+ * @export
+ * @interface ExpressMeta
+ */
+export interface ExpressMeta {
+  url: string;
+
+  routes: {
+    [key: string]: Route;
+  }
+
+  middleware: Middleware[];
+
+  params: {
+    [key: string]: ParameterConfiguration[];
+  }
+}
+
+/**
+ * Express decorators controller
+ *
+ * @export
+ * @interface ExpressMeta
+ */
+export abstract class ExpressClass {
+  abstract __express_meta__?: ExpressMeta;
+}
+
+/**
+ * Get or initiate metadata on a target
+ *
+ * @param {ExpressClass} target
+ * @returns {ExpressMeta}
  */
 export function getMeta(target: ExpressClass): ExpressMeta {
   if (!target.__express_meta__) {
     target.__express_meta__ = {
-      baseUrl: '',
-      controllerMiddleware: [],
+      url: '',
+      middleware: [],
       routes: {},
-      middleware: {},
       params: {}
     };
   }
   return target.__express_meta__;
-}
-
-/**
- * Get array of given middleware
- */
-export function getMiddleware(middleware: Function|Function[]): Function[] {
-  if (Array.isArray(middleware)) {
-    return (<Function[]>middleware)
-      .filter(md => typeof md === 'function');
-  } else if (typeof middleware === 'function') {
-    return [middleware];
-  }
-
-  return [];
 }

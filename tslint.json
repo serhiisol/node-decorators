@@ -32,7 +32,6 @@
     "no-console": [
       true,
       "debug",
-      "info",
       "time",
       "timeEnd",
       "trace"
@@ -102,6 +101,6 @@
 
     "no-angle-bracket-type-assertion": false,
     "prefer-const": false,
-    "no-unused-expression": false
+    "no-submodule-imports": false
   }
 }

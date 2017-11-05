@@ -1,4 +1,4 @@
 # TS Files
-src/**/*.ts
-!src/**/*.d.ts
-index.ts
+**/*.ts
+!**/*.d.ts
+tsconfig.json

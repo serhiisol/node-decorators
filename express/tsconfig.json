@@ -8,13 +8,17 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "rootDir": ".",
     "inlineSourceMap": true,
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
-    "pretty": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+    "pretty": true
+  },
+  "exclude": ["node_modules"],
+  "files": [
+    "src/index.ts"
+  ]
 }

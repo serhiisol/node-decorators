@@ -1,11 +1,13 @@
 export { Controller } from './controller';
 export {
+  All,
   Get,
   Post,
   Put,
   Delete,
+  Patch,
   Options,
-  Route
+  Head
 } from './route';
 export {
   Request,
@@ -17,6 +19,3 @@ export {
   Headers,
   Cookies
 } from './params';
-
-/** @deprecated */
-export { Middleware } from './middleware';

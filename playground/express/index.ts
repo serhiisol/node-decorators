@@ -1,42 +1,45 @@
 import * as express from 'express';
-import { Express, Request } from 'express';
 
+import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
 import {
-  Response,
-  Request as Req,
-  Params,
   Controller,
+  Response,
   Get,
   attachControllers
 } from '@decorators/express';
 
-@Controller('/', (req: Request, res, next) => {
-  console.log('Controller Middleware', req.path);
-  next();
-})
-class UsersController {
+const MESSAGE = new InjectionToken('MESSAGE');
 
-  @Get('/favicon.ico')
-  getFavicon(@Response() res) {
-    res.status(404).send();
+@Injectable()
+class Middleware {
+  constructor(@Inject(MESSAGE) private message: string) {}
+
+  public use(req, res, next) {
+    console.log('middleware', this.message);
+
+    next();
   }
+}
 
-  @Get('/:id', [(req, _res, next) => {
-    console.log('First Middleware');
-    next();
-  }, (req, _res, next) => {
-    console.log('Second Middleware');
-    next();
-  }])
-  getData(@Response() res, @Params('id') id: string, @Req('params') params) {
-    console.log('Express welcomes: ' + JSON.stringify(id));
-    res.send('Express welcomes: ' + JSON.stringify(id));
+@Controller('/')
+@Injectable()
+class UserController {
+
+  constructor(@Inject(MESSAGE) private message: string) {}
+
+  @Get('/user', [Middleware])
+  public getData(@Response() res): void {
+    res.send(this.message);
   }
 
 }
 
-let app: Express = express();
+let app: express.Express = express();
 
-attachControllers(app, [ UsersController ]);
+Container.provide([
+  { provide: MESSAGE, useValue: 'Express welcomes user' }
+]);
+
+attachControllers(app, [ UserController ]);
 
 app.listen(3003);
