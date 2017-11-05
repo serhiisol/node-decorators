@@ -1,12 +1,24 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { Container } from '@decorators/di';
 
+/**
+ * Middleware class interface
+ *
+ * @export
+ * @interface Middleware
+ */
 export interface Middleware {
   new (...args: any[]);
 
   use(request: Request, response: Response, next: NextFunction): void;
 }
 
+/**
+ * Error middleware class interface
+ *
+ * @export
+ * @interface ErrorMiddleware
+ */
 export interface ErrorMiddleware {
   new (...args: any[]);
 

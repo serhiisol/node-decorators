@@ -1,5 +1,11 @@
 import { Middleware } from './middleware';
 
+/**
+ * All possible parameter decorator types
+ *
+ * @export
+ * @enum {number}
+ */
 export enum ParameterType {
   REQUEST,
   RESPONSE,
@@ -11,6 +17,12 @@ export enum ParameterType {
   NEXT
 }
 
+/**
+ * Cached(meta) parameter configuration
+ *
+ * @export
+ * @interface ParameterConfiguration
+ */
 export interface ParameterConfiguration {
   index: number;
   type: ParameterType;
@@ -18,12 +30,24 @@ export interface ParameterConfiguration {
   data?: any;
 }
 
+/**
+ * Cached(meta) route configuration
+ *
+ * @export
+ * @interface Route
+ */
 export interface Route {
   method: string;
   url: string;
   middleware: Middleware[];
 }
 
+/**
+ * Express decorators controller metadata
+ *
+ * @export
+ * @interface ExpressMeta
+ */
 export interface ExpressMeta {
   url: string;
 
@@ -38,14 +62,21 @@ export interface ExpressMeta {
   }
 }
 
+/**
+ * Express decorators controller
+ *
+ * @export
+ * @interface ExpressMeta
+ */
 export abstract class ExpressClass {
   abstract __express_meta__?: ExpressMeta;
 }
 
 /**
- * Get or initiate metadata on target
- * @param target
- * @returns {SocketIOMeta}
+ * Get or initiate metadata on a target
+ *
+ * @param {ExpressClass} target
+ * @returns {ExpressMeta}
  */
 export function getMeta(target: ExpressClass): ExpressMeta {
   if (!target.__express_meta__) {
