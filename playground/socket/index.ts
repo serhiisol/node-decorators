@@ -25,20 +25,20 @@ class ServerMiddleware implements Middleware {
 class ControllerMiddleware implements Middleware {
   public use(io, socket, args, next) {
     console.log('ControllerMiddleware');
-    next(new Error('Denied'));
+    next();
   }
 }
 
-@Controller('/', [ControllerMiddleware])
+@Controller('/', [ControllerMiddleware, ControllerMiddleware, ControllerMiddleware])
 @Injectable()
 class ConnectionController {
 
   constructor(@Inject(MESSAGE) private welcomeMessage: string) {}
 
-  // @Connect()
-  // public connect(@Socket() socket: SocketIO.Socket) {
-  //   console.log('Socket.id=', socket.id);
-  // }
+  @Connect()
+  public connect(@Socket() socket: SocketIO.Socket) {
+    console.log('Socket.id=', socket.id);
+  }
 
   @Event('message')
   public message(@Args() message: string) {
@@ -47,37 +47,9 @@ class ConnectionController {
 
 }
 
-@Controller('/messaging')
-@Injectable()
-class MessagingController {
-
-  @Connect()
-  public connect(@Socket() socket: SocketIO.Socket) {
-    console.log('connect');
-  }
-
-  @Event('message')
-  public message(@Args() message: string) {
-    console.log('Message', message);
-  }
-
-}
-
 Container.provide([
   { provide: MESSAGE, useValue: 'Socket welcomes user' },
   { provide: IO_MIDDLEWARE, useClass: ServerMiddleware }
-])
+]);
 
-attachControllers(server, [ ConnectionController, MessagingController ]);
-
-// server.on('connection', (socket) => {
-
-//   (socket as any).use((packet, next) => {
-//     next(new Error('Denied'));
-//   });
-
-//   socket.on('message', () => {
-//     console.log('123123');
-//   });
-
-// });
+attachControllers(server, [ ConnectionController ]);
