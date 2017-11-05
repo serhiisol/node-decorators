@@ -1,14 +1,15 @@
 {
   "name": "@decorators/socket",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "node decorators - decorators for socket.io library",
   "main": "src/index.js",
   "dependencies": {
-    "socket.io": ">=1.7.3"
+    "socket.io": ">=2.0.4",
+    "@decorators/di": ">=1.0.0"
   },
   "devDependencies": {
-    "@types/socket.io": "1.4.31",
-    "typescript": "2.5.3"
+    "@types/socket.io": ">=1.4.31",
+    "typescript": ">=2.6.1"
   },
   "keywords": [
     "nodejs",

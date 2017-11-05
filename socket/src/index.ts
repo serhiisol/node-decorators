@@ -1,7 +1,5 @@
 export {
   Controller,
-  ServerMiddleware,
-  Middleware,
   Connection,
   Connect,
   Disconnect,
@@ -12,4 +10,5 @@ export {
   Args,
   Ack
 } from './decorators';
-export { attachControllers, attachControllersToSocket } from './socket';
+export { IO_MIDDLEWARE, Middleware } from './middleware';
+export { attachControllers } from './socket';

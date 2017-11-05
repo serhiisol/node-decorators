@@ -1,38 +1,20 @@
-import { SocketMeta, ParameterType, SocketIOClass } from '../interface';
-import { getMeta } from '../utils';
-
-/**
- * Add parameter to metadata
- *
- * @param {SocketIOClass} target Target Class
- * @param {string|symbol} key Function name, parameters owner
- * @param {ParameterType} type
- * @param {number} index
- * @param {*} [data]
- */
-function addParameter(
-  target: SocketIOClass,
-  method: string | symbol,
-  type: ParameterType,
-  index: number,
-  data?: any
-): void {
-  const meta: SocketMeta = getMeta(target);
-
-  meta.params.push({ type, method, index, data });
-}
+import { SocketMeta, ParameterType, SocketClass, getMeta } from '../meta';
 
 /**
  * Parameter decorator factory, creates parameter decorator
  *
- * @param parameterType Parameter Type
- *
- * @returns { (WrapperClass?: any) => ParameterDecorator }
+ * @param {ParameterType} type
  */
-function makeDecorator(parameterType: ParameterType): (WrapperClass?: any) => ParameterDecorator {
-  return (WrapperClass?: any): ParameterDecorator => {
-    return (target: SocketIOClass, key: string | symbol, index: number) => {
-      addParameter(target, key, parameterType, index, WrapperClass);
+function makeDecorator(type: ParameterType) {
+  return (wrapper?: any): ParameterDecorator => {
+    return (target: SocketClass, methodName: string, index: number) => {
+      const meta: SocketMeta = getMeta(target);
+
+      if (meta.params[methodName] === undefined) {
+        meta.params[methodName] = [];
+      }
+
+      meta.params[methodName].push({ type, index, wrapper });
     };
   };
 }
@@ -40,28 +22,27 @@ function makeDecorator(parameterType: ParameterType): (WrapperClass?: any) => Pa
 /**
  * Returns server itself
  *
- * @type { () => ParameterDecorator }
+ * @type {SocketIO.Server}
  */
 export const IO = makeDecorator(ParameterType.IO);
 
 /**
  * Returns socket
  *
- * @param WrapperClass Class, that will get plain socket object as dependency to add new functionality on top of standard one
- * @type {(WrapperClass?: any) => ParameterDecorator}
+ * @type {SocketIO.Socket}
  */
 export const Socket = makeDecorator(ParameterType.Socket);
 
 /**
  * Returns event arguments (excluding callback)(if it exists)
  *
- * @type {() => ParameterDecorator}
+ * @type {any[]}
  */
 export const Args = makeDecorator(ParameterType.Args);
 
 /**
  * Returns ack callback function (if it exists)
  *
- * @type {() => ParameterDecorator}
+ * @type {Function}
  */
 export const Ack = makeDecorator(ParameterType.Ack);

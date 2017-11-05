@@ -1,22 +1,17 @@
-import { SocketMeta, MiddlewareType, MiddlewareFunction } from '../interface';
-import { getMeta, prepareMiddleware } from '../utils';
+import { getMeta, SocketMeta } from '../meta';
+import { Middleware } from '../middleware';
 
 /**
  * Defines namespace for the controller and controller-based middleware
  *
- * @param {string} [ns = '/']
- * @param {MiddlewareFunction|MiddlewareFunction[]} [fn]
+ * @param {string} namespace
+ * @param {Middleware[]} [middleware]
  */
-export const Controller = (ns = '/', fn?: MiddlewareFunction|MiddlewareFunction[]): ClassDecorator => {
+export function Controller(namespace: string, middleware?: Middleware[]) {
   return (target): void => {
     const meta: SocketMeta = getMeta(target.prototype);
-    const middleware: MiddlewareFunction[] = prepareMiddleware(fn);
 
-    meta.ns = ns;
-
-    meta.middleware.push({
-      middleware,
-      type: MiddlewareType.Controller
-    });
+    meta.namespace = namespace;
+    meta.middleware = middleware;
   };
 };

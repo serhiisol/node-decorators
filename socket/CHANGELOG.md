@@ -1,3 +1,15 @@
+# Express#2.1.0
+* Dependency injection with `@decorators/di`
+* `@ServerMiddleware` decorator was removed, use `IO_MIDDLEWARE` token to register custom server middleware
+* `@Middleware` decorator was removed use controller-based middleware
+* Middlewares as a class
+* Functions as middleware are no longer supported, use classes instead (`Middleware` interface)
+* Single middleware are no longer supported, use array instead (unified interface for all usages)
+* legacy helper function `attachControllersToSocket` was removed
+* Updated `socket.io` version to `>=2.0.4`
+* Development: big refactoring
+* Development: updated typescript version to `>=2.6.1`
+
 # Socket#2.0.1
 * Fixed availability of **@Socket** in `connection` event
 * Updated typescript to latest
