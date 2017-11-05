@@ -27,7 +27,7 @@ class UserController {
 
   constructor(@Inject(MESSAGE) private message: string) {}
 
-  @Get('/user', Middleware)
+  @Get('/user', [Middleware])
   public getData(@Response() res): void {
     res.send(this.message);
   }
