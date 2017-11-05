@@ -6,38 +6,49 @@ import {
   Socket,
   Args,
   Middleware,
-  Event
+  Event,
+  IO_MIDDLEWARE
 } from '@decorators/socket';
+import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
 
 const server = listen(3000);
+const MESSAGE = new InjectionToken('MESSAGE');
 
-@Middleware((io, socket, next) => {
-  console.log('Middleware 1');
-  next();
-})
-@Controller('/', (io, socket, args, next) => {
-  console.log('ControllerMiddleware');
-  next();
-})
+class ServerMiddleware implements Middleware {
+  public use(io, socket, next) {
+    console.log('ServerMiddleware');
+    next();
+  }
+}
+
+@Injectable()
+class ControllerMiddleware implements Middleware {
+  public use(io, socket, args, next) {
+    console.log('ControllerMiddleware');
+    next(new Error('Denied'));
+  }
+}
+
+@Controller('/', [ControllerMiddleware])
+@Injectable()
 class ConnectionController {
+
+  constructor(@Inject(MESSAGE) private welcomeMessage: string) {}
 
   // @Connect()
   // public connect(@Socket() socket: SocketIO.Socket) {
   //   console.log('Socket.id=', socket.id);
   // }
 
-  // @Event('message')
-  // public message(@Args() message: string) {
-  //   console.log('Message', message);
-  // }
+  @Event('message')
+  public message(@Args() message: string) {
+    console.log('Message', this.welcomeMessage, message);
+  }
 
 }
 
-@Middleware((io, socket, next) => {
-  console.log('Middleware 2');
-  next(new Error('Test Error'));
-})
-@Controller('/')
+@Controller('/messaging')
+@Injectable()
 class MessagingController {
 
   @Connect()
@@ -52,4 +63,21 @@ class MessagingController {
 
 }
 
+Container.provide([
+  { provide: MESSAGE, useValue: 'Socket welcomes user' },
+  { provide: IO_MIDDLEWARE, useClass: ServerMiddleware }
+])
+
 attachControllers(server, [ ConnectionController, MessagingController ]);
+
+// server.on('connection', (socket) => {
+
+//   (socket as any).use((packet, next) => {
+//     next(new Error('Denied'));
+//   });
+
+//   socket.on('message', () => {
+//     console.log('123123');
+//   });
+
+// });

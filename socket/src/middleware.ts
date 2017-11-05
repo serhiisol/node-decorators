@@ -53,9 +53,7 @@ export function middlewareHandler(middleware: Middleware | InjectionToken) {
 export function executeMiddleware(middleware: Middleware[], args: any[] = []): Promise<any> {
   function iteratee(done: (err: Error) => void, i = 0) {
     try {
-      const instance: Middleware = Container.get(middleware[i]);
-
-      instance.use(...args, (err) => {
+      middlewareHandler(middleware[i])(...args, (err) => {
         if (err) {
           return done(err);
         }
@@ -72,6 +70,10 @@ export function executeMiddleware(middleware: Middleware[], args: any[] = []): P
   }
 
   return new Promise((resolve, reject) => {
+    if (middleware === undefined || middleware.length === 0) {
+      return resolve();
+    }
+
     iteratee((err: Error) => err ? reject(err) : resolve());
   });
 }

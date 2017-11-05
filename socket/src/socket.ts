@@ -18,6 +18,8 @@ import { executeMiddleware, IO_MIDDLEWARE, middlewareHandler } from './middlewar
  * @param {SocketClass[]} controllers
  */
 export function attachControllers(io: SocketIO.Server, controllers: SocketClass[]) {
+  io.use((socket, next) => middlewareHandler(IO_MIDDLEWARE)(io, socket, next));
+
   controllers.forEach((controller: SocketClass) => attachController(io, controller));
 }
 
@@ -34,8 +36,6 @@ function attachController(
   const instance: SocketClass = Container.get(controller);
   const meta: SocketMeta = getMeta(instance);
   const ioNS: SocketIO.Namespace = io.of(meta.namespace);
-
-  ioNS.use((socket, next) => middlewareHandler(IO_MIDDLEWARE)(ioNS, socket, next));
 
   /**
    * Apply io based events
@@ -116,7 +116,7 @@ function applyEvents(
         io, socket || args[0], meta.params[methodName], args
       );
 
-      return controller[methodName].apply(controller, newArgs);
+      return instance[methodName].apply(instance, newArgs);
     }));
 }
 
