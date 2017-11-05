@@ -4,6 +4,7 @@
 * Functions as middleware are no longer supported, use classes instead
 * Single middleware are no longer supported, use array instead (unified interface for all usages)
 * Added `All`, `Patch` and `Head` route decorators
+* Global error middleware, closes #56 
 * Updated `express` version to `>=4.16.2`
 * Removed deprecated methods and decorators
 * big refactoring
