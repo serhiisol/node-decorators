@@ -20,9 +20,9 @@ npm install @decorators/mongoose --save
 * **@Model(name: string, options?: SchemaTypeOpts)** - registers model with defined name and options
 
 ##### Method
-* **@Static()** - registers static method
+* **@Static()** - registers static method (on static member)
 * **@Query()** - registers query
-* **@Instance()** - registers instance method 
+* **@Instance()** - registers instance method
 * **@Virtual()** - registers virtual property
 
 ##### Property
@@ -54,7 +54,7 @@ class Animal extends AbstractModel {
   name: string;
 
   @Static()
-  spawn() {}
+  static spawn() {}
 
   @Instance()
   scream() {}

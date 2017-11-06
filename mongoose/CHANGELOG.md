@@ -1,3 +1,5 @@
+# Mongoose#3.0.0
+
 # Mongoose#2.0.0
 ### FEATURES
 * **schema()** helper function added in order to reach mongoose schema in the same way, with @decorators/mongoose class

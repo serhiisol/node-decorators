@@ -101,6 +101,7 @@
 
     "no-angle-bracket-type-assertion": false,
     "prefer-const": false,
-    "no-submodule-imports": false
+    "no-submodule-imports": false,
+    "no-empty-interface": false
   }
 }

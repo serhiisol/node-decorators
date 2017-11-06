@@ -2,11 +2,11 @@ import { getMongooseMeta } from '../meta';
 
 /**
  * Defines Schema field
- * @param type Field type
+ * @param {*} type Field type
  */
 export function SchemaField(type: any): PropertyDecorator {
   return (target: any, name: string) => {
-    Object.assign(getMongooseMeta(target).schema, {[name]: type});
+    getMongooseMeta(target).schema[name] = type;
   };
 }
 
@@ -15,7 +15,7 @@ export function SchemaField(type: any): PropertyDecorator {
  */
 export function Static() {
   return (target: any, name: string, descriptor?: TypedPropertyDescriptor<any>) => {
-    getMongooseMeta(target).statics.push(descriptor ? [name, target[name]] : name);
+    getMongooseMeta(target.prototype).statics.push(descriptor ? [name, target[name]] : name);
   };
 }
 
@@ -23,7 +23,7 @@ export function Static() {
  * Defines query method
  */
 export function Query() {
-  return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
+  return (target: any, name: string) => {
     getMongooseMeta(target).queries.push([name, target[name]]);
   };
 }
@@ -32,7 +32,7 @@ export function Query() {
  * Defines instance method
  */
 export function Instance() {
-  return (target: any, name: string, descriptor: TypedPropertyDescriptor<any>) => {
+  return (target: any, name: string) => {
     getMongooseMeta(target).instances.push([name, target[name]]);
   };
 }
@@ -52,5 +52,17 @@ export function Virtual() {
 export function Index() {
   return (target: any, name: string) => {
     getMongooseMeta(target).indexes.push(name);
+  };
+}
+
+/**
+ * Defines pre-hoos
+ *
+ * @param {string} hookType
+ * @param {string} actionType
+ */
+export function Hook(hookType: string, actionType: string) {
+  return (target: any, name: string) => {
+    getMongooseMeta(target).hooks.push([hookType, actionType, name]);
   };
 }

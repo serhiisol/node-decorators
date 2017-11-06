@@ -1,62 +1,51 @@
 import * as mongoose from 'mongoose';
-import {
-  SchemaField,
-  Model,
-  Static,
-  Instance,
-  model,
-  schema
-} from '@decorators/mongoose';
+import { SchemaField, Model, Static, Instance, Hook, model } from '@decorators/mongoose';
+import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
 
-import { AbstractModel } from './abstract.model';
-
-(<any>mongoose).Promise = Promise;
-mongoose.connect('192.168.99.100:27017/test', {
-  server: {
-    socketOptions: {
-      keepAlive: 1
-    }
-  }
+(mongoose as any).Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/test', {
+  useMongoClient: true
 });
 
+const TEST_ARG = new InjectionToken('TEST_ARG');
+
 @Model('Animal')
-class AnimalClass extends AbstractModel {
+@Injectable()
+export class Animal {
+
+  @Static()
+  static staticField = 'static test field';
 
   @SchemaField(String)
   testField: string;
 
-  args: any;
-
   @Static()
-  staticField = 'static test field';
-
-  constructor(...args) {
-    super();
-    this.args = args;
-  }
-
-  @Static()
-  staticMethod() {
+  static staticMethod() {
     console.log('static test method');
   }
+
+  constructor(@Inject(TEST_ARG) private message: string) {}
 
   @Instance()
   setField() {
     this.testField = 'World';
-    console.log(this.testField, this.args);
+    console.log(this.testField, this.message);
   }
 
-  @Instance()
-  instanceMethod() {
-    console.log(this.testField, this.args);
-
-    this.save();
+  @Hook('pre', 'save')
+  preSave(next) {
+    console.log('pre save');
+    next();
   }
 
 }
+export interface Animal extends mongoose.Document {}
 
-export type AnimalType = AnimalClass & mongoose.Document;
-export type AnimalModel = mongoose.Model<AnimalType>;
-export const Animal = model<AnimalType>({ provide: AnimalClass, deps: [ 'dep' ] });
+Container.provide([
+  { provide: TEST_ARG, useValue: 'Mongoose welcomes you' }
+]);
 
-export const AnimalSchema = schema({ provide: AnimalClass, deps: [ 'another dep' ]});
+export const AnimalModel: AnimalType = model(Animal);
+type AnimalType = mongoose.Model<Animal> & typeof Animal;
+
+console.log(AnimalModel.schema.indexes);

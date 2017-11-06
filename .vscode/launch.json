@@ -27,6 +27,15 @@
       "outFiles": [
         "${workspaceFolder}/di/out/**/*.js"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Playground/Mongoose",
+      "program": "${workspaceFolder}/playground/mongoose/index.js",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ]
     }
   ]
 }
