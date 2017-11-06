@@ -1,49 +1,18 @@
-import { SocketIOClass, SocketMeta, EventType, MiddlewareFunction } from '../interface';
-import { getMeta, prepareMiddleware } from '../utils';
-
-/**
- * Add listener to metadata
- *
- * @param target Target class
- * @param {string} key Function name
- * @param descriptor Function descriptor
- * @param {string} type Listener type: io or socket
- * @param {string} event Event name
- * @param {MiddlewareFunction | MiddlewareFunction[]} middleware Event middleware
- */
-function addListener(
-  target: SocketIOClass,
-  method: string | symbol,
-  type: EventType,
-  event: string,
-  middleware: MiddlewareFunction | MiddlewareFunction[]
-): void {
-  const meta: SocketMeta = getMeta(target);
-
-  meta.listeners.push({
-    event,
-    type,
-    method,
-    middleware: prepareMiddleware(middleware)
-  });
-}
+import { getMeta, SocketClass, SocketMeta, EventType } from '../meta';
+import { Middleware } from '../middleware';
 
 /**
  * Listener decorator factory, creates listener decorator
  *
- * @param {string} type Listener type: io or socket
+ * @param {EventType} type Listener type: io or socket
  * @param {string} event Event name
- * @param {MiddlewareFunction | MiddlewareFunction[]} middleware Event middleware
- *
- * @returns {MethodDecorator}
+ * @param {Middleware[]} middleware Event middleware
  */
-function makeDecorator(
-  type: EventType,
-  event: string,
-  middleware?: MiddlewareFunction | MiddlewareFunction[]
-): MethodDecorator {
-  return (target: SocketIOClass, key: string | symbol, descriptor?: any) => {
-    addListener(target, key, type, event, middleware);
+function makeDecorator(type: EventType, event: string, middleware?: Middleware[]) {
+  return (target: SocketClass, methodName: string, descriptor?: any) => {
+    const meta: SocketMeta = getMeta(target);
+
+    meta.listeners.push({ event, type, middleware, methodName });
 
     return descriptor;
   };
@@ -53,11 +22,10 @@ function makeDecorator(
  * Register **connection** event
  *
  * @see **io.on('connection', fn)**
- * @param {MiddlewareFunction | MiddlewareFunction[]} middleware Event middleware
  *
- * @returns {MethodDecorator}
+ * @param {Middleware[]} middleware Event middleware
  */
-export function Connection(middleware?: MiddlewareFunction | MiddlewareFunction[]): MethodDecorator {
+export function Connection(middleware?: Middleware[]) {
   return makeDecorator(EventType.IO, 'connection', middleware);
 }
 /**
@@ -69,12 +37,11 @@ export const Connect = Connection;
  * Registers global event
  *
  * @see **io.on**
- * @param {string} event
- * @param {MiddlewareFunction | MiddlewareFunction[]} middleware Event middleware
  *
- * @returns {MethodDecorator}
+ * @param {string} event
+ * @param {Middleware[]} middleware Event middleware
  */
-export function GlobalEvent(event: string, middleware?: MiddlewareFunction | MiddlewareFunction[]): MethodDecorator {
+export function GlobalEvent(event: string, middleware?: Middleware[]) {
   return makeDecorator(EventType.IO, event, middleware);
 }
 
@@ -82,11 +49,10 @@ export function GlobalEvent(event: string, middleware?: MiddlewareFunction | Mid
  * Registers **disconnect** listener
  *
  * @see **socket.on('disconnect', fn)**
- * @param {MiddlewareFunction | MiddlewareFunction[]} middleware Event middleware
  *
- * @returns {MethodDecorator}
+ * @param {Middleware[]} middleware Event middleware
  */
-export function Disconnect(middleware?: MiddlewareFunction | MiddlewareFunction[]): MethodDecorator {
+export function Disconnect(middleware?: Middleware[]) {
   return makeDecorator(EventType.Socket, 'disconnect', middleware);
 }
 
@@ -94,11 +60,10 @@ export function Disconnect(middleware?: MiddlewareFunction | MiddlewareFunction[
  * Registers socket event
  *
  * @see **socket.on**
- * @param {string} event
- * @param {Function | Function[]} middleware Event middleware
  *
- * @returns {MethodDecorator}
+ * @param {string} event
+ * @param {Middleware[]} middleware Event middleware
  */
-export function Event(event: string, middleware?: MiddlewareFunction | MiddlewareFunction[]): MethodDecorator {
+export function Event(event: string, middleware?: Middleware[]) {
   return makeDecorator(EventType.Socket, event, middleware);
 };

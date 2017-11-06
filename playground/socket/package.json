@@ -1,11 +1,12 @@
 {
   "name": "@decorators/playground-socket",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
     "@decorators/socket": "../../socket",
-    "@types/socket.io": "1.4.29"
+    "@types/socket.io": "1.4.29",
+    "typescript": "2.6.1"
   },
   "keywords": [
     "nodejs",
@@ -24,5 +25,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiiso/node-decorators.git"
+  },
+  "scripts": {
+    "compile": "tsc"
   }
 }
