@@ -1,4 +1,4 @@
-# Express#2.1.0
+# Express#3.0.0
 * Dependency injection with `@decorators/di`
 * `@ServerMiddleware` decorator was removed, use `IO_MIDDLEWARE` token to register custom server middleware
 * `@Middleware` decorator was removed use controller-based middleware
