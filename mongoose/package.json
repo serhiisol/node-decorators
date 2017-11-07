@@ -1,6 +1,6 @@
 {
   "name": "@decorators/mongoose",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "node decorators",
   "main": "src/index.js",
   "dependencies": {

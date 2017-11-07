@@ -10,9 +10,9 @@ npm install @decorators/mongoose --save
 
 ### API
 #### Functions
-* **model(MongooseModel | { provide: MongooseModel, deps: [UserService] })** - Helper function to generate model for class
-* **schema(MongooseModel | { provide: MongooseModel, deps: [UserService] })** - Helper function to generate plain schema
-* **ref(collectionRef)** - Helper function to define reference to another collection/model
+* **model(class: MongooseClass)** - Helper function to generate model for class
+* **schema(class: MongooseClass)** - Helper function to generate plain schema
+* **ref(collectionRef: string)** - Helper function to define reference to another collection/model
 
 #### Decorators
 
@@ -24,32 +24,24 @@ npm install @decorators/mongoose --save
 * **@Query()** - registers query
 * **@Instance()** - registers instance method
 * **@Virtual()** - registers virtual property
+* **@Hook(hookType: string, actionType: string)** - define mongoose lifecycle hook, where:
+  * **hookType** = `pre` | `post` | etc.
+  * **actionType** = `save` | `find` | etc.
+  * for all other hooks you can check [MongooseJS] website
 
 ##### Property
-* **@SchemaField(schemaFieldDefinition)** - registers schema field
+* **@SchemaField(options: schemaFieldDefinition)** - registers schema field
 * **@Static()** - registers static property
 * **@Index()** - registers index property
 
 ### Example Mongoose Model
-> Note: In order to get access to all proper methods, you can create custom **AbstractModel** like so:
-```typescript
-import { MongooseDocument, Model, Document } from 'mongoose';
-
-export interface AbstractModel extends MongooseDocument {
-  __v?: number;
-  update(data: any);
-  increment?(): this;
-  model?(name: string): Model<Document>;
-  remove?(fn?: (err: any, product: this) => void): Promise<this>;
-  save?(fn?: (err: any, product: this, numAffected: number) => void): Promise<this>;
-}
-
-export abstract class AbstractModel {}
-```
+> Note: In order to get access to all proper methods, you have to extend mongoose Document in your class interface, like so:
 
 ```typescript
+import { Document } from 'mongoose';
+
 @Model('Animal')
-class Animal extends AbstractModel {
+class Animal {
   @SchemaField(String)
   name: string;
 
@@ -64,11 +56,14 @@ class Animal extends AbstractModel {
     return this.find({ name });
   }
 }
+interface Animal extends Document{}
 
-export let TestModel = model(TestModelClass);
+
+export const AnimalModel: AnimalType = model(Animal);
+
+// This type is also necessary to have all needed methods and properties of mongoose
+// plus all static methods and properties of Animal class
+type AnimalType = mongoose.Model<Animal> & typeof Animal;
 ```
-
-### License
-MIT
 
 [MongooseJS]:http://mongoosejs.com

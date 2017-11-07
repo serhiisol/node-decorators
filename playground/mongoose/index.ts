@@ -1,4 +1,4 @@
-import { AnimalModel, Animal } from './model';
+import { AnimalModel } from './model';
 
 AnimalModel.staticMethod();
 console.log(AnimalModel.staticField);

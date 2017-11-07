@@ -1,4 +1,10 @@
 # Mongoose#3.0.0
+* Dependency injection with `@decorators/di`
+* `@Static` is using `static` members from now on
+* new `@Hook` decorators for mongoose lifecycle hooks (pre, post etc.)
+* Updated `mongoose` version to `>=4.13.0`
+* Development: big refactoring
+* Development: updated typescript version to `>=2.6.1`
 
 # Mongoose#2.0.0
 ### FEATURES
