@@ -45,7 +45,7 @@ Container.provide([
   { provide: TEST_ARG, useValue: 'Mongoose welcomes you' }
 ]);
 
-export const AnimalModel: AnimalType = model(Animal);
+export const AnimalModel = model<AnimalType>(Animal);
 type AnimalType = mongoose.Model<Animal> & typeof Animal;
 
 console.log(AnimalModel.schema.indexes);

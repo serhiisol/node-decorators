@@ -1,11 +1,13 @@
-import { Schema, model as MongooseModel, Model as MongooseModelType, Document } from 'mongoose';
+import { Schema, model as MongooseModel } from 'mongoose';
 import { Container } from '@decorators/di';
 
 import { getMongooseMeta, Fn, MongooseClass, MongooseMeta } from './meta';
 
 /**
  * Quick helper function to link reference
+ *
  * @param {String} collectionRef
+ *
  * @returns { {type: "mongoose".Schema.Types.ObjectId, ref: string} }
  */
 export function ref(collectionRef: string): { type: any, ref: string } {
@@ -27,10 +29,12 @@ export function schema(modelClass: MongooseClass): Schema {
 
 /**
  * Create mongoose model out of @decorators/mongoose class
+ *
  * @param {MongooseClass} modelClass
+ *
  * @returns {Object} Mongoose model itself
  */
-export function model<T extends Document>(modelClass: MongooseClass): MongooseModelType<T> {
+export function model<T>(modelClass: MongooseClass): T {
   const { meta, instance } = getArtifacts(modelClass);
   const statics = {};
 
@@ -40,7 +44,7 @@ export function model<T extends Document>(modelClass: MongooseClass): MongooseMo
     }
   });
 
-  const newModel = MongooseModel<T>(meta.name, buildSchema(meta, instance));
+  const newModel = MongooseModel(meta.name, buildSchema(meta, instance));
 
   /**
    * Extend model with statics
@@ -49,7 +53,7 @@ export function model<T extends Document>(modelClass: MongooseClass): MongooseMo
     newModel[key] = statics[key];
   }
 
-  return newModel;
+  return newModel as any;
 }
 
 /**
@@ -57,6 +61,7 @@ export function model<T extends Document>(modelClass: MongooseClass): MongooseMo
  *
  * @param {MongooseMeta} meta
  * @param {any} classInstance
+ *
  * @returns {Schema}
  */
 function buildSchema(meta: MongooseMeta, classInstance): Schema {
@@ -113,12 +118,13 @@ function buildSchema(meta: MongooseMeta, classInstance): Schema {
 }
 
 /**
- * Wrap function with correct context
- * @description just to make sure, that functions will be executed with scope of class
+ * Wrap function with correct context just to make sure,
+ * that functions will be executed with scope of class
  * in order to get DI working properly
  *
  * @param {Function} fn
  * @param {any} instance
+ *
  * @returns {Function}
  */
 function wrapFunction(fn: Fn, instance): Fn {
@@ -138,6 +144,7 @@ function wrapFunction(fn: Fn, instance): Fn {
  * Extract meta and classInstance of the injectable
  *
  * @param {MongooseClass} modelClass
+ *
  * @returns {{ meta: MongooseMeta, instance: MongooseClass }}
  */
 function getArtifacts(modelClass: MongooseClass): { meta: MongooseMeta, instance: MongooseClass } {

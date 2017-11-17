@@ -16,7 +16,7 @@ export class MongooseMeta {
 }
 
 export interface MongooseClass extends Object {
-  __mongoose_meta__: MongooseMeta;
+  __mongoose_meta__?: MongooseMeta;
 
   new (...deps: any[]);
 }
