@@ -1,11 +1,13 @@
-import { Schema, model as MongooseModel, Model as MongooseModelType, Document } from 'mongoose';
+import { Schema, model as MongooseModel } from 'mongoose';
+import { Container } from '@decorators/di';
 
-import { MongooseClass, Injectable, MongooseMeta } from './interfaces';
-import { getMongooseMeta, extend } from './meta';
+import { getMongooseMeta, Fn, MongooseClass, MongooseMeta } from './meta';
 
 /**
  * Quick helper function to link reference
+ *
  * @param {String} collectionRef
+ *
  * @returns { {type: "mongoose".Schema.Types.ObjectId, ref: string} }
  */
 export function ref(collectionRef: string): { type: any, ref: string } {
@@ -13,39 +15,45 @@ export function ref(collectionRef: string): { type: any, ref: string } {
 }
 
 /**
- * Wrap function with correct context
- * @description just to make sure, that functions will be executed with scope of class
- * in order to get DI working properly
+ * Create mongoose schema out of @decorators/mongoose class
  *
- * @param {Function} fn
- * @param {any} instance
- * @returns {Function}
+ * @param {MongooseClass} modelClass
+ *
+ * @returns {Object} Mongoose model itself
  */
-function wrapFunction(fn: Function, instance): Function {
-  return function(...args) {
-    const fullCtx = Object.assign({}, instance, this);
-    Object.setPrototypeOf(fullCtx, Object.getPrototypeOf(this));
+export function schema(modelClass: MongooseClass): Schema {
+  const { meta, instance } = getArtifacts(modelClass);
 
-    return fn.apply(fullCtx, args);
-  };
+  return buildSchema(meta, instance);
 }
 
 /**
- * Extract meta and classInstance of the injectable
+ * Create mongoose model out of @decorators/mongoose class
  *
- * @param {(Injectable | Function)} injectable
- * @returns {{ meta: MongooseMeta, classInstance: any }}
+ * @param {MongooseClass} modelClass
+ *
+ * @returns {Object} Mongoose model itself
  */
-function getArtifacts(
-  injectable: Injectable | Function
-): { meta: MongooseMeta, classInstance: any } {
-  const DecoratedModel: any = (<Injectable>injectable).provide || <MongooseClass>injectable;
-  const deps = (<Injectable>injectable).deps || [];
+export function model<T>(modelClass: MongooseClass): T {
+  const { meta, instance } = getArtifacts(modelClass);
+  const statics = {};
 
-  const meta: MongooseMeta = getMongooseMeta(DecoratedModel.prototype);
-  const classInstance = new DecoratedModel(...deps);
+  meta.statics.forEach((stat: [string, Fn] | string) => {
+    if (typeof stat[1] !== 'function') {
+      statics[<string>stat] = modelClass[<string>stat];
+    }
+  });
 
-  return { meta, classInstance };
+  const newModel = MongooseModel(meta.name, buildSchema(meta, instance));
+
+  /**
+   * Extend model with statics
+   */
+  for (let key of Object.keys(statics)) {
+    newModel[key] = statics[key];
+  }
+
+  return newModel as any;
 }
 
 /**
@@ -53,77 +61,95 @@ function getArtifacts(
  *
  * @param {MongooseMeta} meta
  * @param {any} classInstance
+ *
  * @returns {Schema}
  */
 function buildSchema(meta: MongooseMeta, classInstance): Schema {
-  let schema: Schema = new Schema(meta.schema);
+  let newSchema: Schema = new Schema(meta.schema);
   let indexes = {};
 
-  meta.statics.forEach((stat: [string, Function] | string) => {
+  meta.statics.forEach((stat: [string, Fn] | string) => {
     if (typeof stat[1] === 'function') {
-      schema.statics[<string>stat[0]] = wrapFunction(<Function>stat[1], classInstance);
+      newSchema.statics[<string>stat[0]] = wrapFunction(<Fn>stat[1], classInstance);
     }
   });
 
-  meta.queries.forEach(([name, fn]: [string, Function]) => {
-    schema['query'][name] = wrapFunction(fn, classInstance);
+  meta.queries.forEach(([name, fn]: [string, Fn]) => {
+    newSchema['query'][name] = wrapFunction(fn, classInstance);
   });
 
-  meta.instances.forEach(([name, fn]: [string, Function]) => {
-    schema.methods[name] = wrapFunction(fn, classInstance);
+  meta.instances.forEach(([name, fn]: [string, Fn]) => {
+    newSchema.methods[name] = wrapFunction(fn, classInstance);
   });
 
   meta.virtuals.forEach(([name, descriptor]: [string, PropertyDescriptor]) => {
-    let v = schema.virtual(name);
+    const virtual = newSchema.virtual(name);
+
     if (descriptor.get) {
-      v.get(wrapFunction(descriptor.get, classInstance));
+      virtual.get(wrapFunction(descriptor.get, classInstance));
     }
+
     if (descriptor.set) {
-      v.set(wrapFunction(descriptor.set, classInstance));
+      virtual.set(wrapFunction(descriptor.set, classInstance));
     }
   });
 
   meta.indexes.forEach((index: string) => {
     indexes[index] = classInstance[index];
+    newSchema.index({ [index]: classInstance[index] });
   });
-  schema.index(indexes);
+  // newSchema.index(indexes);
 
   meta.options.forEach(([option, value]: [string, any]) => {
-    schema.set(option, value);
+    newSchema.set(option, value);
   });
 
-  return schema;
+  meta.hooks.forEach(([hookType, actionType, name]: [string, string, string]) => {
+    newSchema[hookType](actionType, function(next) {
+      /**
+       * Hook expects to get exactly one parameter, so
+       * wrapped function cannot be passed as an argument
+       */
+      return wrapFunction(classInstance[name], classInstance).call(this, next);
+    });
+  });
+
+  return newSchema;
 }
 
 /**
- * Create mongoose schema out of @decorators/mongoose class
- * @param DecoratedClass
- * @returns {Object} Mongoose model itself
+ * Wrap function with correct context just to make sure,
+ * that functions will be executed with scope of class
+ * in order to get DI working properly
+ *
+ * @param {Function} fn
+ * @param {any} instance
+ *
+ * @returns {Function}
  */
-export function schema(injectable: Injectable | Function): Schema {
-  const { meta, classInstance } = getArtifacts(injectable);
+function wrapFunction(fn: Fn, instance): Fn {
+  return function(next) {
+    let fullCtx = instance;
 
-  return buildSchema(meta, classInstance);
-}
-
-/**
- * Create mongoose model out of @decorators/mongoose class
- * @param DecoratedClass
- * @returns {Object} Mongoose model itself
- */
-export function model<T extends Document>(injectable: Injectable | Function): MongooseModelType<T> {
-  const { meta, classInstance } = getArtifacts(injectable);
-  const statics = {};
-
-  meta.statics.forEach((stat: [string, Function] | string) => {
-    if (typeof stat[1] !== 'function') {
-      statics[<string>stat] = classInstance[<string>stat];
+    if (this) {
+      fullCtx = { ...instance, ...(this || {}) };
+      Object.setPrototypeOf(fullCtx, Object.getPrototypeOf(this));
     }
-  });
 
-  const model = <MongooseModelType<T>>MongooseModel(meta.name, buildSchema(meta, classInstance));
+    return fn.apply(fullCtx, [next]);
+  };
+}
 
-  extend(model, statics);
+/**
+ * Extract meta and classInstance of the injectable
+ *
+ * @param {MongooseClass} modelClass
+ *
+ * @returns {{ meta: MongooseMeta, instance: MongooseClass }}
+ */
+function getArtifacts(modelClass: MongooseClass): { meta: MongooseMeta, instance: MongooseClass } {
+  const instance: MongooseClass = Container.get(modelClass);
+  const meta: MongooseMeta = getMongooseMeta(instance);
 
-  return model;
+  return { meta, instance };
 }

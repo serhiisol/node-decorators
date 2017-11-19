@@ -1,18 +1,10 @@
-import { Animal, AnimalSchema } from './model';
+import { AnimalModel } from './model';
 
-console.log(Animal.create);
+AnimalModel.staticMethod();
 
-Animal.staticMethod();
-console.log(Animal.staticField);
+let test = new AnimalModel({ testField: 'Hello World' });
 
-let test = new Animal({ testField: 'Hello World' });
-
-console.log('Model = ' + test.toString());
-
-test.setField();
-
-test.testField = 'Test Field';
-
-test.instanceMethod();
-
-process.exit(0);
+test.save(() => {
+  console.log('saved 2');
+  process.exit(0);
+});

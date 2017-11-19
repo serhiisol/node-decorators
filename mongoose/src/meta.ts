@@ -1,24 +1,30 @@
-import { MongooseClass, MongooseMeta } from './interfaces';
+export type Fn = (...args: any[]) => any;
 
-export function getMongooseMeta(target: MongooseClass): MongooseMeta {
-  if (!target.__meta__) {
-    target.__meta__ = <MongooseMeta> {
-      name: '',
-      schema:    {},
-      statics:   [],
-      queries:   [],
-      instances: [],
-      virtuals:  [],
-      indexes:   [],
-      options:   []
-    };
-  }
-  return <MongooseMeta>target.__meta__;
+export type HookType = 'pre' | 'post' | string;
+export type ActionType = 'save' | 'find' | string;
+
+export class MongooseMeta {
+  name:      string;
+  schema:    any = {};
+  statics:   Array<[string, Fn] | string> = [];
+  queries:   Array<[string, Fn]> = [];
+  instances: Array<[string, Fn]> = [];
+  virtuals:  Array<[string, PropertyDescriptor]> = [];
+  indexes:   string[] = [];
+  options:   Array<[string, any]> = [];
+  hooks: Array<[HookType, ActionType, string]> = [];
 }
 
-export function extend(_what, _to) {
-  for(let key of Object.keys(_to)) {
-    _what[key] = _to[key];
+export interface MongooseClass extends Object {
+  __mongoose_meta__?: MongooseMeta;
+
+  new (...deps: any[]);
+}
+
+export function getMongooseMeta(target: MongooseClass): MongooseMeta {
+  if (!target.__mongoose_meta__) {
+    target.__mongoose_meta__ = new MongooseMeta();
   }
-  return _what;
+
+  return target.__mongoose_meta__;
 }

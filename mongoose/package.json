@@ -1,14 +1,15 @@
 {
   "name": "@decorators/mongoose",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "node decorators",
   "main": "src/index.js",
   "dependencies": {
-    "mongoose": "^4.7.0"
+    "mongoose": ">=4.13.0",
+    "@decorators/di": ">=1.0.0"
   },
   "devDependencies": {
-    "@types/mongoose": "4.7.18",
-    "typescript": "2.4.1"
+    "@types/mongoose": ">=4.7.25",
+    "typescript": ">=2.6.1"
   },
   "keywords": [
     "nodejs",

@@ -8,8 +8,10 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "rootDir": ".",
-    "sourceMap": true,
+    "inlineSourceMap": true,
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
@@ -17,6 +19,6 @@
   },
   "exclude": ["node_modules"],
   "files": [
-    "src/index.ts"
+    "./index.ts"
   ]
 }

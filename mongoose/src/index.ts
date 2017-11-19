@@ -5,6 +5,7 @@ export {
   Query,
   Instance,
   Virtual,
-  Index
+  Index,
+  Hook
 } from './decorators';
 export { model, schema, ref } from './mongoose';

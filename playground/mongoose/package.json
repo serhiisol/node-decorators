@@ -1,14 +1,14 @@
 {
   "name": "@decorators/playground-mongoose",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
     "@decorators/mongoose": "../../mongoose"
   },
   "devDependencies": {
-     "@types/mongoose": "4.7.18",
-     "typescript": "2.4.1"
+     "@types/mongoose": "4.7.25",
+     "typescript": "2.6.1"
   },
   "keywords": [
     "nodejs",
