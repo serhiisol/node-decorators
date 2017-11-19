@@ -1,5 +1,5 @@
 # TS Files
-**/*.ts
-**/*.spec.ts
+src/**/*.ts
 !src/**/*.d.ts
 tsconfig.json
+index.ts

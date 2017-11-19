@@ -44,6 +44,10 @@ export class Container {
   public static get<T>(injectable: Injectable): T {
     const provider: StoreProvider = Store.findProvider(injectable);
 
+    if (provider === undefined) {
+      throw new MissingProviderError(injectable);
+    }
+
     return this.resolveProvider(provider)
   }
 
