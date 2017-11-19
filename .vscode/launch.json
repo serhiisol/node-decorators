@@ -23,9 +23,9 @@
       "type": "node",
       "request": "launch",
       "name": "PLayground/DI",
-      "program": "${workspaceFolder}/di/test.ts",
+      "program": "${workspaceFolder}/playground/di/index.ts",
       "outFiles": [
-        "${workspaceFolder}/di/out/**/*.js"
+        "${workspaceFolder}/**/*.js"
       ]
     },
     {

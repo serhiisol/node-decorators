@@ -9,7 +9,7 @@ export class RecursiveProviderError extends DiError {
       .join(' => ');
 
     super(`
-      DI recursive dependency: ${circular} => ${depProvider.id.toString()}
+      DI recursive dependency: ${circular} => ${depProvider.id.toString()}.
     `);
   }
 
