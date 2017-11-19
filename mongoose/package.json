@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@types/mongoose": ">=4.7.25",
-    "typescript": "2.6.1"
+    "typescript": ">=2.6.1"
   },
   "keywords": [
     "nodejs",
