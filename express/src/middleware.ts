@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { Container } from '@decorators/di';
 
+export interface Type extends Function {
+  new (...args: any[]);
+}
+
 /**
  * Middleware class interface
  *
@@ -8,20 +12,16 @@ import { Container } from '@decorators/di';
  * @interface Middleware
  */
 export interface Middleware {
-  new (...args: any[]);
-
   use(request: Request, response: Response, next: NextFunction): void;
 }
 
 /**
- * Error middleware class interface
+ * Error middleware interface
  *
  * @export
  * @interface ErrorMiddleware
  */
 export interface ErrorMiddleware {
-  new (...args: any[]);
-
   use(error: any, request: Request, response: Response, next: NextFunction): void;
 }
 
@@ -33,7 +33,7 @@ export interface ErrorMiddleware {
  *
  * @returns {RequestHandler}
  */
-export function middlewareHandler(middleware: Middleware): RequestHandler {
+export function middlewareHandler(middleware: Type): RequestHandler {
   return function(...args: any[]): any {
     let instance: Middleware;
 

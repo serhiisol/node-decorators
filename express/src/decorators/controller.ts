@@ -1,5 +1,5 @@
 import { ExpressMeta, getMeta } from '../meta';
-import { Middleware } from '../middleware';
+import { Type } from '../middleware';
 
 /**
  * Registers controller for base url
@@ -7,7 +7,7 @@ import { Middleware } from '../middleware';
  * @param {string} url
  * @param {Middleware[]} [middleware]
  */
-export function Controller(url: string, middleware?: Middleware[]) {
+export function Controller(url: string, middleware?: Type[]) {
   return (target): void => {
     const meta: ExpressMeta = getMeta(target.prototype);
 

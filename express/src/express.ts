@@ -2,7 +2,7 @@ import { RequestHandler, ErrorRequestHandler, Application, Router, Express, Requ
 import { Container, InjectionToken } from '@decorators/di';
 
 import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
-import { middlewareHandler, ErrorMiddleware } from './middleware';
+import { middlewareHandler, ErrorMiddleware, Type } from './middleware';
 
 /**
  * Error Middleware class registration DI token
@@ -13,10 +13,10 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
  * Attach controllers to express application
  *
  * @param {Express} app Express application
- * @param {ExpressClass[]} controllers Controllers array
+ * @param {Type[]} controllers Controllers array
  */
-export function attachControllers(app: Express, controllers: ExpressClass[]) {
-  controllers.forEach((controller: ExpressClass) => registerController(app, controller));
+export function attachControllers(app: Express, controllers: Type[]) {
+  controllers.forEach((controller: Type) => registerController(app, controller));
 
   app.use(errorMiddlewareHandler());
 }
@@ -28,7 +28,7 @@ export function attachControllers(app: Express, controllers: ExpressClass[]) {
  * @param {ExpressClass} Controller
  * @returns
  */
-function registerController(app: Application, Controller: ExpressClass) {
+function registerController(app: Application, Controller: Type) {
   const controller: ExpressClass = Container.get(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router();
