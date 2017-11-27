@@ -25,7 +25,7 @@ function decoratorFactory(method: string, url: string, middleware: Type[]) {
  * middleware, and callback to _every_ HTTP method.
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function All(url: string, middleware?: Type[]) {
   return decoratorFactory('all', url, middleware)
@@ -35,7 +35,7 @@ export function All(url: string, middleware?: Type[]) {
  * Get route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Get(url: string, middleware?: Type[]) {
   return decoratorFactory('get', url, middleware)
@@ -45,7 +45,7 @@ export function Get(url: string, middleware?: Type[]) {
  * Post route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Post(url: string, middleware?: Type[]) {
   return decoratorFactory('post', url, middleware);
@@ -55,7 +55,7 @@ export function Post(url: string, middleware?: Type[]) {
  * Put route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Put(url: string, middleware?: Type[]) {
   return decoratorFactory('put', url, middleware);
@@ -65,7 +65,7 @@ export function Put(url: string, middleware?: Type[]) {
  * Delete route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Delete(url: string, middleware?: Type[]) {
   return decoratorFactory('delete', url, middleware);
@@ -75,7 +75,7 @@ export function Delete(url: string, middleware?: Type[]) {
  * Patch route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Patch(url: string, middleware?: Type[]) {
   return decoratorFactory('patch', url, middleware);
@@ -85,7 +85,7 @@ export function Patch(url: string, middleware?: Type[]) {
  * Options route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Options(url: string, middleware?: Type[]) {
   return decoratorFactory('options', url, middleware);
@@ -95,7 +95,7 @@ export function Options(url: string, middleware?: Type[]) {
  * Head route
  *
  * @param {string} url
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
 export function Head(url: string, middleware?: Type[]) {
   return decoratorFactory('head', url, middleware);
