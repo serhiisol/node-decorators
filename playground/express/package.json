@@ -1,9 +1,10 @@
 {
   "name": "@decorators/playground-express",
-  "version": "1.2.0",
+  "version": "2.1.0",
   "description": "node decorators",
   "main": "index.js",
   "dependencies": {
+    "@types/express": "4.0.39",
     "@decorators/di": "1.0.0",
     "@decorators/express": "file:../../express"
   },

@@ -1,10 +1,14 @@
 # Express#2.0.0
+* Fixed definitions
+* Fixed complition for VSCode, etc.
+
+# Express#2.0.0
 * Dependency injection with `@decorators/di`, closes #54;
-* Express route middlewares as a class, closes #55; 
+* Express route middlewares as a class, closes #55;
 * Functions as middleware are no longer supported, use classes instead
 * Single middleware are no longer supported, use array instead (unified interface for all usages)
 * Added `All`, `Patch` and `Head` route decorators
-* Global error middleware, closes #56 
+* Global error middleware, closes #56
 * Updated `express` version to `>=4.16.2`
 * Removed deprecated methods and decorators
 * big refactoring
@@ -66,7 +70,7 @@ homeAction(req, res, next) {
 # 0.1.1
 * added trash files into **.npmignore**
 
-# 0.1.0 
+# 0.1.0
 * New imports:
 ```
 import { Controller } from 'node-decorators/express';

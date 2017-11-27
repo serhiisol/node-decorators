@@ -1,4 +1,4 @@
-import { Middleware } from './middleware';
+import { Type } from './middleware';
 
 /**
  * All possible parameter decorator types
@@ -39,7 +39,7 @@ export interface ParameterConfiguration {
 export interface Route {
   method: string;
   url: string;
-  middleware: Middleware[];
+  middleware: Type[];
 }
 
 /**
@@ -55,7 +55,7 @@ export interface ExpressMeta {
     [key: string]: Route;
   }
 
-  middleware: Middleware[];
+  middleware: Type[];
 
   params: {
     [key: string]: ParameterConfiguration[];
@@ -68,8 +68,8 @@ export interface ExpressMeta {
  * @export
  * @interface ExpressMeta
  */
-export abstract class ExpressClass {
-  abstract __express_meta__?: ExpressMeta;
+export interface ExpressClass {
+  __express_meta__?: ExpressMeta;
 }
 
 /**
