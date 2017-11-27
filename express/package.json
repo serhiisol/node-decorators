@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "node decorators",
   "main": "src/index.js",
+  "types": "src/index.d.ts",
   "dependencies": {
     "express": ">=4.16.2",
     "@decorators/di": ">=1.0.0"
