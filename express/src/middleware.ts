@@ -39,7 +39,7 @@ export function middlewareHandler(middleware: Type): RequestHandler {
 
     try {
       instance = Container.get(middleware);
-    } catch (e) {
+    } catch {
       instance = new middleware();
     }
 
