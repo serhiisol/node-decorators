@@ -29,7 +29,7 @@ export function attachControllers(app: Express, controllers: Type[]) {
  * @returns
  */
 function registerController(app: Application, Controller: Type) {
-  const controller: ExpressClass = Container.get(Controller);
+  const controller: ExpressClass = getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router();
 
@@ -88,7 +88,7 @@ function errorMiddlewareHandler(): ErrorRequestHandler {
     try {
       const errorMiddleware: ErrorMiddleware = Container.get(ERROR_MIDDLEWARE);
       errorMiddleware.use(error, req, res, next);
-    } catch (error) {
+    } catch {
       next(error);
     }
   }
@@ -143,6 +143,21 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
   }
 
   return args;
+}
+
+/**
+ * Get controller instance from container or instantiate one
+ *
+ * @param {any} Controller
+ *
+ * @returns {ExpressClass}
+ */
+function getController(Controller: Type): ExpressClass {
+  try {
+    return Container.get(Controller);
+  } catch {
+    return new Controller();
+  }
 }
 
 /**

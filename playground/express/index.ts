@@ -36,15 +36,11 @@ class UserMiddleware implements Middleware {
 }
 
 @Controller('/')
-@Injectable()
 class UserController {
 
-  constructor(@Inject(MESSAGE) private message: string) {}
-
-  @Get('/user', [UserMiddleware])
+  @Get('/', [UserMiddleware])
   public getData(@Response() res): void {
-    throw Error('User test error');
-    // res.send(this.message);
+    res.send('Hello User');
   }
 
 }
@@ -58,4 +54,4 @@ Container.provide([
 
 attachControllers(app, [ UserController ]);
 
-app.listen(3003);
+app.listen(3000);
