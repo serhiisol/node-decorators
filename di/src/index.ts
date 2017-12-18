@@ -1,7 +1,8 @@
 export {
   Injectable,
   Inject,
-  Optional
+  Optional,
+  Bean
 } from './decorators';
 export {
   Container
