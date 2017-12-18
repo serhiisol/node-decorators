@@ -60,7 +60,7 @@ const API_URL = new InjectionToken('API_URL');
 @Injectable()
 export class HttpService {
   constructor(
-    @Inject(TEST_STRING2) private apiUrl: string
+    @Inject(API_URL) private apiUrl: string
   ) {}
 
   public send(options: object): Promise<any> {
@@ -69,7 +69,7 @@ export class HttpService {
 }
 
 Container.provide([
-  { provide: TEST_STRING, useValue: 'Hello World' }
+  { provide: API_URL, useValue: 'http://server.localhost' }
 ]);
 
 const httpService = Container.get<HttpService>(HttpService);
