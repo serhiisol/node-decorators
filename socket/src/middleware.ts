@@ -34,7 +34,7 @@ export function middlewareHandler(middleware: Middleware | InjectionToken) {
     try {
       instance = Container.get(middleware);
     } catch (e) {
-      instance = new middleware();
+      instance = new (middleware as Middleware)();
     }
 
     return instance.use.apply(instance, args);
