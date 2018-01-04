@@ -10,67 +10,54 @@ npm install @decorators/socket --save
 
 #### Decorators
 ##### Class
-* **@Controller(namespace?: string, middleware?: Function | Function[])** - registers controller for controller
-
-* **@ServerMiddleware(middleware: Function | Function[])** - registers global server (io) middleware
-```typescript
-function middleware(
-  io: SocketIO.Server | SocketIO.Namespace,
-  socket: SocketIO.Socket,
-  next: Function
-) {}
-```
-
-* **@Middleware(middleware: Function | Function[]) => {})** - registers socket global middleware
-```typescript
-function middleware(
-  io: SocketIO.Server | SocketIO.Namespace,
-  socket: SocketIO.Socket,
-  packet: [string, any],
-  next: Function
-) {}
-```
+* **@Controller(namespace?: string, middleware?: Middleware[])** - registers controller for controller
 
 ##### Method
-* **@Connection()** - register **connection** listener (**io.on('connection', fn)**)
-* **@Connect()** - alias of **@Connection()**
-* **@Disconnect()** - register disconnect socket event (**socket.on('disconnect', fn)**)
+* **@Connection(middleware?: Middleware[])** - register **connection** listener (**io.on('connection', fn)**)
+* **@Connect(middleware?: Middleware[])** - alias of **@Connection()**
+* **@Disconnect(middleware?: Middleware[])** - register disconnect socket event (**socket.on('disconnect', fn)**)
 * **@GlobalEvent(event: string)** - register global event (**io.on**)
-
-* **@Event(event: string, middleware?: Function | Function[])** - register socket event (**socket.on**),
-where middleware is a function which accepts four parameters:
-```typescript
-function middleware(
-  io: SocketIO.Server | SocketIO.Namespace,
-  socket: SocketIO.Socket,
-  packet: [string, any],
-  next: Function
-) {}
-```
+* **@Event(event: string, middleware?: Middleware[])** - register socket event (**socket.on**)
 
 ##### Parameter
 * **@IO(WrapperClass?: Class)** - returns server itself
 * **@Socket(WrapperClass?: Class)** - returns socket
-
 If **WrapperClass** provided, returns instance
 of **WrapperClass**, passes **socket** or **server** as dependency into **WrapperClass**
-
 ```typescript
 class SocketWrapper {
-  constructor(private ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket) {}
+  constructor(
+    private ioSock: SocketIO.Server|SocketIO.Namespace|SocketIO.Socket
+  ) {}
 }
 ```
-
 * **@Args()** - returns event arguments (excluding callback, if it exists)
 * **@Ack()** - returns ack callback function (if it exists)
 
 #### Helper Functions
-* **attachControllers(io: SocketIO.Server, Controller[] || Injectable[])** -  Attaches controllers to IO server
-* **attachControllersToSocket(io: SocketIO.Server, socket: SocketIO.Socket, Controller[] || Injectable[])** -  Attaches controllers to Socket
+* **attachControllers(io: SocketIO.Server, Controller[])** -  Attaches controllers to IO server
 
-where Injectable:
+##### Middleware
+Middleware is a class, that implements interface **Middleware**, like so:
 ```typescript
-{ provide: UserController, deps: [UserService] }
+class ControllerMiddleware implements Middleware {
+  public use(
+    io: SocketIO.Server | SocketIO.Namespace,
+    socket: SocketIO.Socket,
+    args: any,
+    next: Function
+  ) {
+    console.log('ControllerMiddleware');
+    next();
+  }
+}
+```
+To register global middleware handler, use **IO_MIDDLEWARE** injection token with **Container** from `@decorators/di` package, like so:
+
+```typescript
+Container.provide([
+  { provide: IO_MIDDLEWARE, useClass: ServerMiddleware }
+]);
 ```
 
 ### Details

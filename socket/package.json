@@ -1,6 +1,6 @@
 {
   "name": "@decorators/socket",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "node decorators - decorators for socket.io library",
   "main": "src/index.js",
   "dependencies": {
