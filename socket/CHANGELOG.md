@@ -1,3 +1,6 @@
+# Express#3.0.1
+* Updated README
+
 # Express#3.0.0
 * Dependency injection with `@decorators/di`
 * `@ServerMiddleware` decorator was removed, use `IO_MIDDLEWARE` token to register custom server middleware
