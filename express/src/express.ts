@@ -15,7 +15,7 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
  * @param {Express} app Express application
  * @param {Type[]} controllers Controllers array
  */
-export function attachControllers(app: Express, controllers: Type[]) {
+export function attachControllers(app: Express | Router, controllers: Type[]) {
   controllers.forEach((controller: Type) => registerController(app, controller));
 
   app.use(errorMiddlewareHandler());
