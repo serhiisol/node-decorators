@@ -28,7 +28,7 @@ export function attachControllers(app: Express | Router, controllers: Type[]) {
  * @param {ExpressClass} Controller
  * @returns
  */
-function registerController(app: Application, Controller: Type) {
+function registerController(app: Application | Router, Controller: Type) {
   const controller: ExpressClass = getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router();
