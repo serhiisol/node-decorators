@@ -90,7 +90,19 @@ class UsersController {
 
 let app = express();
 attachControllers(app, [UsersController]);
+
 app.listen(3000);
+```
+
+You can also attach controllers to express.Router instance. This is useful when you want to namespace all of the routes with a prefix:
+
+```
+import { attachControllers } from '@decorators/express';
+
+const apiRouter = express.Router();
+attachControllers(apiRouter, [UsersController]);
+
+app.use('/v1/api', apiRouter);
 ```
 
 [ExpressJS]:http://expressjs.com
