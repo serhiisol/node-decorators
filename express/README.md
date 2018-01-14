@@ -10,7 +10,7 @@ npm install @decorators/express --save
 
 ### API
 #### Functions
-* **attachControllers(app: Express, controllers: Controller[])** - attach controllers to express application
+* **attachControllers(app: Express.Application | Express.Router, controllers: Controller[])** - attach controllers to express application
 
 #### Decorators
 ##### Class

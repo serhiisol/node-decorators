@@ -11,7 +11,8 @@
     "rootDir": ".",
     "inlineSourceMap": true,
     "target": "es6",
-    "inlineSources": true
+    "inlineSources": true,
+    "outDir": ".compiled"
   },
   "exclude": [
     "node_modules/**/*"
