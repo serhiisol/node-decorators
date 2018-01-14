@@ -1,3 +1,8 @@
+# 2.2.1
+* Router support for `attachControllers` helper function
+* Global error middleware also intercepts errors in async method handlers
+* Changed library structure
+
 # 2.2.0
 * `@Injectable` from `@decorators/di` is now optional for controller.
 Note: make sure to use `@Injectable` if you need dependency injection in controller

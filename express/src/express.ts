@@ -61,8 +61,13 @@ function registerController(app: Application | Router, Controller: Type) {
 
     const routeHandler = (req, res, next) => {
       const args = extractParameters(req, res, next, params[methodName]);
+      const handler = controller[methodName].apply(controller, args);
 
-      return controller[methodName].apply(controller, args);
+      if (handler instanceof Promise) {
+          handler.catch(next);
+      }
+
+      return handler;
     };
 
     const routeMiddleware: RequestHandler[] = (route.middleware || [])

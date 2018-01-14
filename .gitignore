@@ -8,6 +8,8 @@ node_modules/
 npm-debug.log
 
 # compiled
+.compiled
+lib
 **/*.d.ts
 **/*.js
 **/*.map

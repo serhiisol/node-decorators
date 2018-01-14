@@ -2,7 +2,8 @@
   "name": "@decorators/express",
   "version": "2.2.1",
   "description": "node decorators",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "express": ">=4.16.2",
     "@decorators/di": ">=1.0.0"
@@ -29,7 +30,6 @@
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
-  "types": "index.d.ts",
   "scripts": {
     "compile": "tsc"
   }
