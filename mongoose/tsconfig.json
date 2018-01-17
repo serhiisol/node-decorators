@@ -15,7 +15,8 @@
     "target": "es6",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
-    "pretty": true
+    "pretty": true,
+    "outDir": "lib"
   },
   "exclude": ["node_modules"],
   "files": [

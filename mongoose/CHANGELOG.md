@@ -1,4 +1,8 @@
-# Mongoose#3.0.0
+# 3.0.1
+* Added ability to not to use `@Injectable` from `@decorators/di` in case if DI is not needed
+* Changed library structure
+
+# 3.0.0
 * Dependency injection with `@decorators/di`
 * `@Static` is using `static` members from now on
 * new `@Hook` decorators for mongoose lifecycle hooks (pre, post etc.)
@@ -6,7 +10,7 @@
 * Development: big refactoring
 * Development: updated typescript version to `>=2.6.1`
 
-# Mongoose#2.0.0
+# 2.0.0
 ### FEATURES
 * **schema()** helper function added in order to reach mongoose schema in the same way, with @decorators/mongoose class
 
@@ -15,22 +19,22 @@
 * renamed **bootstrapMongoose** to **model(...)**
 * renamed **ModelClass**
 
-# Mongoose#1.2.1
+# 1.2.1
 * Fixed model ctx for DI
 
-# Mongoose#1.2.0
+# 1.2.0
 * Model DI
 
-# Mongoose#1.1.2
+# 1.1.2
 * New `options` parameter for `Model` decorator to pass in Schema Type options
-* `Set` and `Option` decorators are now deprecated and will be removed in a future release 
+* `Set` and `Option` decorators are now deprecated and will be removed in a future release
 
-# Mongoose#1.1.1
+# 1.1.1
 * Automatic definitions generation
 * new **ref(collectionRef)** - helper function to define reference to another collection/model
 * **ModelClass** interface provides all properties and functions to the class
 
-# Mongoose#1.1.0
+# 1.1.0
 ### BREAKING CHANGES
 * Changed **@Schema** decorator to **@SchemaField** to use it inside class as property decorator
   ```typescript
@@ -72,7 +76,7 @@ npm install @decorators/mongoose --save
 ### Bug Fixes
 * added trash files into **.npmignore**
 
-# 0.1.0 
+# 0.1.0
 ### Features
 * New mongoose decorators
   * @Static

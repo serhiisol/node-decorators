@@ -148,8 +148,23 @@ function wrapFunction(fn: Fn, instance): Fn {
  * @returns {{ meta: MongooseMeta, instance: MongooseClass }}
  */
 function getArtifacts(modelClass: MongooseClass): { meta: MongooseMeta, instance: MongooseClass } {
-  const instance: MongooseClass = Container.get(modelClass);
+  const instance: MongooseClass = getModel(modelClass);
   const meta: MongooseMeta = getMongooseMeta(instance);
 
   return { meta, instance };
+}
+
+/**
+ * Get model instance from container or instantiate one
+ *
+ * @param {MongooseClass} ModelClass
+ *
+ * @returns {MongooseClass}
+ */
+function getModel(ModelClass: MongooseClass): MongooseClass {
+  try {
+    return Container.get(ModelClass);
+  } catch {
+    return new ModelClass();
+  }
 }
