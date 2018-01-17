@@ -1,8 +1,9 @@
 {
   "name": "@decorators/mongoose",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "node decorators",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "mongoose": ">=4.13.0",
     "@decorators/di": ">=1.0.0"
@@ -29,7 +30,6 @@
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
-  "types": "index.d.ts",
   "scripts": {
     "compile": "tsc"
   }
