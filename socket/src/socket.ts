@@ -147,7 +147,7 @@ function mapArguments(
    * loop through all params and put them into correct order
    */
   return params
-    .sort((param: Param) => param.index)
+    .sort((p1: Param, p2: Param) => p1.index - p2.index)
     .map((param: Param) => {
       switch (param.type) {
         case ParameterType.IO: return getWrapper(param, io);
