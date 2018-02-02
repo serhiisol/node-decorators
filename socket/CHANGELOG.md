@@ -1,3 +1,6 @@
+# Socket#3.0.2
+* Fix sorting parameters when applying events
+
 # Express#3.0.1
 * Updated README
 
