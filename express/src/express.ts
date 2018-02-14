@@ -177,5 +177,5 @@ function getController(Controller: Type): ExpressClass {
 function getParam(source: any, paramType: string, name: string): any {
   let param = source[paramType] || source;
 
-  return param[name] || param;
+  return name ? param[name] : param;
 }

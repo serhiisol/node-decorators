@@ -1,3 +1,6 @@
+# 2.2.2
+* Fixed `getParam` to always return property of `param` when `name` is provided
+
 # 2.2.1
 * Router support for `attachControllers` helper function
 * Global error middleware also intercepts errors in async method handlers
