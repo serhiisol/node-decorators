@@ -64,15 +64,15 @@ export class Container {
       return provider.value;
     }
 
-    requesters.push(provider);
+    const _requesters = requesters.concat([provider]);
 
     const deps = provider
       .deps.map((dep: Dependency) => {
         const requesterProvider: StoreProvider =
-          requesters.find((requester: StoreProvider) => requester.id === dep.id);
+          _requesters.find((requester: StoreProvider) => requester.id === dep.id);
 
         if (requesterProvider) {
-          throw new RecursiveProviderError(requesters, requesterProvider);
+          throw new RecursiveProviderError(_requesters, requesterProvider);
         }
 
         const depService: StoreProvider = Store.findProvider(dep.id);
@@ -85,7 +85,7 @@ export class Container {
           return null;
         }
 
-        return this.resolveProvider(depService, requesters);
+        return this.resolveProvider(depService, _requesters);
       });
 
     provider.value = provider.factory ?

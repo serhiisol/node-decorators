@@ -140,6 +140,21 @@ describe('Container', () => {
         }
       });
 
+      it('should not throw error {RecursiveProviderError}', () => {
+        const mod1: InjectionToken = new InjectionToken('mod1');
+        const mod2: InjectionToken = new InjectionToken('mod2');
+        const mod3: InjectionToken = new InjectionToken('mod3');
+
+        Container.provide([
+          { provide: mod1, deps: [mod2, mod3], useFactory: (val) => val },
+          { provide: mod2, useFactory: (val) => val },
+          { provide: mod3, deps: [mod2], useFactory: (val) => val },
+        ]);
+
+        const r = Container.get(mod1);
+        expect(r).to.be;
+      });
+
     });
 
     describe('ClassProvider', () => {
@@ -222,6 +237,20 @@ describe('Container', () => {
         }
       });
 
+      it('should not throw error {RecursiveProviderError}', () => {
+        const mod1: InjectionToken = new InjectionToken('mod1');
+        const mod2: InjectionToken = new InjectionToken('mod2');
+        const mod3: InjectionToken = new InjectionToken('mod3');
+
+        Container.provide([
+          { provide: mod1, useClass: TestInjectable, deps: [mod2, mod3] },
+          { provide: mod2, useClass: AnotherInjectable },
+          { provide: mod3, useClass: AnotherInjectable, deps: [mod2]}
+        ]);
+
+        const r = Container.get(mod1);
+        expect(r).to.be;
+      });
     });
 
   });
