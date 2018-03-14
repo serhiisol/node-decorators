@@ -1,3 +1,6 @@
+# 2.2.3
+* Fixed `getParam` to return `undefined` if `name` is not a property of `param`.
+
 # 2.2.2
 * Fixed `getParam` to always return property of `param` when `name` is provided
 
