@@ -80,11 +80,11 @@ import {
 @Controller('/')
 class UsersController {
 
-  constructor(userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   @Get('/users/:id')
   getData(@Response() res, @Params('id') id: string) {
-    res.send(userService.findById(id));
+    res.send(this.userService.findById(id));
   }
 }
 
