@@ -1,10 +1,10 @@
 # Socket#3.0.2
 * Fix sorting parameters when applying events
 
-# Express#3.0.1
+# Socket#3.0.1
 * Updated README
 
-# Express#3.0.0
+# Socket#3.0.0
 * Dependency injection with `@decorators/di`
 * `@ServerMiddleware` decorator was removed, use `IO_MIDDLEWARE` token to register custom server middleware
 * `@Middleware` decorator was removed use controller-based middleware
