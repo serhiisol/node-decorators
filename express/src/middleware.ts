@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { Container } from '@decorators/di';
+import { Request, Response, NextFunction, RequestHandler, ErrorRequestHandler } from 'express';
+import { Container, InjectionToken } from '@decorators/di';
 
 export interface Type extends Function {
   new (...args: any[]);
@@ -28,21 +28,70 @@ export interface ErrorMiddleware {
 /**
  * Create request middleware handler that uses class or function provided as middleware
  *
- * @export
- * @param {Middleware} middleware
+ * @param {Type} middleware
  *
  * @returns {RequestHandler}
  */
 export function middlewareHandler(middleware: Type): RequestHandler {
-  return function(...args: any[]): any {
-    let instance: Middleware;
-
+  return function(req: Request, res: Response, next: NextFunction): any {
     try {
-      instance = Container.get(middleware);
-    } catch {
-      instance = new middleware();
+      return getMiddleware(middleware, [req, res, next]);
+    } catch (error) {
+      next(error);
     }
-
-    return instance.use.apply(instance, args);
   }
+}
+
+/**
+ * Error Middleware class registration DI token
+ */
+export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
+
+/**
+ * Add error middleware to the app
+ *
+ * @returns {ErrorRequestHandler}
+ */
+export function errorMiddlewareHandler(): ErrorRequestHandler {
+  return function(error: Error, req: Request, res: Response, next: NextFunction): void {
+    try {
+      return getMiddleware(ERROR_MIDDLEWARE, [error, req, res, next]);
+    } catch {
+      next(error);
+    }
+  }
+}
+
+/**
+ * Instantiate middleware and invoke it with arguments
+ *
+ * @param {InjectionToken | Type} middleware
+ * @param {any[]} args
+ */
+function getMiddleware(middleware: InjectionToken | Type, args: any[]) {
+  const next: NextFunction = args.pop(); // last parameter is always the next function
+  let instance: Middleware | ErrorMiddleware;
+
+  try {
+    // first, trying to get instance from the container
+    instance = Container.get(middleware);
+  } catch {
+    try {
+      // if container fails, trying to instantiate it
+      instance = new (middleware as Type)();
+    } catch {
+      // if instantiation fails, try to use it as is
+      instance = middleware as any;
+    }
+  }
+
+  const result = instance.use.apply(instance, args);
+
+  if (result instanceof Promise) {
+    result
+      .then(() => next())
+      .catch(e => next(e));
+  }
+
+  return result
 }
