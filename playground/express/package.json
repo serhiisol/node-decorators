@@ -1,14 +1,14 @@
 {
   "name": "@decorators/playground-express",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "node decorators",
   "dependencies": {
-    "@types/express": "4.0.39",
-    "@decorators/di": "1.0.1",
-    "@decorators/express": "file:../../express"
+    "@decorators/di": ">=1.0.2",
+    "express": ">=4.16.3"
   },
   "devDependencies": {
-    "typescript": "2.6.2"
+    "@types/express": "4.16.0",
+    "typescript": "2.9.2"
   },
   "keywords": [
     "nodejs",
@@ -29,7 +29,6 @@
     "url": "https://github.com/serhiiso/node-decorators.git"
   },
   "scripts": {
-    "compile": "tsc",
-    "start": "node .compiled/index.js"
+    "compile": "tsc"
   }
 }

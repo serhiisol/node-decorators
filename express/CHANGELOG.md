@@ -1,3 +1,7 @@
+# 2.3.0
+* Added support for `async` middleware
+* `express` and `@decorators/di` as `peerDependencies`
+
 # 2.2.2
 * Fixed `getParam` to always return property of `param` when `name` is provided
 

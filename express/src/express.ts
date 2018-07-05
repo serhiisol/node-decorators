@@ -1,13 +1,8 @@
-import { RequestHandler, ErrorRequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
-import { Container, InjectionToken } from '@decorators/di';
+import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
+import { Container } from '@decorators/di';
 
 import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
-import { middlewareHandler, ErrorMiddleware, Type } from './middleware';
-
-/**
- * Error Middleware class registration DI token
- */
-export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
+import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
 
 /**
  * Attach controllers to express application
@@ -18,6 +13,7 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
 export function attachControllers(app: Express | Router, controllers: Type[]) {
   controllers.forEach((controller: Type) => registerController(app, controller));
 
+  // error middleware must be registered as the very last one
   app.use(errorMiddlewareHandler());
 }
 
@@ -32,7 +28,6 @@ function registerController(app: Application | Router, Controller: Type) {
   const controller: ExpressClass = getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router();
-
   const routes: object = meta.routes;
   const url: string = meta.url;
   const params: object = meta.params;
@@ -84,22 +79,6 @@ function registerController(app: Application | Router, Controller: Type) {
 }
 
 /**
- * Add error middleware to the app
- *
- * @param {Express} app
- */
-function errorMiddlewareHandler(): ErrorRequestHandler {
-  return function(error: Error, req: Request, res: Response, next: NextFunction): void {
-    try {
-      const errorMiddleware: ErrorMiddleware = Container.get(ERROR_MIDDLEWARE);
-      errorMiddleware.use(error, req, res, next);
-    } catch {
-      next(error);
-    }
-  }
-}
-
-/**
  * Extract parameters for handlers
  *
  * @param {Request} req
@@ -116,7 +95,7 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
 
   const args = [];
 
-  for (let { name, index, type } of params) {
+  for (const { name, index, type } of params) {
 
     switch (type) {
       case ParameterType.RESPONSE:
@@ -175,7 +154,7 @@ function getController(Controller: Type): ExpressClass {
  * @returns {*}
  */
 function getParam(source: any, paramType: string, name: string): any {
-  let param = source[paramType] || source;
+  const param = source[paramType] || source;
 
   return name ? param[name] : param;
 }
