@@ -7,8 +7,9 @@
       "name": "Playground/Express",
       "program": "${workspaceFolder}/playground/express/index.ts",
       "outFiles": [
-        "${workspaceFolder}/**/*.js"
-      ]
+        "${workspaceFolder}/playground/express/.compiled/**/*.js"
+      ],
+      "preLaunchTask": "Playground/Express"
     },
     {
       "type": "node",

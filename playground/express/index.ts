@@ -1,25 +1,27 @@
 import * as express from 'express';
-
-import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
+import { Container, Injectable } from '@decorators/di';
 import {
   Controller,
   Response,
   Get,
   attachControllers,
   ERROR_MIDDLEWARE,
-  ErrorMiddleware,
-  Middleware
+  ErrorMiddleware
 } from '@decorators/express';
 
-const MESSAGE = new InjectionToken('MESSAGE');
+async function emulatedRequest(): Promise<any> {
+  return new Promise(resolve =>
+    setTimeout(resolve, 3000)
+  );
+}
 
 @Injectable()
 class ServerErrorMiddleware implements ErrorMiddleware {
 
-  public use(error, req, res, next) {
-    console.log('server error middleware', error.toString());
+  async use(error, _req, res) {
+    await emulatedRequest();
 
-    res.send(500);
+    res.status(500).send(error.toString());
   }
 }
 
@@ -27,18 +29,29 @@ class ServerErrorMiddleware implements ErrorMiddleware {
 class UserController {
 
   @Get('/')
-  public async getData(@Response() res): Promise<any> {
-    throw new Error('test error');
+  getData(@Response() res) {
+    throw new Error('Handler error');
   }
 
 }
 
-let app: express.Express = express();
+/**
+ * Server configuration
+ */
+
+const app: express.Express = express();
+
+app.set('env', 'test');
 
 Container.provide([
-  { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
+  {
+    provide: ERROR_MIDDLEWARE,
+    useClass: ServerErrorMiddleware
+  }
 ]);
 
 attachControllers(app, [ UserController ]);
 
 app.listen(3000);
+
+console.log('Server is running on http://localhost:3000');

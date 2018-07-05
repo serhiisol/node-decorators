@@ -69,8 +69,8 @@ export function errorMiddlewareHandler(): ErrorRequestHandler {
  * @param {any[]} args
  */
 function getMiddleware(middleware: InjectionToken | Type, args: any[]) {
-  const next: NextFunction = args.pop(); // last parameter is always the next function
-  let instance: Middleware | ErrorMiddleware;
+  const next: NextFunction = args[args.length - 1]; // last parameter is always the next function
+  let instance;
 
   try {
     // first, trying to get instance from the container
@@ -85,12 +85,15 @@ function getMiddleware(middleware: InjectionToken | Type, args: any[]) {
     }
   }
 
-  const result = instance.use.apply(instance, args);
+  // first, assuming that middleware is a class, try to use it,
+  // otherwise use it as a function
+  const result = instance.use ?
+    (instance as Middleware | ErrorMiddleware).use.apply(instance, args) :
+    (instance as Type).apply(instance, args);
 
+  // if result of execution is a promise, add additional listener to catch error
   if (result instanceof Promise) {
-    result
-      .then(() => next())
-      .catch(e => next(e));
+    result.catch(e => next(e));
   }
 
   return result
