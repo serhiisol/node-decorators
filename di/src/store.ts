@@ -3,8 +3,7 @@ import { Reflector } from './reflector';
 import { InjectionToken } from './injection-token';
 
 export class Store {
-  public static providers: StoreProvider[] = [];
-
+  private static providers: StoreProvider[] = [];
   /**
    * Get provider id
    *
@@ -29,8 +28,8 @@ export class Store {
    *
    * @internal
    * @static
-   * @param {Type} provider
-   * @param {InjectableId} useId
+   * @param {Type} type
+   * @param {InjectableId} args
    */
   public static provider(type: Type, args?: { injectable?, optional?, index? }): Type {
     let provider: StoreProvider = this.findProvider(type);
@@ -76,7 +75,7 @@ export class Store {
   }
 
   /**
-   * Replace stored provider wiht new provider
+   * Replace stored provider with new provider
    *
    * @static
    * @param {Injectable} injectable
@@ -98,7 +97,7 @@ export class Store {
    *
    * @internal
    * @static
-   * @param {Injectable} injectable
+   * @param {Injectable} type
    *
    * @returns {StoreProvider}
    */

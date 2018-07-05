@@ -13,7 +13,7 @@ export class Reflector {
    * @returns {InjectionToken}
    */
   public static getId(type: Type): InjectionToken {
-    return Reflect.getMetadata('__meta_di__', type);
+    return Reflect.getMetadata('__meta_di__', type) || type.name;
   }
 
   /**
