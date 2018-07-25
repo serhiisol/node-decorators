@@ -5,6 +5,7 @@ import {
   Controller,
   Socket,
   Args,
+  ServerMiddleware,
   Middleware,
   Event,
   IO_MIDDLEWARE
@@ -14,7 +15,7 @@ import { Container, Injectable, Inject, InjectionToken } from '@decorators/di';
 const server = listen(3000);
 const MESSAGE = new InjectionToken('MESSAGE');
 
-class ServerMiddleware implements Middleware {
+class GlobalMiddleware implements ServerMiddleware {
   public use(io, socket, next) {
     console.log('ServerMiddleware');
     next();
@@ -49,7 +50,7 @@ class ConnectionController {
 
 Container.provide([
   { provide: MESSAGE, useValue: 'Socket welcomes user' },
-  { provide: IO_MIDDLEWARE, useClass: ServerMiddleware }
+  { provide: IO_MIDDLEWARE, useClass: GlobalMiddleware }
 ]);
 
 attachControllers(server, [ ConnectionController ]);
