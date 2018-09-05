@@ -9,29 +9,29 @@ import {
   SocketClass,
   getMeta
 } from './meta';
-import { executeMiddleware, IO_MIDDLEWARE, middlewareHandler } from './middleware';
+import { executeMiddleware, IO_MIDDLEWARE, middlewareHandler, Type } from './middleware';
 
 /**
  * Attaches controllers to IO server
  *
  * @param {SocketIO.Server} io
- * @param {SocketClass[]} controllers
+ * @param {Type[]} controllers
  */
-export function attachControllers(io: SocketIO.Server, controllers: SocketClass[]) {
+export function attachControllers(io: SocketIO.Server, controllers: Type[]) {
   io.use((socket, next) => middlewareHandler(IO_MIDDLEWARE)(io, socket, next));
 
-  controllers.forEach((controller: SocketClass) => attachController(io, controller));
+  controllers.forEach((controller: Type) => attachController(io, controller));
 }
 
 /**
  * Attach Controller
  *
  * @param {SocketIO.Server} IO
- * @param {SocketClass} Controller
+ * @param {Type} Controller
  */
 function attachController(
   io: SocketIO.Server,
-  controller: SocketClass
+  controller: Type
 ) {
   const instance: SocketClass = Container.get(controller);
   const meta: SocketMeta = getMeta(instance);
@@ -95,13 +95,13 @@ function socketMiddlewareHandler(io: IO, socket: SocketIO.Socket, meta: SocketMe
  *
  * @param {SocketIO.Server|SocketIO.Namespace} io
  * @param {SocketIO.Socket} socket
- * @param {DecoratorsArtifacts} artifacts
+ * @param {Type} controller
  * @param {EventType} type
  */
 function applyEvents(
   io: SocketIO.Server | SocketIO.Namespace,
   socket: SocketIO.Socket,
-  controller: SocketClass,
+  controller: Type,
   type: EventType
 ) {
   const instance: SocketClass = Container.get(controller);

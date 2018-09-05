@@ -1,4 +1,4 @@
-import { Middleware } from './middleware';
+import { Type } from './middleware';
 
 /**
  * Parameter types enum
@@ -38,7 +38,7 @@ export interface Listener {
   methodName: string;
   event: string;
   type: EventType;
-  middleware: Middleware[];
+  middleware: Type[];
 }
 
 /**
@@ -56,7 +56,7 @@ export class SocketMeta {
   /**
    * Middleware
    */
-  middleware: Middleware[] = [];
+  middleware: Type[] = [];
 
   /**
    * Event listeners
@@ -77,9 +77,7 @@ export class SocketMeta {
  * @extends {Object}
  */
 export interface SocketClass extends Object {
-  __socket_meta__: SocketMeta;
-
-  new (...deps: any[]);
+  __socket_meta__?: SocketMeta;
 }
 
 /**

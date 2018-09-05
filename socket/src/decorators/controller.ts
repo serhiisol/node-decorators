@@ -1,13 +1,13 @@
 import { getMeta, SocketMeta } from '../meta';
-import { Middleware } from '../middleware';
+import { Type } from '../middleware';
 
 /**
  * Defines namespace for the controller and controller-based middleware
  *
  * @param {string} namespace
- * @param {Middleware[]} [middleware]
+ * @param {Type[]} [middleware]
  */
-export function Controller(namespace: string, middleware?: Middleware[]) {
+export function Controller(namespace: string, middleware?: Type[]) {
   return (target): void => {
     const meta: SocketMeta = getMeta(target.prototype);
 

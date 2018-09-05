@@ -52,11 +52,25 @@ class ControllerMiddleware implements Middleware {
   }
 }
 ```
-To register global middleware handler, use **IO_MIDDLEWARE** injection token with **Container** from `@decorators/di` package, like so:
+To register global middleware handler create a class, that implements interface **ServerMiddleware**, like so:
+```typescript
+class GlobalMiddleware implements ServerMiddleware {
+  public use(
+    io: SocketIO.Server | SocketIO.Namespace,
+    socket: SocketIO.Socket,
+    next: Function
+  ) {
+    console.log('GlobalMiddleware');
+    next();
+  }
+}
+```
+
+Then register it by using **IO_MIDDLEWARE** injection token with **Container** from `@decorators/di` package, like so:
 
 ```typescript
 Container.provide([
-  { provide: IO_MIDDLEWARE, useClass: ServerMiddleware }
+  { provide: IO_MIDDLEWARE, useClass: GlobalMiddleware }
 ]);
 ```
 
@@ -64,7 +78,6 @@ Container.provide([
 #### Middleware
 The middleware order :
 * Global Server Middleware (**io.use(...)**)
-* Global Socket middleware (**socket.use(...)**)
 * Controller based middleware (**@Controller(...)**)
 * Event based middleware (**@Event(...)**)
 

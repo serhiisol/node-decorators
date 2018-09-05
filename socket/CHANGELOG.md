@@ -1,3 +1,9 @@
+# Socket#3.1.0
+* Changed library structure
+* Fixed interfaces
+* Added new interface to implement for server middleware `ServerMiddleware`, controller `Middleware` interface remains the same
+* Updated versions of dependencies, like `socket.io` and `@decorators/di`
+
 # Socket#3.0.2
 * Fix sorting parameters when applying events
 
