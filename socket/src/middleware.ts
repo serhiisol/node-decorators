@@ -50,15 +50,37 @@ export interface Middleware {
  */
 export function middlewareHandler(middleware: Type | InjectionToken) {
   return function(...args: any[]): any {
-    let instance: Middleware | ServerMiddleware;
+    const next: NextFunction = args[args.length - 1];
+    let instance: Middleware | ServerMiddleware | Type;
 
     try {
       instance = Container.get(middleware);
-    } catch (e) {
-      instance = new (middleware as Type)();
+    } catch {
+      try {
+        instance = new (middleware as Type)();
+      } catch {
+        instance = middleware as any;
+      }
     }
 
-    return instance.use.apply(instance, args);
+    // first, assuming that middleware is a class, try to use it,
+    // otherwise use it as a function
+    const use = (instance as Middleware | ServerMiddleware).use ?
+      (instance as Middleware | ServerMiddleware).use : instance as Type;
+
+    try {
+      const result = use.apply(instance, args);
+
+       // if result of execution is a promise, add additional listener to catch error
+      if (result instanceof Promise) {
+        result.catch(next);
+      }
+
+      return result;
+    } catch (e) {
+      return next(e);
+    }
+
   }
 }
 
