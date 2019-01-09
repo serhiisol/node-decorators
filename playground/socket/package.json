@@ -30,6 +30,7 @@
     "url": "https://github.com/serhiiso/node-decorators.git"
   },
   "scripts": {
-    "compile": "tsc"
+    "compile": "tsc",
+    "install": "rm -rf node_modules/@decorators/socket && cp -r ../../socket node_modules/@decorators && rm -rf node_modules/@decorators/socket/node_modules && rm -rf node_modules/@decorators/socket/src"
   }
 }
