@@ -1,19 +1,6 @@
 # dependencies
-node_modules/
-
-# IDEs and editors
-.idea/
-
-# misc
-npm-debug.log
+node_modules
 
 # compiled
-.compiled
 lib
-**/*.d.ts
-**/*.js
-**/*.map
 
-#System Files
-.DS_Store
-Thumbs.db

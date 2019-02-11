@@ -2,14 +2,14 @@ function bind(fn, ctx) {
   if (fn.bind) {
     return fn.bind(ctx);
   }
-  return function bind(...args) {
+  return function(...args) {
     return fn.apply(ctx, args);
   };
 }
 
-export function Bind(context ? : any) {
-  return function Bind(target, key, descriptor: PropertyDescriptor) {
-    const { configurable, enumerable, set } = descriptor;
+export function Bind(context?: any) {
+  return function(_target, _key, descriptor: PropertyDescriptor) {
+    const { configurable, enumerable } = descriptor;
     let method = descriptor.value;
 
     if (typeof method !== 'function') {
@@ -23,9 +23,9 @@ export function Bind(context ? : any) {
       get() {
         return bind(method, context || this);
       },
-      set(value: Function) {
+      set(value) {
         method = value;
       }
     };
-  }
+  };
 }

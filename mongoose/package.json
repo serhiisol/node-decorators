@@ -1,7 +1,7 @@
 {
   "name": "@decorators/mongoose",
   "version": "3.0.1",
-  "description": "node decorators",
+  "description": "node decorators - decorators for mongoose library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {

@@ -1,7 +1,7 @@
 {
   "name": "@decorators/express",
   "version": "2.3.0",
-  "description": "node decorators",
+  "description": "node decorators - decorators for express library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
@@ -33,7 +33,6 @@
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
   "scripts": {
-    "compile": "tsc",
-    "compile-to-playground": "tsc --outDir ../playground/express/node_modules/@decorators/express"
+    "compile": "tsc"
   }
 }

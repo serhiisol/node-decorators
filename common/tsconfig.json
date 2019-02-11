@@ -8,15 +8,18 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "rootDir": ".",
-    "sourceMap": true,
-    "target": "es5",
+    "inlineSourceMap": true,
+    "target": "es6",
+    "inlineSources": true,
+    "typeRoots": ["node_modules/@types"],
     "pretty": true,
-    "lib": [
-      "es2015"
-    ]
+    "outDir": "lib"
   },
+  "exclude": ["node_modules"],
   "files": [
-    "src/index.ts"
+    "./index.ts"
   ]
 }

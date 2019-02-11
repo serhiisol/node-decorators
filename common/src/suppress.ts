@@ -3,14 +3,13 @@
  * @param {string[]} methods Methods to be suppressed
  */
 export function SuppressConsole(methods: string[] = ['log']) {
-  return function SuppressConsole(target, key, descriptor) {
-
+  return function(_target, _key, descriptor) {
     const originalMethod = descriptor.value;
-    const nativeMethods = methods.reduce((nativeMethods, method) => {
-      nativeMethods[method] = console[method];
-      return nativeMethods;
+    const nativeMethods = methods.reduce((aggMethods, method) => {
+      aggMethods[method] = console[method];
+      return aggMethods;
     }, {});
-    const noop = function noop() {};
+    const noop = function noopFn() {};
 
     function lock() {
       methods.forEach(method => {
@@ -24,7 +23,7 @@ export function SuppressConsole(methods: string[] = ['log']) {
       });
     }
 
-    descriptor.value = function (...args) {
+    descriptor.value = function(...args) {
       lock();
 
       let result: any;
@@ -45,5 +44,5 @@ export function SuppressConsole(methods: string[] = ['log']) {
       unlock();
       return result;
     };
-  }
+  };
 }
