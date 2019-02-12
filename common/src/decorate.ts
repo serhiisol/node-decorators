@@ -9,12 +9,10 @@
  *  }
  * }
  */
-export function Decorate(decoratorFn: Function, ...args) {
-  return function (target, key, descriptor) {
-
+export function Decorate(decoratorFn: (...args) => any, ...args) {
+  return function(_target, _key, descriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = decoratorFn.apply(this, [originalMethod, ...args]);
-
-  }
+  };
 }

@@ -1,3 +1,7 @@
+# Socket#3.2.0
+* Made global middleware optional
+* Made dependencies as peerDependencies
+
 # Socket#3.1.0
 * Changed library structure
 * Fixed interfaces

@@ -1,8 +1,9 @@
 {
   "name": "@decorators/common",
   "version": "1.1.2",
-  "description": "node decorators",
-  "main": "src/index.js",
+  "description": "node decorators - common decorators",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^8.0.4",
@@ -10,6 +11,7 @@
   },
   "keywords": [
     "nodejs",
+    "common decorators",
     "node decorators",
     "typescript"
   ],
@@ -19,7 +21,7 @@
     "url": "https://github.com/serhiiso/node-decorators/issues"
   },
   "engines": {
-    "node": ">=6.3.0"
+    "node": ">=7.1.0"
   },
   "repository": {
     "type": "git",

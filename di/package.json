@@ -1,8 +1,9 @@
 {
   "name": "@decorators/di",
   "version": "1.0.2",
-  "description": "node decorators",
-  "main": "src/index.js",
+  "description": "node decorators - decorators for dependency injection",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "reflect-metadata": "0.1.10"
   },
@@ -32,10 +33,8 @@
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
-  "types": "index.d.ts",
   "scripts": {
     "compile": "tsc",
-    "test": "mocha test.ts --require ts-node/register test.ts",
-    "clean-tsc": "find . -name \"*.js\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.js.map\" -type f -not -path \"./node_modules/*\" -delete && find . -name \"*.d.ts\" -type f -not -path \"./node_modules/*\" -not -path \"./types/*\" -delete"
+    "test": "mocha test.ts --require ts-node/register test.ts"
   }
 }

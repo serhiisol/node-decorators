@@ -1,8 +1,10 @@
 export function Throttle(wait = 500) {
-  return function throttled(target, key, descriptor) {
-    let method = descriptor.value, timeout, last;
+  return function throttled(_target, _key, descriptor) {
+    const method = descriptor.value;
+    let timeout;
+    let last;
 
-    descriptor.value = function (...args) {
+    descriptor.value = function(...args) {
       const now = Date.now();
 
       if (last && now < last + wait) {
