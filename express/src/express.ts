@@ -11,7 +11,21 @@ import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
  * @param {Type[]} controllers Controllers array
  */
 export function attachControllers(app: Express | Router, controllers: Type[]) {
-  controllers.forEach((controller: Type) => registerController(app, controller));
+  controllers.forEach((controller: Type) => registerController(app, controller, getController));
+
+  // error middleware must be registered as the very last one
+  app.use(errorMiddlewareHandler());
+}
+
+
+/**
+ * Attach controller instances to express application
+ *
+ * @param {Express} app Express application
+ * @param {any[]} controllers Controllers array
+ */
+export function attachControllerInstances(app: Express | Router, controllers: object[]) {
+  controllers.forEach((controller: Type) => registerController(app, controller, (c: object) => c ));
 
   // error middleware must be registered as the very last one
   app.use(errorMiddlewareHandler());
@@ -24,7 +38,7 @@ export function attachControllers(app: Express | Router, controllers: Type[]) {
  * @param {ExpressClass} Controller
  * @returns
  */
-function registerController(app: Application | Router, Controller: Type) {
+function registerController(app: Application | Router, Controller: Type|object, getController: (c: Type|object) => ExpressClass) {
   const controller: ExpressClass = getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router();
