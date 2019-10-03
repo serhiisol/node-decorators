@@ -1,16 +1,14 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
-Project implements decorators for modern tools for NodeJS like 
-[ExpressJS], [MongooseJS], [Socket.IO]
+Project implements decorators for modern tools for NodeJS like
+[ExpressJS], [Socket.IO]
 
 ## Installation
 
 ```
 npm install @decorators/di --save
 npm install @decorators/express --save
-npm install @decorators/mongoose --save
 npm install @decorators/socket --save
-npm install @decorators/common --save
 ```
 
 ## Example of usage
@@ -43,5 +41,4 @@ app.listen(3000);
 Look at the corresponding package for instructions
 
 [ExpressJS]:http://expressjs.com
-[MongooseJS]:http://mongoosejs.com
 [Socket.IO]:http://socket.io/
