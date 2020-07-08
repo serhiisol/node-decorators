@@ -28,8 +28,8 @@ function decoratorFactory(method: string, url: string, middleware: Type[]) {
  * @param {Type[]} [middleware]
  */
 export function All(url: string, middleware?: Type[]) {
-  return decoratorFactory('all', url, middleware)
-};
+  return decoratorFactory('all', url, middleware);
+}
 
 /**
  * Get route
@@ -38,8 +38,8 @@ export function All(url: string, middleware?: Type[]) {
  * @param {Type[]} [middleware]
  */
 export function Get(url: string, middleware?: Type[]) {
-  return decoratorFactory('get', url, middleware)
-};
+  return decoratorFactory('get', url, middleware);
+}
 
 /**
  * Post route

@@ -39,7 +39,7 @@ export function middlewareHandler(middleware: Type): RequestHandler {
     } catch (error) {
       next(error);
     }
-  }
+  };
 }
 
 /**
@@ -59,7 +59,7 @@ export function errorMiddlewareHandler(): ErrorRequestHandler {
     } catch {
       next(error);
     }
-  }
+  };
 }
 
 /**
@@ -96,5 +96,5 @@ function getMiddleware(middleware: InjectionToken | Type, args: any[]) {
     result.catch(e => next(e));
   }
 
-  return result
+  return result;
 }
