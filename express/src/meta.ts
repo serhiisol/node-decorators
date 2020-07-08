@@ -1,3 +1,5 @@
+import { RouterOptions } from 'express';
+
 import { Type } from './middleware';
 
 /**
@@ -51,15 +53,17 @@ export interface Route {
 export interface ExpressMeta {
   url: string;
 
+  routerOptions?: RouterOptions;
+
   routes: {
     [key: string]: Route;
-  }
+  };
 
   middleware: Type[];
 
   params: {
     [key: string]: ParameterConfiguration[];
-  }
+  };
 }
 
 /**
