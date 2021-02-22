@@ -8,11 +8,18 @@ import { Type } from '../middleware';
  * @param {string} url
  * @param {Type[]} middleware
  */
-function decoratorFactory(method: string, url: string, middleware: Type[]) {
+function decoratorFactory(method: string, url: string, middleware?: Type[]) {
+  middleware = middleware ?? [];
+
   return (target: any, key: string, descriptor: any) => {
     const meta: ExpressMeta = getMeta(target);
 
-    meta.routes[key] = { method, url, middleware };
+    if (!meta.routes[key]) {
+      meta.routes[key] = { method, url, middleware };
+    } else {
+      // Replace method and route but concatenate middlewares from previous route
+      meta.routes[key] = { method, url, middleware: middleware.concat(meta.routes[key].middleware) };
+    }
 
     return descriptor;
   };
