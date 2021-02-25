@@ -8,9 +8,7 @@ import { Type } from '../middleware';
  * @param {string} url
  * @param {Type[]} middleware
  */
-function decoratorFactory(method: string, url: string, middleware?: Type[]) {
-  middleware = middleware ?? [];
-
+function decoratorFactory(method: string, url: string, middleware: Type[] = []) {
   return (target: any, key: string, descriptor: any) => {
     const meta: ExpressMeta = getMeta(target);
 
