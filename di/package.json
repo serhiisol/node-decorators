@@ -1,11 +1,11 @@
 {
   "name": "@decorators/di",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "node decorators - decorators for dependency injection",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "reflect-metadata": "0.1.10"
+    "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
     "@types/mocha": "2.2.44",

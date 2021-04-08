@@ -1,3 +1,6 @@
+# 1.0.3
+* Update `reflect-metadata` to 0.1.13
+
 # 1.0.2
 * Fixed cyclic di and error
 
