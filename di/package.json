@@ -1,6 +1,6 @@
 {
   "name": "@decorators/di",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "node decorators - decorators for dependency injection",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
