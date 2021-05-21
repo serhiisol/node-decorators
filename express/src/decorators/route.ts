@@ -6,17 +6,23 @@ import { Type } from '../middleware';
  *
  * @param {string} method
  * @param {string} url
- * @param {Type[]} middleware
+ * @param {Type[]} [middleware=[]]
+ * @param {string[]} [aliases=[]]
  */
-function decoratorFactory(method: string, url: string, middleware: Type[] = []) {
+function decoratorFactory(method: string, url: string, middleware: Type[] = [], aliases: string[] = []) {
   return (target: any, key: string, descriptor: any) => {
     const meta: ExpressMeta = getMeta(target);
 
     if (!meta.routes[key]) {
-      meta.routes[key] = { method, url, middleware };
+      meta.routes[key] = { method, url, middleware, aliases };
     } else {
-      // Replace method and route but concatenate middlewares from previous route
-      meta.routes[key] = { method, url, middleware: middleware.concat(meta.routes[key].middleware) };
+      // Replace method and route but concatenate middlewares from previous route and aliases
+      meta.routes[key] = {
+        method,
+        url,
+        middleware: middleware.concat(meta.routes[key].middleware),
+        aliases: Array.from(new Set([...aliases, ...meta.routes[key].aliases]))
+      };
     }
 
     return descriptor;
@@ -31,9 +37,10 @@ function decoratorFactory(method: string, url: string, middleware: Type[] = []) 
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function All(url: string, middleware?: Type[]) {
-  return decoratorFactory('all', url, middleware);
+export function All(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('all', url, middleware, aliases);
 }
 
 /**
@@ -41,9 +48,10 @@ export function All(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Get(url: string, middleware?: Type[]) {
-  return decoratorFactory('get', url, middleware);
+export function Get(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('get', url, middleware, aliases);
 }
 
 /**
@@ -51,9 +59,10 @@ export function Get(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Post(url: string, middleware?: Type[]) {
-  return decoratorFactory('post', url, middleware);
+export function Post(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('post', url, middleware, aliases);
 }
 
 /**
@@ -61,9 +70,10 @@ export function Post(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Put(url: string, middleware?: Type[]) {
-  return decoratorFactory('put', url, middleware);
+export function Put(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('put', url, middleware, aliases);
 }
 
 /**
@@ -71,9 +81,10 @@ export function Put(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Delete(url: string, middleware?: Type[]) {
-  return decoratorFactory('delete', url, middleware);
+export function Delete(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('delete', url, middleware, aliases);
 }
 
 /**
@@ -81,9 +92,10 @@ export function Delete(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Patch(url: string, middleware?: Type[]) {
-  return decoratorFactory('patch', url, middleware);
+export function Patch(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('patch', url, middleware, aliases);
 }
 
 /**
@@ -91,9 +103,10 @@ export function Patch(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Options(url: string, middleware?: Type[]) {
-  return decoratorFactory('options', url, middleware);
+export function Options(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('options', url, middleware, aliases);
 }
 
 /**
@@ -101,7 +114,8 @@ export function Options(url: string, middleware?: Type[]) {
  *
  * @param {string} url
  * @param {Type[]} [middleware]
+ * @param {string[]} [aliases]
  */
-export function Head(url: string, middleware?: Type[]) {
-  return decoratorFactory('head', url, middleware);
+export function Head(url: string, middleware?: Type[], aliases?: string[]) {
+  return decoratorFactory('head', url, middleware, aliases);
 }

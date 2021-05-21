@@ -81,9 +81,9 @@ function registerController(app: Application | Router, Controller: Type|object, 
     const routeMiddleware: RequestHandler[] = (route.middleware || [])
       .map(middleware => middlewareHandler(middleware));
 
-    router[route.method].apply(router, [
-      route.url, ...routeMiddleware, routeHandler
-    ]);
+    [route.url, ...route.aliases].forEach(alias => {
+      router[route.method].apply(router, [alias, ...routeMiddleware, routeHandler]);
+    });
   }
 
   (app as Router).use(url, router);

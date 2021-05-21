@@ -42,6 +42,7 @@ export interface Route {
   method: string;
   url: string;
   middleware: Type[];
+  aliases: string[];
 }
 
 /**
