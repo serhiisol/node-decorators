@@ -56,7 +56,9 @@ export interface ExpressMeta {
   routerOptions?: RouterOptions;
 
   routes: {
-    [key: string]: Route;
+    [instanceMethodName: string]: {
+      [key: string]: Route;
+    };
   };
 
   middleware: Type[];

@@ -41,7 +41,7 @@ function registerController(app: Application | Router, Controller: Type|object, 
   const controller: ExpressClass = _getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router(meta.routerOptions);
-  const routes: object = meta.routes;
+  const routes: { [key: string]: { [key: string]: Route } } = meta.routes;
   const url: string = meta.url;
   const params: object = meta.params;
 
@@ -65,8 +65,6 @@ function registerController(app: Application | Router, Controller: Type|object, 
    * Applying registered routes
    */
   for (const methodName of Object.keys(routes)) {
-    const route: Route = routes[methodName];
-
     const routeHandler = (req, res, next) => {
       const args = extractParameters(req, res, next, params[methodName]);
       const handler = controller[methodName].apply(controller, args);
@@ -78,12 +76,15 @@ function registerController(app: Application | Router, Controller: Type|object, 
       return handler;
     };
 
-    const routeMiddleware: RequestHandler[] = (route.middleware || [])
-      .map(middleware => middlewareHandler(middleware));
+    const routesMap = routes[methodName];
+    Object.values(routesMap).forEach(route => {
+      const routeMiddleware: RequestHandler[] = (route.middleware || [])
+        .map(middleware => middlewareHandler(middleware));
 
-    router[route.method].apply(router, [
-      route.url, ...routeMiddleware, routeHandler
-    ]);
+      router[route.method].apply(router, [
+        route.url, ...routeMiddleware, routeHandler
+      ]);
+    });
   }
 
   (app as Router).use(url, router);

@@ -4,21 +4,29 @@ import { Type } from '../middleware';
 /**
  * Route decorator factory, creates decorator
  *
- * @param {string} method
+ * @param {string} httpMethod
  * @param {string} url
  * @param {Type[]} middleware
  */
-function decoratorFactory(method: string, url: string, middleware: Type[] = []) {
+function decoratorFactory(httpMethod: string, url: string, middleware: Type[] = []) {
   return (target: any, key: string, descriptor: any) => {
     const meta: ExpressMeta = getMeta(target);
 
-    if (!meta.routes[key]) {
-      meta.routes[key] = { method, url, middleware };
+    // init the routes dictionary
+    const routes = meta.routes[key] = meta.routes[key] || {};
+    const routeKey = `${httpMethod}.${url}`;
+    if (routes[routeKey]) {
+      // the combination of httpMethod and url is already registered for this method (fn)
+      // let's not register a new route but concat its middlewares
+      routes[routeKey].middleware = [...routes[routeKey].middleware, ...middleware];
     } else {
-      // Replace method and route but concatenate middlewares from previous route
-      meta.routes[key] = { method, url, middleware: middleware.concat(meta.routes[key].middleware) };
+      // this is a new route for the method
+      routes[routeKey] = {
+        method: httpMethod,
+        url,
+        middleware,
+      };
     }
-
     return descriptor;
   };
 }
