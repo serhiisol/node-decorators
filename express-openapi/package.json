@@ -1,6 +1,6 @@
 {
-  "name": "@decorators/openapi",
-  "version": "1.0.0",
+  "name": "@decorators/express-openapi",
+  "version": "1.0.0-beta",
   "description": "node decorators - openapi decorators for swagger-ui-express and @decorators/express",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
