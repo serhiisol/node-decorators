@@ -1,80 +1,7 @@
 import { Container, InjectionToken } from "@decorators/di";
 import { Express } from 'express';
 import * as swaggerUi from "swagger-ui-express";
-
-type OpenApiOptions = {
-  serveOnPath?: string;
-  info?: {
-    title?: string;
-    description?: string;
-    version?: string;
-  };
-  tags?: { name: string, description?: string }[];
-  servers?: { url: string, description?: string }[];
-  externalDocs?: { url: string, description?: string; };
-}
-
-type Type = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object';
-
-type Ref = {
-  $ref: string;
-};
-type OneOf = {
-  oneOf: Array<Type | Ref>;
-};
-type AnyOf = {
-  anyOf: Array<Type | Ref>;
-};
-type AllOf = {
-  allOf: Array<Type | Ref>;
-};
-type Not = {
-  not: Type | Ref;
-}
-
-type CommonAttrs<T> = {
-  default?: T;
-  example?: T;
-  readOnly?: boolean;
-  writeOnly?: boolean;
-  deprecated?: boolean;
-}
-
-type StringAttrs = {
-  minLength?: number;
-  maxLength?: number;
-  format?: string;
-  pattern?: string;
-  enum?: string[];
-} & CommonAttrs<string>;
-type NumericAttrs = {
-  minimum?: number;
-  maximum?: number;
-  format?: string;
-  exclusiveMinimum?: boolean;
-  exclusiveMaximum?: boolean;
-  multipleOf?: number;
-} & CommonAttrs<number>;
-type ArrayAttrs = {
-  items: Schema;
-  minItems?: number;
-  maxItems?: number;
-  uniqueItems?: boolean;
-} & CommonAttrs<any[]>
-type ObjectAttrs = {
-  properties?: Properties;
-  required?: string[];
-} & CommonAttrs<object>;
-export type StringSchema = { type: 'string' } & StringAttrs;
-export type NumericSchema = { type: 'number' | 'integer' } & NumericAttrs;
-export type BooleanSchema = { type: 'boolean' } & CommonAttrs<boolean>;
-export type ArraySchema = { type: 'array' } & ArrayAttrs;
-export type ObjectSchema = { type: 'object' } & ObjectAttrs;
-export type Schema = Ref | OneOf | AnyOf | AllOf | Not |
-  StringSchema | NumericSchema | BooleanSchema | ArraySchema | ObjectSchema;
-export type Properties = {
-  [key: string]: Schema;
-}
+import {OpenApiOptions, SchemaDef} from "./types";
 
 export const OPENAPI_DOCUMENT = new InjectionToken('openapi_doc');
 export function getOpenApiDoc(): any {
@@ -115,7 +42,7 @@ export function enableOpenApi(app: Express, options: OpenApiOptions = {}) {
   app.use(serveOnPath, swaggerUi.serve, swaggerUi.setup(doc));
 }
 
-export function registerSchema(name: string, schema: Schema): void {
+export function registerSchema(name: string, schema: SchemaDef): void {
   const doc = getOpenApiDoc();
   const schemas = doc.components.schemas = doc.components.schemas || {};
   schemas[name] = schema;

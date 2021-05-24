@@ -2,10 +2,10 @@ import * as express from 'express';
 import {attachControllers, Controller, Get, Put, Response} from "@decorators/express";
 import {enableOpenApi, registerSchema} from "../helpers";
 import {
-  BodyContent, Deprecated,
+  BodyContent, Deprecated, Description,
   OpenApiResponse,
-  OpenApiSchema,
-  Param, Parameters,
+  Schema,
+  Param,
   Property,
   Responses,
   Summary, Tags,
@@ -19,10 +19,8 @@ const app = express();
 class UsersController {
   @Get('/')
   @Summary('this endpoint gets a list of users')
-  @Parameters([
-    { name: 'id', 'in': 'query' },
-    { name: 'created_after', in: 'query' }
-  ])
+  @Param('id', 'query')
+  @Param('created_after', 'query')
   @OpenApiResponse(200, 'Successful response')
   @OpenApiResponse(200, 'application/json', { $ref: '#/components/schemas/User' })
   public getUsers(@Response() res: express.Response) {
@@ -54,6 +52,7 @@ class UsersController {
 
   // custom tags for one operation
   @Put('/:id')
+  @Description('this endpoint updates an user or creates a new one if there is no user with that id')
   @Param('id', 'path', { required: true })
   @BodyContent('application/json', { $ref: '#/components/schemas/User' })
   @Responses({
@@ -87,8 +86,7 @@ class UsersController {
 
 }
 
-@OpenApiSchema()
-// @ts-ignore
+@Schema()
 class User {
   @Property({ type: 'string', format: 'uuid', readOnly: true })
   public id: string;

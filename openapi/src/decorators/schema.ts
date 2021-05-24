@@ -1,7 +1,8 @@
+import { registerSchema } from "../helpers";
 import { getSchemaMeta } from "../meta";
-import {registerSchema, Schema} from "../helpers";
+import { SchemaDef } from "../types";
 
-export function OpenApiSchema(name?: string): ClassDecorator {
+export function Schema(name?: string): ClassDecorator {
   return (target) => {
     const { properties, required } = getSchemaMeta(target.prototype);
     registerSchema(name || target.name, {
@@ -12,7 +13,7 @@ export function OpenApiSchema(name?: string): ClassDecorator {
   }
 }
 
-export function Property(opts: Schema & { required?: boolean }): PropertyDecorator {
+export function Property(opts: SchemaDef & { required?: boolean }): PropertyDecorator {
   return (target: any, key: string) => {
     const meta = getSchemaMeta(target);
     const properties = meta.properties = meta.properties || {};

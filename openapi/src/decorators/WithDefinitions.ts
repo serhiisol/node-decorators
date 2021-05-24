@@ -1,8 +1,9 @@
 import { getMeta } from "@decorators/express/lib/src/meta";
-import {getOpenApiMeta, PathMeta} from "../meta";
-import {getOpenApiDoc} from "../helpers";
+import { getOpenApiDoc } from "../helpers";
+import { getOpenApiMeta } from "../meta";
+import { PathMeta } from "../types";
 
-export type WithDefinitionsOpts = {
+type WithDefinitionsOpts = {
   tags?: string[]
   basePath: string;
 }
