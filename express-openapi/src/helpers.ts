@@ -1,7 +1,7 @@
 import { Container, InjectionToken } from "@decorators/di";
 import { Express } from 'express';
 import * as swaggerUi from "swagger-ui-express";
-import {OpenApiOptions, SchemaDef} from "./types";
+import { OpenApiOptions, SchemaDef } from "./types";
 
 export const OPENAPI_DOCUMENT = new InjectionToken('openapi_doc');
 export function getOpenApiDoc(): any {
