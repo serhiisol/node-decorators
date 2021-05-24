@@ -1,7 +1,7 @@
 import { getMeta } from "@decorators/express/lib/src/meta";
 import { getOpenApiDoc } from "../helpers";
 import { getOpenApiMeta } from "../meta";
-import { PathMeta } from "../types";
+import { ParamDef, ParamLocation, PathMeta } from "../types";
 
 type WithDefinitionsOpts = {
   tags?: string[]
@@ -12,12 +12,13 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
   return (target: any) => {
     const meta = getOpenApiMeta(target.prototype);
     const paths = getOpenApiDoc().paths;
-    const { routes } = getMeta(target.prototype);
+    const { routes, params } = getMeta(target.prototype);
     const basePath = options?.basePath || '/';
     const globalTags = options.tags || [];
 
     Object.keys(meta).forEach(methodName => {
       const pathMeta = meta[methodName];
+      const routeParams = params[methodName];
       getRoutes(routes, methodName).forEach(route => {
         // as openapi does not support nested urls, need to concat the controller url with the one from the method
         const url = getPathName(basePath, route.url);
@@ -31,7 +32,7 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
           tags: getTags(pathMeta.tags, globalTags, target.name),
           summary: pathMeta.summary,
           description: pathMeta.description,
-          parameters: pathMeta.parameters,
+          parameters: getParameters(pathMeta, getRouteParams(routeParams)),
           deprecated: isDeprecated(route.url, pathMeta),
           requestBody: pathMeta.requestBody,
           responses: pathMeta.responses,
@@ -72,4 +73,29 @@ function getTags(pathTags: string[], globalTags: string[], defaultTag: string) {
 function isDeprecated(url: string, pathMeta: PathMeta): boolean {
   if (pathMeta.deprecated === true) return true;
   return Array.isArray(pathMeta.deprecated) && pathMeta.deprecated.indexOf(url) >= 0;
+}
+
+const ExpressParamType: {[key: number]: ParamLocation} = {
+  2: 'path',
+  3: 'query',
+  5: 'header',
+  6: 'cookie',
+};
+
+function getRouteParams(params: { type: number, name?: string }[]): ParamDef[] {
+ return params
+   .filter(({ type, name }) => ExpressParamType[type] && name)
+   .map(({ type, name }) => ({ name, in: ExpressParamType[type], required: ExpressParamType[type] === 'path' }));
+}
+
+function getParameters(meta: PathMeta, routeParams: ParamDef[] = []): ParamDef[]{
+  const parameters = meta.parameters || [];
+  routeParams.forEach(param => {
+    if (parameters.findIndex(p => p.name === param.name && p.in === param.in) < 0) {
+      // there is no parameter with this name and location,
+      // add the definition
+      parameters.push(param);
+    }
+  });
+  return parameters;
 }

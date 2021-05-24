@@ -1,6 +1,6 @@
 import * as express from 'express';
-import {attachControllers, Controller, Get, Put, Response} from "@decorators/express";
-import {enableOpenApi, registerSchema} from "../helpers";
+import { attachControllers, Controller, Get, Put, Response, Params } from "@decorators/express";
+import { enableOpenApi, registerSchema } from "../helpers";
 import {
   BodyContent, Deprecated, Description,
   OpenApiResponse,
@@ -53,7 +53,6 @@ class UsersController {
   // custom tags for one operation
   @Put('/:id')
   @Description('this endpoint updates an user or creates a new one if there is no user with that id')
-  @Param('id', 'path', { required: true })
   @BodyContent('application/json', { $ref: '#/components/schemas/User' })
   @Responses({
     '200': {
@@ -72,8 +71,10 @@ class UsersController {
     }
   })
   @Tags('users', 'upsert functions') // When defining custom tags, the default one is excluded
-  public upsertUser(@Response() res: express.Response) {
-    res.sendStatus(400);
+  public upsertUser(@Params('id') id: string, @Response() res: express.Response) {
+    const user = new User();
+    user.id = id;
+    res.send(user);
   }
 
   // deprecated endpoints
