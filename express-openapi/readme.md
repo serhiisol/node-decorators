@@ -53,6 +53,8 @@ Defines a schema on the openapi document
 | name | `string` | | The name of the schema in the openapi document |
 | schema | `object` | | A schema object following openapi specifications. See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#schemaObject |
 
+<hr>
+
 ### Decorators
 
 #### Class Decorators
@@ -84,6 +86,8 @@ Defines a new schema on the openapi document. Internally uses `registerSchema`.
 | Name | Type | Attribute | Description |
 | ---- |----- | --------- | ----------- |
 | name | `string` | <ul><li>optional</li><li>Default: The class name</li></ul> | The name of the schema |
+
+<hr>
 
 #### Method Decorators - Route documentation
 
@@ -261,6 +265,8 @@ Defines one response schema for the operation
 | status | `string` `number` |  | The response status |
 | produces | `string` |  | The media type described |
 | schema | `object` |  | A schema definition following the openapi specifications |
+
+<hr>
 
 #### Property Decorators - Schema property
 
