@@ -37,6 +37,33 @@ attachControllers(app, [UsersController]);
 app.listen(3000);
 ```
 
+
+## Another Example of usage
+In this example we are using shorter version of Request and Response decorators to typecast them with express Request and Response type.
+```typescript
+import { Req, Res, Params, Controller, Get, attachControllers } from '@decorators/express';
+import {Request,Response} from 'express';
+import { Injectable } from '@decorators/di';
+
+@Controller('/')
+@Injectable()
+class UsersController {
+
+  constructor(userService: UserService) {}
+
+  @Get('/users/:id')
+  getData(@Req() req : Request, @Res() res : Response, @Params('id') id: string) {
+    res.send(this.userService.findById(id));
+  }
+}
+
+let app: Express = express();
+
+attachControllers(app, [UsersController]);
+
+app.listen(3000);
+```
+
 ## Documentation
 Look at the corresponding package for instructions
 

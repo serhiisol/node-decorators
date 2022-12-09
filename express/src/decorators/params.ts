@@ -6,8 +6,8 @@ import { ExpressMeta, ParameterType, getMeta } from '../meta';
  * @param {ParameterType} parameterType Parameter Type
  */
 function decoratorFactory(type: ParameterType) {
-  return function(name?: string): ParameterDecorator {
-    return function(target: any, methodName: string, index: number) {
+  return function (name?: string): ParameterDecorator {
+    return function (target: any, methodName: string, index: number) {
       const meta: ExpressMeta = getMeta(target);
 
       if (meta.params[methodName] === undefined) {
@@ -25,9 +25,19 @@ function decoratorFactory(type: ParameterType) {
 export const Request = decoratorFactory(ParameterType.REQUEST);
 
 /**
+ * Express req object in short form
+ */
+export const Req = Request;
+
+/**
  * Express res object
  */
 export const Response = decoratorFactory(ParameterType.RESPONSE);
+
+/**
+ * Express res object in short form
+ */
+export const Res = Response;
 
 /**
  * Express next function
