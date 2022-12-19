@@ -40,8 +40,8 @@ class UserMiddleware implements Middleware {
 ```
 
 ##### Parameter
-* **@Request(property?: string)** - Returns express req object or any other object, if name was specified
-* **@Response()** - Returns express res object
+* **@Request(property?: string)** (alias **@Req(property?: string)**) - Returns express req object or any other object, if name was specified
+* **@Response()** (alias **@Res**) - Returns express res object
 * **@Next()** - Returns express next function
 * **@Params(param?: string)** - Express req.params object or single param, if param name was specified
 * **@Query(param?: string)** - Express req.query object or single query param, if query param name was specified
