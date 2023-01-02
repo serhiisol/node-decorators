@@ -4,6 +4,38 @@ import { Container } from '@decorators/di';
 import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
 import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
 
+
+
+/**
+ * Type for configurations used internaly 
+ * 
+ * @type ControllerConfiguration
+ */
+export type ControllerConfiguration = {
+  return_response?: boolean
+};
+
+
+/**
+ * Internal Configuration for controller and router 
+ * @object _ControllerConfiguration 
+ * 
+ * @key return_response if set true  router will send the response autotially which ever value is returned by controller method
+ */
+const _ControllerConfiguration: ControllerConfiguration = {
+  return_response: false
+};
+
+
+/**
+ * Set internal configuration 
+ * @param configuration 
+ */
+export function setConfiguration(configuration: ControllerConfiguration) {
+  Object.assign(_ControllerConfiguration, configuration);
+}
+
+
 /**
  * Attach controllers to express application
  *
@@ -37,7 +69,7 @@ export function attachControllerInstances(app: Express | Router, controllers: ob
  * @param {ExpressClass} Controller
  * @returns
  */
-function registerController(app: Application | Router, Controller: Type|object, _getController: (c: Type|object) => ExpressClass) {
+function registerController(app: Application | Router, Controller: Type | object, _getController: (c: Type | object) => ExpressClass) {
   const controller: ExpressClass = _getController(Controller);
   const meta: ExpressMeta = getMeta(controller);
   const router: Router = Router(meta.routerOptions);
@@ -69,8 +101,27 @@ function registerController(app: Application | Router, Controller: Type|object, 
       const args = extractParameters(req, res, next, params[methodName]);
       const handler = controller[methodName].apply(controller, args);
 
-      if (handler instanceof Promise) {
+      /**
+       * Checking the configuration if return response is enabled
+       */
+      if (_ControllerConfiguration.return_response == true) {
+        // Checking if return is a promise 
+        if (handler instanceof Promise) {
+          handler.then((r) => {
+            // Checking if response is already sent
+            if (!res.headersSent) {
+              res.send(r);
+            }
+          });
           handler.catch(next);
+        } else {
+          // Checking if response is already sent
+          if (!res.headersSent) {
+            res.send(handler);
+          }
+        }
+      } else if (handler instanceof Promise) {
+        handler.catch(next);
       }
 
       return handler;
@@ -104,7 +155,7 @@ function registerController(app: Application | Router, Controller: Type|object, 
  */
 function extractParameters(req: Request, res: Response, next: NextFunction, params: ParameterConfiguration[]): any[] {
   if (!params || !params.length) {
-    return [ req, res, next ];
+    return [req, res, next];
   }
 
   const args = [];
