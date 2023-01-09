@@ -1,14 +1,11 @@
 import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
 import { Container } from '@decorators/di';
 
-import { ExpressMeta, getMeta, ParameterType, ExpressClass, Route, ParameterConfiguration } from './meta';
+import { getMeta, ParameterType, ExpressClass, ParameterConfiguration } from './meta';
 import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
 
 /**
  * Attach controllers to express application
- *
- * @param {Express} app Express application
- * @param {Type[]} controllers Controllers array
  */
 export function attachControllers(app: Express | Router, controllers: Type[]) {
   controllers.forEach((controller: Type) => registerController(app, controller, getController));
@@ -19,12 +16,9 @@ export function attachControllers(app: Express | Router, controllers: Type[]) {
 
 /**
  * Attach controller instances to express application
- *
- * @param {Express} app Express application
- * @param {any[]} controllers Controllers array
  */
-export function attachControllerInstances(app: Express | Router, controllers: object[]) {
-  controllers.forEach((controller: Type) => registerController(app, controller, (c: object) => c));
+export function attachControllerInstances(app: Express | Router, controllers: InstanceType<Type>[]) {
+  controllers.forEach((controller: InstanceType<Type>[]) => registerController(app, controller, (c: InstanceType<Type>) => c));
 
   // error middleware must be registered as the very last one
   app.use(errorMiddlewareHandler());
@@ -32,24 +26,20 @@ export function attachControllerInstances(app: Express | Router, controllers: ob
 
 /**
  * Register controller via registering new Router
- *
- * @param {Application} app
- * @param {ExpressClass} Controller
- * @returns
  */
-function registerController(app: Application | Router, Controller: Type|object, _getController: (c: Type|object) => ExpressClass) {
-  const controller: ExpressClass = _getController(Controller);
-  const meta: ExpressMeta = getMeta(controller);
-  const router: Router = Router(meta.routerOptions);
-  const routes: { [key: string]: { [key: string]: Route } } = meta.routes;
-  const url: string = meta.url;
-  const params: object = meta.params;
+function registerController(
+  app: Application | Router,
+  Controller: Type | InstanceType<Type>,
+  extractController: (c: Type | InstanceType<Type>) => InstanceType<Type>,
+) {
+  const controller = extractController(Controller);
+  const meta = getMeta(controller);
+  const router = Router(meta.routerOptions);
 
   /**
    * Wrap all registered middleware with helper function
    * that can instantiate or get from the container instance of the class
    * or execute given middleware function
-   * @see getMiddleware
    */
   const routerMiddleware: RequestHandler[] = (meta.middleware || [])
     .map(middleware => middlewareHandler(middleware));
@@ -64,53 +54,60 @@ function registerController(app: Application | Router, Controller: Type|object, 
   /**
    * Applying registered routes
    */
-  for (const methodName of Object.keys(routes)) {
-    const routeHandler = (req, res, next) => {
-      const args = extractParameters(req, res, next, params[methodName]);
-      const handler = controller[methodName].apply(controller, args);
-
-      if (handler instanceof Promise) {
-          handler.catch(next);
-      }
-
-      return handler;
-    };
-
-    const routesMap = routes[methodName];
-    Object.values(routesMap).forEach(route => {
+  for (const [methodName, methodMeta] of Object.entries(meta.routes)) {
+    methodMeta.routes.forEach(route => {
       const routeMiddleware: RequestHandler[] = (route.middleware || [])
         .map(middleware => middlewareHandler(middleware));
+      const handler = routeHandler(controller, methodName, meta.params[methodName], methodMeta.status);
 
       router[route.method].apply(router, [
-        route.url, ...routeMiddleware, routeHandler
+        route.url, ...routeMiddleware, handler,
       ]);
     });
   }
 
-  (app as Router).use(url, router);
+  (app as Router).use(meta.url, router);
 
   return app;
 }
 
 /**
- * Extract parameters for handlers
- *
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * @param {ParameterConfiguration[]} params
- *
- * @returns {any[]}
+ * Returns function that will call original route handler and wrap return options
  */
-function extractParameters(req: Request, res: Response, next: NextFunction, params: ParameterConfiguration[]): any[] {
-  if (!params || !params.length) {
-    return [ req, res, next ];
-  }
+function routeHandler(controller: ExpressClass, methodName: string, params: ParameterConfiguration[], status: number) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const args = extractParameters(req, res, next, params);
+    const result = controller[methodName].call(controller, ...args);
 
+    if (result instanceof Promise) {
+      result.then((r: any) => {
+        if (!res.headersSent) {
+          if (status) {
+            res.status(status);
+          }
+          res.send(r);
+        }
+      }).catch(next);
+    } else {
+      if (!res.headersSent) {
+        if (status) {
+          res.status(status);
+        }
+        res.send(result);
+      }
+    }
+
+    return result;
+  };
+}
+
+/**
+ * Extract parameters for handlers
+ */
+function extractParameters(req: Request, res: Response, next: NextFunction, params: ParameterConfiguration[] = []): any[] {
   const args = [];
 
   for (const { name, index, type } of params) {
-
     switch (type) {
       case ParameterType.RESPONSE:
         args[index] = res;
@@ -137,7 +134,6 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
         args[index] = getParam(req, 'cookies', name);
         break;
     }
-
   }
 
   return args;
@@ -145,10 +141,6 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
 
 /**
  * Get controller instance from container or instantiate one
- *
- * @param {any} Controller
- *
- * @returns {ExpressClass}
  */
 function getController(Controller: Type): ExpressClass {
   try {
@@ -160,12 +152,6 @@ function getController(Controller: Type): ExpressClass {
 
 /**
  * Get parameter value from the source object
- *
- * @param {*} source
- * @param {string} paramType
- * @param {string} name
- *
- * @returns {*}
  */
 function getParam(source: any, paramType: string, name: string): any {
   const param = source[paramType] || source;

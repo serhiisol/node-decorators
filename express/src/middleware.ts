@@ -1,44 +1,26 @@
 import { Request, Response, NextFunction, RequestHandler, ErrorRequestHandler } from 'express';
 import { Container, InjectionToken } from '@decorators/di';
 
-export interface Type extends Function {
-  new (...args: any[]);
-}
+export type Type<C extends object = object> = new (...args: any) => C;
 
-/**
- * Middleware class interface
- *
- * @export
- * @interface Middleware
- */
-export interface Middleware {
-  use(request: Request, response: Response, next: NextFunction): void;
+export type MiddlewareFunction = (req: Request, res: Response, next: NextFunction) => void;
+export interface MiddlewareClass {
+  use: MiddlewareFunction;
 }
+export type Middleware = MiddlewareFunction | Type<MiddlewareClass>;
 
-/**
- * Error middleware interface
- *
- * @export
- * @interface ErrorMiddleware
- */
-export interface ErrorMiddleware {
-  use(error: any, request: Request, response: Response, next: NextFunction): void;
+export type ErrorMiddlewareFunction = (error: Error, request: Request, response: Response, next: NextFunction) => void;
+export interface ErrorMiddlewareClass {
+  use: ErrorMiddlewareFunction;
 }
+export type ErrorMiddleware = ErrorMiddlewareFunction | Type<ErrorMiddlewareClass>;
 
 /**
  * Create request middleware handler that uses class or function provided as middleware
- *
- * @param {Type} middleware
- *
- * @returns {RequestHandler}
  */
-export function middlewareHandler(middleware: Type): RequestHandler {
-  return function(req: Request, res: Response, next: NextFunction): any {
-    try {
-      return getMiddleware(middleware, [req, res, next]);
-    } catch (error) {
-      next(error);
-    }
+export function middlewareHandler(middleware: Middleware): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction) => {
+    invokeMiddleware(middleware, [req, res, next]);
   };
 }
 
@@ -49,52 +31,43 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
 
 /**
  * Add error middleware to the app
- *
- * @returns {ErrorRequestHandler}
  */
 export function errorMiddlewareHandler(): ErrorRequestHandler {
-  return function(error: Error, req: Request, res: Response, next: NextFunction): void {
-    try {
-      return getMiddleware(ERROR_MIDDLEWARE, [error, req, res, next]);
-    } catch {
-      next(error);
-    }
+  return (error: Error, req: Request, res: Response, next: NextFunction) => {
+    invokeMiddleware(ERROR_MIDDLEWARE, [error, req, res, next]);
   };
 }
 
 /**
  * Instantiate middleware and invoke it with arguments
- *
- * @param {InjectionToken | Type} middleware
- * @param {any[]} args
  */
-function getMiddleware(middleware: InjectionToken | Type, args: any[]) {
-  const next: NextFunction = args[args.length - 1]; // last parameter is always the next function
-  let instance;
+function invokeMiddleware(
+  middleware: InjectionToken | Middleware | ErrorMiddleware,
+  args: Parameters<MiddlewareFunction> | Parameters<ErrorMiddlewareFunction>,
+) {
+  const next = args[args.length - 1] as NextFunction;
+  let instance: InstanceType<Type<MiddlewareClass | ErrorMiddlewareClass>>;
 
   try {
-    // first, trying to get instance from the container
-    instance = Container.get(middleware);
+    instance = Container.get(middleware as InjectionToken);
   } catch {
     try {
-      // if container fails, trying to instantiate it
-      instance = new (middleware as Type)();
-    } catch {
-      // if instantiation fails, try to use it as is
-      instance = middleware as any;
+      instance = new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)(...args);
+    } catch (err) {
+      next(err);
+
+      return;
     }
   }
 
-  // first, assuming that middleware is a class, try to use it,
-  // otherwise use it as a function
-  const result = instance.use ?
-    (instance as Middleware | ErrorMiddleware).use.apply(instance, args) :
-    (instance as Type).apply(instance, args);
+  try {
+    const handler = instance.use ?? instance;
+    const result = typeof handler === 'function' ? handler.apply(instance, args) : instance;
 
-  // if result of execution is a promise, add additional listener to catch error
-  if (result instanceof Promise) {
-    result.catch(e => next(e));
+    if (result instanceof Promise) {
+      result.catch(next);
+    }
+  } catch (err) {
+    next(err);
   }
-
-  return result;
 }

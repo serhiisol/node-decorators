@@ -1,29 +1,19 @@
 import { RouterOptions } from 'express';
 
-import { ExpressMeta, getMeta } from '../meta';
-import { Type } from '../middleware';
+import { ExpressClass, ExpressMeta, getMeta } from '../meta';
+import { Middleware } from '../middleware';
 
 /**
  * Registers controller for base url
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Controller(url: string, middleware?: Type[]);
-/**
- * Registers controller for base url
- *
- * @param {string} url
- * @param routerOptions
- * @param {Type[]} [middleware]
- */
-export function Controller(url: string, routerOptions?: RouterOptions, middleware?: Type[]);
-export function Controller(url: string, middlewareOrRouterOptions?: Type[] | RouterOptions, middleware: Type[] = []) {
-  return (target): void => {
-    const meta: ExpressMeta = getMeta(target.prototype);
+export function Controller(url: string, middleware?: Middleware[]): ClassDecorator;
+export function Controller(url: string, routerOptions?: RouterOptions, middleware?: Middleware[]): ClassDecorator;
+export function Controller(url: string, middlewareOrRouterOptions?: Middleware[] | RouterOptions, middleware: Middleware[] = []): ClassDecorator {
+  return target => {
+    const meta: ExpressMeta = getMeta(target.prototype as ExpressClass);
 
     meta.url = url;
-    meta.middleware = Array.isArray(middlewareOrRouterOptions) ? middlewareOrRouterOptions.concat(meta.middleware ?? []) : middleware.concat(meta.middleware ?? []);
+    meta.middleware = Array.isArray(middlewareOrRouterOptions) ? middlewareOrRouterOptions : middleware;
     meta.routerOptions = Array.isArray(middlewareOrRouterOptions) ? null : middlewareOrRouterOptions;
   };
 }

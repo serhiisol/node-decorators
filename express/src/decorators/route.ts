@@ -1,32 +1,15 @@
-import { ExpressMeta, getMeta } from '../meta';
-import { Type } from '../middleware';
+import { ExpressMeta, getMeta, MethodMeta } from '../meta';
+import { Middleware } from '../middleware';
 
 /**
  * Route decorator factory, creates decorator
- *
- * @param {string} httpMethod
- * @param {string} url
- * @param {Type[]} middleware
  */
-function decoratorFactory(httpMethod: string, url: string, middleware: Type[] = []) {
-  return (target: any, key: string, descriptor: any) => {
-    const meta: ExpressMeta = getMeta(target);
+function decoratorFactory(method: string, url: string, middleware: Middleware[] = []) {
+  return (target: object, key: string, descriptor: any) => {
+    const methodMetadata = getRouteMeta(target, key);
 
-    // init the routes dictionary
-    const routes = meta.routes[key] = meta.routes[key] || {};
-    const routeKey = `${httpMethod}.${url}`;
-    if (routes[routeKey]) {
-      // the combination of httpMethod and url is already registered for this method (fn)
-      // let's not register a new route but concat its middlewares
-      routes[routeKey].middleware = [...routes[routeKey].middleware, ...middleware];
-    } else {
-      // this is a new route for the method
-      routes[routeKey] = {
-        method: httpMethod,
-        url,
-        middleware,
-      };
-    }
+    methodMetadata.routes.push({ method, url, middleware });
+
     return descriptor;
   };
 }
@@ -36,80 +19,78 @@ function decoratorFactory(httpMethod: string, url: string, middleware: Type[] = 
  *
  * Special-cased "all" method, applying the given route `path`,
  * middleware, and callback to _every_ HTTP method.
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function All(url: string, middleware?: Type[]) {
+export function All(url: string, middleware?: Middleware[]) {
   return decoratorFactory('all', url, middleware);
 }
 
 /**
  * Get route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Get(url: string, middleware?: Type[]) {
+export function Get(url: string, middleware?: Middleware[]) {
   return decoratorFactory('get', url, middleware);
 }
 
 /**
  * Post route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Post(url: string, middleware?: Type[]) {
+export function Post(url: string, middleware?: Middleware[]) {
   return decoratorFactory('post', url, middleware);
 }
 
 /**
  * Put route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Put(url: string, middleware?: Type[]) {
+export function Put(url: string, middleware?: Middleware[]) {
   return decoratorFactory('put', url, middleware);
 }
 
 /**
  * Delete route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Delete(url: string, middleware?: Type[]) {
+export function Delete(url: string, middleware?: Middleware[]) {
   return decoratorFactory('delete', url, middleware);
 }
 
 /**
  * Patch route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Patch(url: string, middleware?: Type[]) {
+export function Patch(url: string, middleware?: Middleware[]) {
   return decoratorFactory('patch', url, middleware);
 }
 
 /**
  * Options route
- *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Options(url: string, middleware?: Type[]) {
+export function Options(url: string, middleware?: Middleware[]) {
   return decoratorFactory('options', url, middleware);
 }
 
 /**
  * Head route
  *
- * @param {string} url
- * @param {Type[]} [middleware]
  */
-export function Head(url: string, middleware?: Type[]) {
+export function Head(url: string, middleware?: Middleware[]) {
   return decoratorFactory('head', url, middleware);
+}
+
+/**
+ * Method status
+ */
+export function Status(status: number) {
+  return (target: object, key: string, descriptor: any) => {
+    const methodMetadata = getRouteMeta(target, key);
+
+    methodMetadata.status = status;
+
+    return descriptor;
+  };
+}
+
+function getRouteMeta(target: object, key: string): MethodMeta {
+  const meta: ExpressMeta = getMeta(target);
+
+  return meta.routes[key] = meta.routes[key] || {
+    routes: [],
+  };
 }
