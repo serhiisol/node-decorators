@@ -1,17 +1,14 @@
-import { getMeta, SocketMeta } from '../meta';
-import { Type } from '../middleware';
+import { getMeta, SocketClass } from '../meta';
+import { Middleware } from '../middleware';
 
 /**
  * Defines namespace for the controller and controller-based middleware
- *
- * @param {string} namespace
- * @param {Type[]} [middleware]
  */
-export function Controller(namespace: string, middleware?: Type[]) {
-  return (target): void => {
-    const meta: SocketMeta = getMeta(target.prototype);
+export function Controller(namespace: string, middleware?: Middleware[]): ClassDecorator {
+  return target => {
+    const meta = getMeta(target.prototype as SocketClass);
 
     meta.namespace = namespace;
     meta.middleware = middleware;
   };
-};
+}

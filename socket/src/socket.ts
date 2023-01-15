@@ -1,4 +1,5 @@
 import { Container } from '@decorators/di';
+import { Server, Namespace, Socket, Event } from 'socket.io';
 
 import {
   ParameterType,
@@ -7,35 +8,29 @@ import {
   Listener,
   SocketMeta,
   SocketClass,
-  getMeta
+  getMeta,
 } from './meta';
-import { executeMiddleware, IO_MIDDLEWARE, middlewareHandler, Type } from './middleware';
+import { executeMiddleware, IO_MIDDLEWARE, middlewareHandler, NextFunction, Type } from './middleware';
 
 /**
  * Attaches controllers to IO server
- *
- * @param {SocketIO.Server} io
- * @param {Type[]} controllers
  */
-export function attachControllers(io: SocketIO.Server, controllers: Type[]) {
-  io.use((socket, next) => middlewareHandler(IO_MIDDLEWARE)(io, socket, next));
+export function attachControllers(io: Server, controllers: Type[]) {
+  io.use((socket, next) => middlewareHandler(IO_MIDDLEWARE, [io, socket, next]));
 
   controllers.forEach((controller: Type) => attachController(io, controller));
 }
 
 /**
  * Attach Controller
- *
- * @param {SocketIO.Server} IO
- * @param {Type} Controller
  */
 function attachController(
-  io: SocketIO.Server,
+  io: Server,
   controller: Type
 ) {
   const instance: SocketClass = Container.get(controller);
   const meta: SocketMeta = getMeta(instance);
-  const ioNS: SocketIO.Namespace = io.of(meta.namespace);
+  const ioNS: Namespace = io.of(meta.namespace);
 
   /**
    * Apply io based events
@@ -45,11 +40,11 @@ function attachController(
   /**
    * Apply local listeners (socket based)
    */
-  ioNS.on('connection', (socket: SocketIO.Socket) => {
+  ioNS.on('connection', (socket: Socket) => {
     /**
      * Apply all registered controller-based and event-based middlewares to socket
      */
-    (socket as any).use(socketMiddlewareHandler(io, socket, meta));
+    socket.use(socketMiddlewareHandler(io, socket, meta));
 
     /**
      * Apply socket based events
@@ -60,14 +55,10 @@ function attachController(
 
 /**
  * Handler for all registered controller based middleware
- *
- * @param {IO} io
- * @param {SocketIO.Socket} socket
- * @param {SocketMeta} meta
  */
-function socketMiddlewareHandler(io: IO, socket: SocketIO.Socket, meta: SocketMeta) {
-  return (packet, next) => {
-    const [ event, data ]: string = packet;
+function socketMiddlewareHandler(io: IO, socket: Socket, meta: SocketMeta) {
+  return (packet: Event, next: NextFunction) => {
+    const [ event, data ] = packet;
     const args = [ io, socket, { event, data } ];
     /**
      * Find listener that serves this event
@@ -80,58 +71,57 @@ function socketMiddlewareHandler(io: IO, socket: SocketIO.Socket, meta: SocketMe
      * and after that event (registered in listener) middlewares
      */
     if (listener) {
-      return executeMiddleware(meta.middleware, args)
+      executeMiddleware(meta.middleware, args)
         .then(() => executeMiddleware(listener.middleware, args))
         .then(() => next())
-        .catch(err => next(err));
+        .catch((err: Error) => next(err));
+    } else {
+      next();
     }
-
-    next();
   };
 }
 
 /**
  * Apply listeners to socket or io
  *
- * @param {SocketIO.Server|SocketIO.Namespace} io
- * @param {SocketIO.Socket} socket
+ * @param {Server|Namespace} io
+ * @param {Socket} socket
  * @param {Type} controller
  * @param {EventType} type
  */
 function applyEvents(
-  io: SocketIO.Server | SocketIO.Namespace,
-  socket: SocketIO.Socket,
+  io: Server | Namespace,
+  socket: Socket,
   controller: Type,
   type: EventType
 ) {
   const instance: SocketClass = Container.get(controller);
   const meta: SocketMeta = getMeta(instance);
-  const ioSock: any = socket || io;
 
   meta.listeners
     .filter((listener: Listener) => listener.type === type)
-    .forEach((listener: Listener) => ioSock.on(listener.event, (...args) => {
+    .forEach((listener: Listener) => (socket || io).on(listener.event, (...args) => {
       const methodName: string = listener.methodName;
       const newArgs: any[] = mapArguments(
-        io, socket || args[0], meta.params[methodName], args
+        io, socket || (args[0] as Socket), meta.params[methodName], args
       );
 
-      return instance[methodName].apply(instance, newArgs);
+      return instance[methodName](...newArgs);
     }));
 }
 
 /**
  * Map parameters for new handler
  *
- * @param {SocketIO.Server|SocketIO.Namespace} io
- * @param {SocketIO.Socket} socket
+ * @param {Server|Namespace} io
+ * @param {Socket} socket
  * @param {Param[]} params Meta parameters
  * @param {any[]} args Event handler arguments
  * @returns {Array} returns arguments array, or io and socket, event args by default
  */
 function mapArguments(
-  io: SocketIO.Server | SocketIO.Namespace,
-  socket: SocketIO.Socket,
+  io: Server | Namespace,
+  socket: Socket,
   params: Param[],
   args: any[]
 ): any[] {
@@ -160,6 +150,7 @@ function mapArguments(
 
 /**
  * Get ack callback function
+ *
  * @description extract callback function, it it exists
  *
  * @param {any[]} args Event arguments, passed to handler function
@@ -199,4 +190,4 @@ function getWrapper(item: Param, obj: object): any {
  */
 function noop() {}
 
-type IO = SocketIO.Server | SocketIO.Namespace;
+type IO = Server | Namespace;

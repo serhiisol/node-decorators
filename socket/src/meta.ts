@@ -1,18 +1,12 @@
-import { Type } from './middleware';
+import { Middleware } from './middleware';
 
 /**
  * Parameter types enum
- *
- * @export
- * @enum {number}
  */
 export enum ParameterType { IO, Socket, Args, Ack }
 
 /**
  * Registered params
- *
- * @export
- * @interface Param
  */
 export interface Param {
   type: ParameterType;
@@ -22,30 +16,21 @@ export interface Param {
 
 /**
  * Event types
- *
- * @export
- * @enum {number}
  */
 export enum EventType { IO, Socket }
 
 /**
  * Event listener
- *
- * @export
- * @interface Listener
  */
 export interface Listener {
   methodName: string;
   event: string;
   type: EventType;
-  middleware: Type[];
+  middleware: Middleware[];
 }
 
 /**
  * Metadata class
- *
- * @export
- * @class Meta
  */
 export class SocketMeta {
   /**
@@ -56,7 +41,7 @@ export class SocketMeta {
   /**
    * Middleware
    */
-  middleware: Type[] = [];
+  middleware: Middleware[] = [];
 
   /**
    * Event listeners
@@ -71,10 +56,6 @@ export class SocketMeta {
 
 /**
  * Socket IO Class
- *
- * @export
- * @interface SocketIOClass
- * @extends {Object}
  */
 export interface SocketClass extends Object {
   __socket_meta__?: SocketMeta;
@@ -82,10 +63,6 @@ export interface SocketClass extends Object {
 
 /**
  * Get or initiate metadata on target
- *
- * @param target
- *
- * @returns {SocketIOMeta}
  */
 export function getMeta(target: SocketClass): SocketMeta {
   if (!target.__socket_meta__) {
