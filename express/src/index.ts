@@ -1,3 +1,7 @@
 export * from './express';
 export * from './decorators';
-export * from './middleware';
+export {
+  MiddlewareClass as Middleware,
+  ErrorMiddlewareClass as ErrorMiddleware,
+  ERROR_MIDDLEWARE,
+} from './middleware';

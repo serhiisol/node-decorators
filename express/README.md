@@ -11,10 +11,11 @@ npm install @decorators/express --save
 ### API
 #### Functions
 * **attachControllers(app: Express.Application | Express.Router, controllers: Controller[])** - attach controllers to express application
+* **attachControllerInstances(app: Express.Application | Express.Router, controllers: Controller[])** - attach already existing instances of controllers
 
 #### Decorators
 ##### Class
-* **@Controller(baseUrl: string, middleware?: Middleware[])** - Registers controller for base url
+* **@Controller(baseUrl: string, middleware?: Middleware[])**, **@Controller(baseUrl: string, routerOptions: RouterOptions, middleware?: Middleware[])** - Registers controller for base url
 
 ##### Method
 * **@All(url: string, middleware?: Middleware[])** - Registers all routes
@@ -25,6 +26,7 @@ npm install @decorators/express --save
 * **@Patch(url: string, middleware?: Middleware[])** - Registers patch route
 * **@Options(url: string, middleware?: Middleware[])** - Registers options route
 * **@Head(url: string, middleware?: Middleware[])** - Registers head route
+* **@Status(code: number)** - Specifies status code for the route
 
 where middleware is the class that implements `Middleware` interface.
 
@@ -36,6 +38,14 @@ class UserMiddleware implements Middleware {
   public use(request: Request, response: Response, next: NextFunction): void {
     next();
   }
+}
+```
+
+or a simple function
+
+```typescript
+function userMiddleware(request: Request, response: Response, next: NextFunction): void {
+  next();
 }
 ```
 
@@ -64,6 +74,20 @@ class ServerErrorMiddleware implements ErrorMiddleware {
 
 Container.provide([
   { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
+]);
+```
+
+or as a function
+
+```typescript
+import { ERROR_MIDDLEWARE } from '@decorators/express';
+
+function serverErrorMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
+  next();
+}
+
+Container.provide([
+  { provide: ERROR_MIDDLEWARE, useValue: serverErrorMiddleware }
 ]);
 ```
 

@@ -1,6 +1,6 @@
 import { RouterOptions } from 'express';
 
-import { Type } from './middleware';
+import { Middleware } from './middleware';
 
 /**
  * All possible parameter decorator types
@@ -41,7 +41,15 @@ export interface ParameterConfiguration {
 export interface Route {
   method: string;
   url: string;
-  middleware: Type[];
+  middleware: Middleware[];
+}
+
+/**
+ * Method metadata object
+ */
+export interface MethodMeta {
+  routes: Route[];
+  status?: number;
 }
 
 /**
@@ -56,12 +64,10 @@ export interface ExpressMeta {
   routerOptions?: RouterOptions;
 
   routes: {
-    [instanceMethodName: string]: {
-      [key: string]: Route;
-    };
+    [instanceMethodName: string]: MethodMeta;
   };
 
-  middleware: Type[];
+  middleware: Middleware[];
 
   params: {
     [key: string]: ParameterConfiguration[];
@@ -90,7 +96,7 @@ export function getMeta(target: ExpressClass): ExpressMeta {
       url: '',
       middleware: [],
       routes: {},
-      params: {}
+      params: {},
     };
   }
   return target.__express_meta__;
