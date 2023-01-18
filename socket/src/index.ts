@@ -1,3 +1,7 @@
 export * from './decorators';
-export * from './middleware';
+export {
+  MiddlewareClass as Middleware,
+  ServerMiddlewareClass as ServerMiddleware,
+  IO_MIDDLEWARE,
+} from './middleware';
 export * from './socket';

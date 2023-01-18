@@ -1,117 +1,95 @@
 import { Container, InjectionToken } from '@decorators/di';
+import { Server, Namespace, Socket } from 'socket.io';
+
+export type NextFunction = (err?: Error) => void;
+
+export type Type<C extends object = object> = new (...args: any) => C;
+
+/**
+ * Middleware class interface
+ */
+export type MiddlewareFunction = (io: Server | Namespace, socket: Socket, args: unknown, next: NextFunction) => void;
+export interface MiddlewareClass {
+  use: MiddlewareFunction;
+}
+export type Middleware = MiddlewareFunction | Type<MiddlewareClass>;
+
+
+/**
+ * Server Middleware
+ */
+export type ServerMiddlewareFunction = (io: Server | Namespace, socket: Socket, next: NextFunction) => void;
+export interface ServerMiddlewareClass {
+  use: ServerMiddlewareFunction;
+}
+export type ServerMiddleware = ServerMiddlewareFunction | Type<ServerMiddlewareClass>;
 
 /**
  * IO Middleware class registration DI token
  */
 export const IO_MIDDLEWARE = new InjectionToken('IO_MIDDLEWARE');
 
-export interface Type extends Function {
-  new (...args: any[]);
-}
-
-export type NextFunction = (err?: Error) => void;
-
-/**
- * Server Middleware class interface
- *
- * @export
- * @interface ServerMiddleware
- */
-export interface ServerMiddleware {
-  use(
-    io: SocketIO.Server | SocketIO.Namespace,
-    socket: SocketIO.Socket,
-    next: NextFunction
-  ): void;
-}
-
-/**
- * Middleware class interface
- *
- * @export
- * @interface Middleware
- */
-export interface Middleware {
-  use(
-    io: SocketIO.Server | SocketIO.Namespace,
-    socket: SocketIO.Socket,
-    args: any,
-    next: NextFunction
-  ): void;
-}
-
 /**
  * Create request middleware handler that uses class or function provided as middleware
- *
- * @export
- * @param {Type | InjectionToken} middleware
- *
- * @returns {RequestHandler}
  */
-export function middlewareHandler(middleware: Type | InjectionToken) {
-  return function(...args: any[]): any {
-    const next: NextFunction = args[args.length - 1];
-    let instance: Middleware | ServerMiddleware | Type;
+export function middlewareHandler(
+  middleware: Middleware | InjectionToken,
+  args: Parameters<MiddlewareFunction> | Parameters<ServerMiddlewareFunction>
+) {
+  const next = args[args.length - 1] as NextFunction;
+  let instance: InstanceType<Type<MiddlewareClass | ServerMiddlewareClass>>;
 
-    try {
-      instance = Container.get(middleware);
-    } catch {
-      try {
-        instance = new (middleware as Type)();
-      } catch {
-        instance = middleware as any;
-      }
+  try {
+    instance = Container.get(middleware);
+  } catch {
+    if (typeof instance !== 'function') {
+      next();
+
+      return;
     }
 
-    // first, assuming that middleware is a class, try to use it,
-    // otherwise use it as a function
-    const use = (instance as Middleware | ServerMiddleware).use ?
-      (instance as Middleware | ServerMiddleware).use : instance as Type;
-
     try {
-      const result = use.apply(instance, args);
+      instance = new (middleware as Type<MiddlewareClass | ServerMiddlewareClass>)(...args);
+    } catch (err) {
+      next(err as Error);
 
-       // if result of execution is a promise, add additional listener to catch error
-      if (result instanceof Promise) {
-        result.catch(next);
-      }
-
-      return result;
-    } catch (e) {
-      return next(e);
+      return;
     }
+  }
 
+  try {
+    const handler = instance.use ?? instance;
+    const result = typeof handler === 'function' ? handler.apply(instance, args) : instance;
+
+    if (result instanceof Promise) {
+      result.catch(next);
+    }
+  } catch (e) {
+    next(e as Error);
   }
 }
 
 /**
  * Loops through all registered middlewares
- *
- * @param {Type[]} middleware Array of middleware
- * @param {any[]} [args = []] Arguments to pass in
- *
- * @returns {Promise<*>}
  */
-export function executeMiddleware(middleware: Type[], args: any[] = []): Promise<any> {
-  function iteratee(done: (err: Error) => void, i = 0) {
+export function executeMiddleware(middleware: Middleware[], args: unknown[] = []): Promise<any> {
+  function iteratee(done: (err?: Error) => void, i = 0) {
     try {
-      middlewareHandler(middleware[i])(...args, (err) => {
+      middlewareHandler(middleware[i], [...args, (err?: Error) => {
         if (err) {
-          return done(err);
+          done(err);
+        } else if (i === middleware.length - 1) {
+          done();
+        } else {
+          iteratee(done, ++i);
         }
-
-        if (i === middleware.length - 1) {
-          return done(null);
-        }
-
-        iteratee(done, ++i);
-      });
+      }] as Parameters<MiddlewareFunction> | Parameters<ServerMiddlewareFunction>);
     } catch (e) {
-      done(e);
+      done(e as Error);
     }
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     if (middleware === undefined || middleware.length === 0) {
       return resolve();
     }
