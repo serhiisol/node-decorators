@@ -1,14 +1,14 @@
 {
   "name": "@decorators/express-openapi",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "node decorators - openapi decorators for swagger-ui-express and @decorators/express",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
     "express": ">=4.16.3",
-    "@decorators/di": ">=1.0.2",
-    "@decorators/express": ">=2.5.0",
-    "swagger-ui-express": ">=4.1.6"
+    "@decorators/di": ">=1.0.3",
+    "@decorators/express": ">=2.8.0",
+    "swagger-ui-express": ">=4.6.0"
   },
   "devDependencies": {
     "@decorators/di": ">=1.0.2",
