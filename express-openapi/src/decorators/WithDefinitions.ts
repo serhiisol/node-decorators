@@ -46,8 +46,7 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
 // for each method get all associated routes
 function getRoutes(routes: any, methodName: string) {
   const route = routes[methodName];
-  if (!route) return [];
-  return [route];
+  return route.routes ? route.routes : [];
 }
 
 function getPathName(basePath: string, url: string) {
@@ -75,7 +74,7 @@ function isDeprecated(url: string, pathMeta: PathMeta): boolean {
   return Array.isArray(pathMeta.deprecated) && pathMeta.deprecated.indexOf(url) >= 0;
 }
 
-const ExpressParamType: {[key: number]: ParamLocation} = {
+const ExpressParamType: { [key: number]: ParamLocation } = {
   2: 'path',
   3: 'query',
   5: 'header',
@@ -83,12 +82,12 @@ const ExpressParamType: {[key: number]: ParamLocation} = {
 };
 
 function getRouteParams(params: { type: number, name?: string }[]): ParamDef[] {
- return params
-   .filter(({ type, name }) => ExpressParamType[type] && name)
-   .map(({ type, name }) => ({ name, in: ExpressParamType[type], required: ExpressParamType[type] === 'path' }));
+  return params
+    .filter(({ type, name }) => ExpressParamType[type] && name)
+    .map(({ type, name }) => ({ name, in: ExpressParamType[type], required: ExpressParamType[type] === 'path' }));
 }
 
-function getParameters(meta: PathMeta, routeParams: ParamDef[] = []): ParamDef[]{
+function getParameters(meta: PathMeta, routeParams: ParamDef[] = []): ParamDef[] {
   const parameters = meta.parameters || [];
   routeParams.forEach(param => {
     if (parameters.findIndex(p => p.name === param.name && p.in === param.in) < 0) {
