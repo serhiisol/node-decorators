@@ -1,7 +1,7 @@
-import { getMeta } from "@decorators/express/lib/src/meta";
-import { getOpenApiDoc } from "../helpers";
-import { getOpenApiMeta } from "../meta";
-import { ParamDef, ParamLocation, PathMeta } from "../types";
+import { getMeta } from '@decorators/express/lib/src/meta';
+import { getOpenApiDoc } from '../helpers';
+import { getOpenApiMeta } from '../meta';
+import { ParamDef, ParamLocation, PathMeta } from '../types';
 
 type WithDefinitionsOpts = {
   tags?: string[]
@@ -19,7 +19,7 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
     Object.keys(meta).forEach(methodName => {
       const pathMeta = meta[methodName];
       const routeParams = params[methodName];
-      getRoutes(routes, methodName).forEach(route => {
+      getRoutes(routes, methodName).forEach((route: { method: string; url: string; }) => {
         // as openapi does not support nested urls, need to concat the controller url with the one from the method
         const url = getPathName(basePath, route.url);
         // the path might exist already (because of another http verb - ie GET /users and POST /users).

@@ -1,3 +1,3 @@
 export * from './path';
 export * from './schema';
-export * from './WithDefinitions';
+export * from './with-definitions';
