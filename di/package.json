@@ -1,6 +1,6 @@
 {
   "name": "@decorators/di",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "node decorators - decorators for dependency injection",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,12 +8,20 @@
     "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
-    "@types/mocha": "2.2.44",
-    "@types/chai": "4.0.4",
-    "chai": "4.1.2",
-    "mocha": "4.0.1",
-    "ts-node": "3.3.0",
-    "typescript": "2.5.3"
+    "@typescript-eslint/eslint-plugin": "^5.6.0",
+    "@typescript-eslint/parser": "^5.6.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsdoc": "^37.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint": "^8.4.0",
+    "@types/mocha": "10.0.1",
+    "@types/chai": "4.3.4",
+    "chai": "4.3.7",
+    "mocha": "10.2.0",
+    "ts-node": "10.9.1",
+    "typescript": "^4.9.4",
+    "jest": "29.3.1",
+    "ts-jest": "29.0.5"
   },
   "keywords": [
     "nodejs",
@@ -26,15 +34,12 @@
   "bugs": {
     "url": "https://github.com/serhiisol/node-decorators/issues"
   },
-  "engines": {
-    "node": ">=7.1.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
   "scripts": {
-    "compile": "tsc",
+    "compile": "tsc --project tsconfig.build.json",
     "test": "mocha test.ts --require ts-node/register test.ts"
   }
 }

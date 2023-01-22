@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 
-import { StoreProvider } from './types';
 import { Store } from './store';
 import { InjectionToken } from './injection-token';
 import { Injectable } from './decorators';
@@ -18,7 +17,7 @@ describe('Store', () => {
 
     it('should find provider', () => {
       Store.provider(TestInjectable);
-      const provider: StoreProvider = Store.findProvider(TestInjectable);
+      const provider = Store.findProvider(TestInjectable);
 
       expect(provider).to.be;
     });
@@ -28,35 +27,35 @@ describe('Store', () => {
   describe('.providerId(injectable: Injectable)', () => {
 
     it('should return null, if no injectable given', () => {
-      const id: null = <null>Store.providerId(undefined);
+      const id = Store.providerId(undefined) as null;
 
       expect(id).to.equal(null);
     });
 
     it('should return given injectable, if injectable is type of string', () => {
       const token = 'token';
-      const id: string = <string>Store.providerId(token);
+      const id = Store.providerId(token) as string;
 
       expect(id).to.equal(token);
     });
 
     it('should return given injectable, if injectable is instance of InjectionToken', () => {
-      const token: InjectionToken = new InjectionToken('token');
-      const id: InjectionToken = <InjectionToken>Store.providerId(token);
+      const token = new InjectionToken('token');
+      const id = Store.providerId(token) as InjectionToken;
 
       expect(id instanceof InjectionToken).to.be.true;
       expect(id).to.equal(token);
     });
 
-  })
+  });
 
   describe('.provider(type: Type, args: { injectable?, optional?, index? })', () => {
     it('should register dependency', () => {
       const index = 0;
-      const depId: InjectionToken = new InjectionToken('test-dep');
+      const depId = new InjectionToken('test-dep');
 
       Store.provider(TestInjectable, { index, injectable: depId });
-      const provider: StoreProvider = Store.findProvider(TestInjectable);
+      const provider = Store.findProvider(TestInjectable);
 
       expect(provider.deps.length).to.equal(1);
       expect(provider.deps[index].optional).to.not.be.true;
@@ -67,7 +66,7 @@ describe('Store', () => {
     it('should register optional dependency', () => {
       const index = 0;
       Store.provider(TestInjectable, { index, optional: true});
-      const provider: StoreProvider = Store.findProvider(TestInjectable);
+      const provider = Store.findProvider(TestInjectable);
 
       expect(provider.deps.length).to.equal(1);
       expect(provider.deps[index].optional).to.be.true;
@@ -76,7 +75,7 @@ describe('Store', () => {
 
     it('should extract arguments from constructor', () => {
       Store.provider(TestInjectable);
-      const provider: StoreProvider = Store.findProvider(TestInjectable);
+      const provider = Store.findProvider(TestInjectable);
 
       expect(provider.id instanceof InjectionToken).to.be.true;
       expect(provider.deps.length).to.equal(1);
@@ -84,15 +83,15 @@ describe('Store', () => {
 
   });
 
-  describe('.replaceProvider(injectable: Injectable, provider: StoreProvider)', () => {
+  describe('.replaceProvider(injectable: Injectable, provider)', () => {
 
     it('should find and replace provider', () => {
-      const id: InjectionToken = new InjectionToken('test-token');
+      const id = new InjectionToken('test-token');
       Store.provider(TestInjectable);
 
       expect(Store.providers.length).to.equal(1);
 
-      let provider: StoreProvider = Store.findProvider(TestInjectable);
+      let provider = Store.findProvider(TestInjectable);
 
       expect(provider).to.be;
 

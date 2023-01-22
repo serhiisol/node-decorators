@@ -3,16 +3,12 @@ import { Reflector } from './reflector';
 import { InjectionToken } from './injection-token';
 
 export class Store {
-  public static providers: StoreProvider[] = [];
+  static providers: StoreProvider[] = [];
 
   /**
    * Get provider id
-   *
-   * @static
-   * @param {Injectable} injectable
-   * @returns {InjectableId}
    */
-  public static providerId(injectable: Injectable): InjectableId {
+  static providerId(injectable: Injectable): InjectableId {
     if (!injectable) {
       return null;
     }
@@ -26,13 +22,8 @@ export class Store {
 
   /**
    * Register provider
-   *
-   * @internal
-   * @static
-   * @param {Type} provider
-   * @param {InjectableId} useId
    */
-  public static provider(type: Type, args?: { injectable?, optional?, index? }): Type {
+  static provider(type: Type, args?: { injectable?: Injectable, optional?: boolean; index?: number; }): Type {
     let provider: StoreProvider = this.findProvider(type);
 
     if (provider === undefined) {
@@ -54,7 +45,7 @@ export class Store {
 
     provider.deps[args.index] = {
       id: args.injectable ? this.providerId(args.injectable) : dep.id,
-      optional: args.optional || dep.optional
+      optional: args.optional || dep.optional,
     };
 
     return type;
@@ -62,14 +53,8 @@ export class Store {
 
   /**
    * Find stored provider
-   *
-   * @internal
-   * @static
-   * @param {Injectable} injectable
-   *
-   * @returns {StoreProvider}
    */
-  public static findProvider(injectable: Injectable): StoreProvider {
+  static findProvider(injectable: Injectable): StoreProvider {
     const id: InjectableId = this.providerId(injectable);
 
     return this.providers.find((provider: StoreProvider) => provider.id === id);
@@ -77,12 +62,8 @@ export class Store {
 
   /**
    * Replace stored provider wiht new provider
-   *
-   * @static
-   * @param {Injectable} injectable
-   * @param {StoreProvider} provider
    */
-  public static replaceProvider(injectable: Injectable, provider: StoreProvider): void {
+  static replaceProvider(injectable: Injectable, provider: StoreProvider): void {
     const storeProvider: StoreProvider = this.findProvider(injectable);
     const index: number = this.providers.indexOf(storeProvider);
 
@@ -95,12 +76,6 @@ export class Store {
 
   /**
    * Create and store provider
-   *
-   * @internal
-   * @static
-   * @param {Injectable} injectable
-   *
-   * @returns {StoreProvider}
    */
   private static createProvider(type: Type): StoreProvider {
     const id: InjectableId = Reflector.setId(type);
