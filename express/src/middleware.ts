@@ -46,22 +46,21 @@ function invokeMiddleware(
   args: Parameters<MiddlewareFunction> | Parameters<ErrorMiddlewareFunction>,
 ) {
   const next = args[args.length - 1] as NextFunction;
-  let instance: InstanceType<Type<MiddlewareClass | ErrorMiddlewareClass>>;
 
   try {
-    instance = Container.get(middleware as InjectionToken);
-  } catch {
-    try {
-      instance = new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)(...args);
-    } catch (err) {
-      next(err);
+    let instance: MiddlewareClass | ErrorMiddlewareClass | MiddlewareFunction;
 
-      return;
+    if (typeof middleware === 'function') {
+      if (middleware.prototype?.use) {
+        instance = new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)(...args);
+      } else {
+        instance = middleware as MiddlewareFunction;
+      }
+    } else {
+      instance = Container.get(middleware);
     }
-  }
 
-  try {
-    const handler = instance.use ?? instance;
+    const handler = (instance as MiddlewareClass | ErrorMiddlewareClass)?.use ?? instance;
     const result = typeof handler === 'function' ? handler.apply(instance, args) : instance;
 
     if (result instanceof Promise) {
