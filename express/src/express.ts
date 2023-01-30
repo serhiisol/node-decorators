@@ -27,12 +27,12 @@ export function attachControllerInstances(app: Express | Router, controllers: In
 /**
  * Register controller via registering new Router
  */
-function registerController(
+async function registerController(
   app: Application | Router,
   Controller: Type | InstanceType<Type>,
-  extractController: (c: Type | InstanceType<Type>) => InstanceType<Type>,
+  extractController: (c: Type | InstanceType<Type>) => Promise<InstanceType<Type>> | InstanceType<Type>,
 ) {
-  const controller = extractController(Controller);
+  const controller = await extractController(Controller);
   const meta = getMeta(controller);
   const router = Router(meta.routerOptions);
 
@@ -142,7 +142,7 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
 /**
  * Get controller instance from container or instantiate one
  */
-function getController(Controller: Type): ExpressClass {
+function getController(Controller: Type): Promise<ExpressClass> | ExpressClass {
   try {
     return Container.get(Controller);
   } catch {
