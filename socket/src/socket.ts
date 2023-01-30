@@ -1,5 +1,5 @@
 import { Container } from '@decorators/di';
-import { Server, Namespace, Socket, Event } from 'socket.io';
+import { Server, Namespace, Socket, Packet } from 'socket.io';
 
 import {
   ParameterType,
@@ -24,18 +24,25 @@ export function attachControllers(io: Server, controllers: Type[]) {
 /**
  * Attach Controller
  */
-function attachController(
+async function attachController(
   io: Server,
   controller: Type
 ) {
-  const instance: SocketClass = Container.get(controller);
+  const instance: SocketClass = await Container.get(controller);
   const meta: SocketMeta = getMeta(instance);
   const ioNS: Namespace = io.of(meta.namespace);
 
   /**
+   * Apply all registered controller-based middlewares to namespace
+   */
+  ioNS.use((socket, next: NextFunction) =>
+    executeMiddleware(meta.middleware, [io, socket, {}]).finally(next),
+  );
+
+  /**
    * Apply io based events
    */
-  applyEvents(io, null, controller, EventType.IO);
+  applyEvents(io, null, instance, meta, EventType.IO);
 
   /**
    * Apply local listeners (socket based)
@@ -49,7 +56,7 @@ function attachController(
     /**
      * Apply socket based events
      */
-    applyEvents(io, socket, controller, EventType.Socket);
+    applyEvents(io, socket, instance, meta, EventType.Socket);
   });
 }
 
@@ -57,7 +64,7 @@ function attachController(
  * Handler for all registered controller based middleware
  */
 function socketMiddlewareHandler(io: IO, socket: Socket, meta: SocketMeta) {
-  return (packet: Event, next: NextFunction) => {
+  return (packet: Packet, next: NextFunction) => {
     const [ event, data ] = packet;
     const args = [ io, socket, { event, data } ];
     /**
@@ -73,8 +80,7 @@ function socketMiddlewareHandler(io: IO, socket: Socket, meta: SocketMeta) {
     if (listener) {
       executeMiddleware(meta.middleware, args)
         .then(() => executeMiddleware(listener.middleware, args))
-        .then(() => next())
-        .catch((err: Error) => next(err));
+        .finally(next);
     } else {
       next();
     }
@@ -83,24 +89,17 @@ function socketMiddlewareHandler(io: IO, socket: Socket, meta: SocketMeta) {
 
 /**
  * Apply listeners to socket or io
- *
- * @param {Server|Namespace} io
- * @param {Socket} socket
- * @param {Type} controller
- * @param {EventType} type
  */
 function applyEvents(
   io: Server | Namespace,
   socket: Socket,
-  controller: Type,
+  instance: SocketClass,
+  meta: SocketMeta,
   type: EventType
 ) {
-  const instance: SocketClass = Container.get(controller);
-  const meta: SocketMeta = getMeta(instance);
-
   meta.listeners
     .filter((listener: Listener) => listener.type === type)
-    .forEach((listener: Listener) => (socket || io).on(listener.event, (...args) => {
+    .forEach((listener: Listener) => (socket || io).on(listener.event as any, (...args) => {
       const methodName: string = listener.methodName;
       const newArgs: any[] = mapArguments(
         io, socket || (args[0] as Socket), meta.params[methodName], args
@@ -112,12 +111,6 @@ function applyEvents(
 
 /**
  * Map parameters for new handler
- *
- * @param {Server|Namespace} io
- * @param {Socket} socket
- * @param {Param[]} params Meta parameters
- * @param {any[]} args Event handler arguments
- * @returns {Array} returns arguments array, or io and socket, event args by default
  */
 function mapArguments(
   io: Server | Namespace,
@@ -150,10 +143,6 @@ function mapArguments(
 
 /**
  * Get ack callback function
- *
- * @description extract callback function, it it exists
- *
- * @param {any[]} args Event arguments, passed to handler function
  */
 function getAck(args: any[]) {
   const ackExists: boolean = typeof args[args.length - 1] === 'function';
@@ -163,10 +152,6 @@ function getAck(args: any[]) {
 
 /**
  * Get proper message data
- *
- * @param {any[]} args
- *
- * @returns {*}
  */
 function getArgs(args: any[]): any {
   return typeof args[args.length - 1] === 'function' ?
@@ -175,13 +160,8 @@ function getArgs(args: any[]): any {
 
 /**
  * Get original socket or io server, or create instance of passed WrapperClass (data)
- *
- * @param {Param} item
- * @param {object} obj
- *
- * @returns {*}
  */
-function getWrapper(item: Param, obj: object): any {
+function getWrapper(item: Param, obj: any): any {
   return item.wrapper ? new item.wrapper(obj) : obj;
 }
 
