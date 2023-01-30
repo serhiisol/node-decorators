@@ -20,7 +20,7 @@ export type ErrorMiddleware = ErrorMiddlewareFunction | Type<ErrorMiddlewareClas
  */
 export function middlewareHandler(middleware: Middleware): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
-    invokeMiddleware(middleware, [req, res, next]);
+    invokeMiddleware(middleware, [req, res, next]).catch(next);
   };
 }
 
@@ -34,14 +34,14 @@ export const ERROR_MIDDLEWARE = new InjectionToken('ERROR_MIDDLEWARE');
  */
 export function errorMiddlewareHandler(): ErrorRequestHandler {
   return (error: Error, req: Request, res: Response, next: NextFunction) => {
-    invokeMiddleware(ERROR_MIDDLEWARE, [error, req, res, next]);
+    invokeMiddleware(ERROR_MIDDLEWARE, [error, req, res, next]).catch(next);
   };
 }
 
 /**
  * Instantiate middleware and invoke it with arguments
  */
-function invokeMiddleware(
+async function invokeMiddleware(
   middleware: InjectionToken | Middleware | ErrorMiddleware,
   args: Parameters<MiddlewareFunction> | Parameters<ErrorMiddlewareFunction>,
 ) {
@@ -57,7 +57,7 @@ function invokeMiddleware(
         instance = middleware as MiddlewareFunction;
       }
     } else {
-      instance = Container.get(middleware);
+      instance = await Container.get(middleware);
     }
 
     const handler = (instance as MiddlewareClass | ErrorMiddlewareClass)?.use ?? instance;
