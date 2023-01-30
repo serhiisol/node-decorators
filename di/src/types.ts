@@ -22,11 +22,9 @@ export type InjectableId
  * [
  *   ServiceProvider,
  *   { provide: TOKEN, useFactory: () => service, deps: [] },
- *   { provide: TOKEN, useValue: "Token Value" }
+ *   { provide: TOKEN, useValue: "Token Value" },
+ *   { provide: TOKEN, useClass: Service }
  * ]
- *
- * @export
- * @type Provider
  */
 export type Provider
   = ClassProvider
@@ -35,13 +33,11 @@ export type Provider
 
 /**
  * Class provider
+ *
  * @example
  * [
  *   ServiceProvider
  * ]
- *
- * @export
- * @interface ClassProvider
  */
 export interface ClassProvider {
   provide: Injectable;
@@ -56,9 +52,6 @@ export interface ClassProvider {
  * [
  *   { provide: TOKEN, useFactory: () => service, deps: [] }
  * ]
- *
- * @export
- * @interface FactoryProvider
  */
 export interface FactoryProvider {
   provide: Injectable;
@@ -73,9 +66,6 @@ export interface FactoryProvider {
  * [
  *   { provide: TOKEN, useValue: "Token Value" }
  * ]
- *
- * @export
- * @interface ValueProvider
  */
 export interface ValueProvider {
   provide: Injectable;
@@ -84,9 +74,6 @@ export interface ValueProvider {
 
 /**
  * Registered provider in the store
- *
- * @export
- * @interface StoreProvider
  */
 export interface StoreProvider {
   id: InjectableId;
@@ -98,9 +85,6 @@ export interface StoreProvider {
 
 /**
  * Injectable dependency
- *
- * @export
- * @interface Dependency
  */
 export interface Dependency {
   id: InjectableId;
@@ -109,17 +93,10 @@ export interface Dependency {
 
 /**
  * Generic interface for the service / class
- *
- * @export
- * @interface Type
  */
-export interface Type {
-  new (...args: any[]): any;
-}
+export type Type = new (...args: any[]) => any;
 
 /**
  * Generic factory function type
- * @export
- * @type Factory
  */
-export type Factory = (...args: any[]) => any;
+export type Factory = (...args: any[]) => Promise<any> | any;

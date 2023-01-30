@@ -3,12 +3,8 @@ import { Store } from '../store';
 
 /**
  * Type of the Inject metadata.
- *
- * @export
- * @param {Injectable} id
  */
 export function Inject(injectable: Injectable): ParameterDecorator {
-  return function(target: Type, _propertyKey, index: number): void {
+  return (target: Type, _propertyKey, index: number) =>
     Store.provider(target, { index, injectable });
-  };
 }

@@ -7,7 +7,7 @@ import {
   ValueProvider,
   Dependency,
   Injectable,
-  Factory
+  Factory,
 } from './types';
 import { Store } from './store';
 import { MissingProviderError, RecursiveProviderError } from './errors';
@@ -16,90 +16,74 @@ export class Container {
 
   /**
    * Register new or replace providers
-   *
-   * @static
-   * @param {Provider[]} providers
    */
-  public static provide(providers: Provider[]) {
-    providers
-      .filter((_provider: ClassProvider) => _provider.useClass)
-      .forEach((_provider: ClassProvider) => this.registerClassProvider(_provider));
+  static provide(providers: Provider[]) {
+    providers.forEach(provider => {
+      if ((provider as ClassProvider).useClass) {
+        return this.registerClassProvider(provider as ClassProvider);
+      }
 
-    providers
-      .filter((_provider: FactoryProvider) => _provider.useFactory)
-      .forEach((_provider: FactoryProvider) => this.registerFactoryProvider(_provider));
+      if ((provider as FactoryProvider).useFactory) {
+        return this.registerFactoryProvider(provider as FactoryProvider);
+      }
 
-    providers
-      .filter((_provider: ValueProvider) => _provider.useValue)
-      .forEach((_provider: ValueProvider) => this.registerValueProvider(_provider));
+      if ((provider as ValueProvider).useValue) {
+        return this.registerValueProvider(provider as ValueProvider);
+      }
+    });
   }
 
   /**
    * Get instance of injectable
-   *
-   * @template T
-   * @param {Injectable} injectable
-   * @returns {T}
    */
-  public static get<T>(injectable: Injectable): T {
+  static get<T>(injectable: Injectable): Promise<T> {
     const provider: StoreProvider = Store.findProvider(injectable);
 
-    if (provider === undefined) {
+    if (!provider) {
       throw new MissingProviderError(injectable);
     }
 
-    return this.resolveProvider(provider)
+    return this.resolveProvider<T>(provider);
   }
 
   /**
    * Resolve provider
-   *
-   * @private
-   * @param {StoreProvider} provider
-   * @param {StoreProvider[]} [requesters = []] provider, that initiated di
-   * @returns {*}
    */
-  private static resolveProvider(provider: StoreProvider, requesters: StoreProvider[] = []): any {
+  private static async resolveProvider<T>(provider: StoreProvider, requesters: StoreProvider[] = []): Promise<T> {
     if (provider.value) {
       return provider.value;
     }
 
     const _requesters = requesters.concat([provider]);
 
-    const deps = provider
-      .deps.map((dep: Dependency) => {
-        const requesterProvider: StoreProvider =
-          _requesters.find((requester: StoreProvider) => requester.id === dep.id);
+    const deps = provider.deps.map((dep: Dependency) => {
+      const requesterProvider: StoreProvider =
+        _requesters.find((requester: StoreProvider) => requester.id === dep.id);
 
-        if (requesterProvider) {
-          throw new RecursiveProviderError(_requesters, requesterProvider);
-        }
+      if (requesterProvider) {
+        throw new RecursiveProviderError(_requesters, requesterProvider);
+      }
 
-        const depService: StoreProvider = Store.findProvider(dep.id);
+      const depService: StoreProvider = Store.findProvider(dep.id);
 
-        if (!depService && !dep.optional) {
-          throw new MissingProviderError(provider, dep);
-        }
+      if (!depService && !dep.optional) {
+        throw new MissingProviderError(provider, dep);
+      }
 
-        if (!depService && dep.optional) {
-          return null;
-        }
+      if (!depService && dep.optional) {
+        return null;
+      }
 
-        return this.resolveProvider(depService, _requesters);
-      });
+      return this.resolveProvider(depService, _requesters);
+    });
 
-    provider.value = provider.factory ?
-      provider.factory(...deps) : new provider.type(...deps);
+    const resolvedDeps = await Promise.all(deps);
 
-    return provider.value;
+    return provider.factory ? provider.factory(...resolvedDeps) : new provider.type(...resolvedDeps);
   }
 
   /**
    * Register class provider
-   *
-   * @private
-   * @static
-   * @param {ClassProvider} provider
    */
   private static registerClassProvider(provider: ClassProvider): void {
     const id: InjectableId = Store.providerId(provider.provide);
@@ -112,10 +96,6 @@ export class Container {
 
   /**
    * Register factory provider
-   *
-   * @private
-   * @static
-   * @param {FactoryProvider} provider
    */
   private static registerFactoryProvider(provider: FactoryProvider): void {
     const id: InjectableId = Store.providerId(provider.provide);
@@ -123,16 +103,11 @@ export class Container {
     const deps: Dependency[] = (provider.deps || [])
       .map((dep: Injectable) => ({ id: Store.providerId(dep) }));
 
-    Store.replaceProvider(provider.provide, { id, factory, deps })
+    Store.replaceProvider(provider.provide, { id, factory, deps });
   }
 
   /**
    * Register value provider
-   *
-   * @private
-   * @static
-   * @param {ValueProvider} provider
-   * @memberof Container
    */
   private static registerValueProvider(provider: ValueProvider): void {
     const id: InjectableId = Store.providerId(provider.provide);
@@ -140,5 +115,4 @@ export class Container {
 
     Store.replaceProvider(provider.provide, { id, value });
   }
-
 }
