@@ -32,40 +32,33 @@ export const IO_MIDDLEWARE = new InjectionToken('IO_MIDDLEWARE');
 /**
  * Create request middleware handler that uses class or function provided as middleware
  */
-export function middlewareHandler(
+export async function middlewareHandler(
   middleware: Middleware | InjectionToken,
   args: Parameters<MiddlewareFunction> | Parameters<ServerMiddlewareFunction>
 ) {
   const next = args[args.length - 1] as NextFunction;
-  let instance: InstanceType<Type<MiddlewareClass | ServerMiddlewareClass>>;
 
   try {
-    instance = Container.get(middleware);
-  } catch {
-    if (typeof instance !== 'function') {
-      next();
+    let instance: MiddlewareClass | ServerMiddlewareClass | MiddlewareFunction;
 
-      return;
+    if (typeof middleware === 'function') {
+      if (middleware.prototype?.use) {
+        instance = new (middleware as Type<MiddlewareClass | ServerMiddlewareClass>)(...args);
+      } else {
+        instance = middleware as MiddlewareFunction;
+      }
+    } else {
+      instance = await Container.get(middleware);
     }
 
-    try {
-      instance = new (middleware as Type<MiddlewareClass | ServerMiddlewareClass>)(...args);
-    } catch (err) {
-      next(err as Error);
-
-      return;
-    }
-  }
-
-  try {
-    const handler = instance.use ?? instance;
+    const handler = (instance as MiddlewareClass | ServerMiddlewareClass)?.use ?? instance;
     const result = typeof handler === 'function' ? handler.apply(instance, args) : instance;
 
     if (result instanceof Promise) {
       result.catch(next);
     }
-  } catch (e) {
-    next(e as Error);
+  } catch (err) {
+    next(err as Error);
   }
 }
 
@@ -74,23 +67,20 @@ export function middlewareHandler(
  */
 export function executeMiddleware(middleware: Middleware[], args: unknown[] = []): Promise<any> {
   function iteratee(done: (err?: Error) => void, i = 0) {
-    try {
-      middlewareHandler(middleware[i], [...args, (err?: Error) => {
-        if (err) {
-          done(err);
-        } else if (i === middleware.length - 1) {
-          done();
-        } else {
-          iteratee(done, ++i);
-        }
-      }] as Parameters<MiddlewareFunction> | Parameters<ServerMiddlewareFunction>);
-    } catch (e) {
-      done(e as Error);
-    }
+    middlewareHandler(middleware[i], [...args, (err?: Error) => {
+      if (err) {
+        done(err);
+      } else if (i === middleware.length - 1) {
+        done();
+      } else {
+        iteratee(done, ++i);
+      }
+    }] as Parameters<MiddlewareFunction> | Parameters<ServerMiddlewareFunction>)
+      .catch(done);
   }
 
   return new Promise<void>((resolve, reject) => {
-    if (middleware === undefined || middleware.length === 0) {
+    if (middleware.length === 0) {
       return resolve();
     }
 
