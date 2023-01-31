@@ -81,14 +81,14 @@ function routeHandler(controller: ExpressClass, methodName: string, params: Para
 
     if (result instanceof Promise) {
       result.then((r: any) => {
-        if (!res.headersSent) {
+        if (!res.headersSent && typeof r !== 'undefined') {
           if (status) {
             res.status(status);
           }
           res.send(r);
         }
       }).catch(next);
-    } else {
+    } else if (typeof result !== 'undefined') {
       if (!res.headersSent) {
         if (status) {
           res.status(status);
