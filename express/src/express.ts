@@ -7,8 +7,12 @@ import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
 /**
  * Attach controllers to express application
  */
-export function attachControllers(app: Express | Router, controllers: Type[]) {
-  controllers.forEach((controller: Type) => registerController(app, controller, getController));
+export async function attachControllers(app: Express | Router, controllers: Type[]) {
+  const promises = controllers.map((controller: Type) =>
+    registerController(app, controller, getController),
+  );
+
+  await Promise.all(promises);
 
   // error middleware must be registered as the very last one
   app.use(errorMiddlewareHandler());
@@ -17,8 +21,12 @@ export function attachControllers(app: Express | Router, controllers: Type[]) {
 /**
  * Attach controller instances to express application
  */
-export function attachControllerInstances(app: Express | Router, controllers: InstanceType<Type>[]) {
-  controllers.forEach((controller: InstanceType<Type>[]) => registerController(app, controller, (c: InstanceType<Type>) => c));
+export async function attachControllerInstances(app: Express | Router, controllers: InstanceType<Type>[]) {
+  const promises = controllers.map((controller: InstanceType<Type>[]) =>
+    registerController(app, controller, (c: InstanceType<Type>) => c),
+  );
+
+  await Promise.all(promises);
 
   // error middleware must be registered as the very last one
   app.use(errorMiddlewareHandler());
