@@ -14,10 +14,23 @@ function delay(data: any) {
   );
 }
 
+
+const dependencyContainer = new Container();
+
 @Injectable()
 export class Dependency {
   message = 'Dependency';
 }
+
+dependencyContainer.provide([{
+  provide: Dependency,
+  useClass: Dependency,
+}]);
+
+
+const container = new Container();
+
+container.setParent(dependencyContainer);
 
 @Injectable()
 export class Service {
@@ -32,11 +45,7 @@ export class Service {
   }
 }
 
-Container.provide([
-  {
-    provide: Dependency,
-    useClass: Dependency,
-  },
+container.provide([
   {
     provide: 'Message',
     async useFactory() {
@@ -51,7 +60,7 @@ Container.provide([
 
 
 async function bootstrap() {
-  const service = await Container.get<Service>('Hello World');
+  const service = await container.get<Service>('Hello World');
 
   console.log(service.sentence());
 }

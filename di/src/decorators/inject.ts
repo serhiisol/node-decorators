@@ -1,10 +1,12 @@
-import { Injectable, Type } from '../types';
-import { Store } from '../store';
+import { ClassConstructor, Injectable } from '../types';
+import { DEP_IDS_METADATA } from '../constants';
 
-/**
- * Type of the Inject metadata.
- */
-export function Inject(injectable: Injectable): ParameterDecorator {
-  return (target: Type, _propertyKey, index: number) =>
-    Store.provider(target, { index, injectable });
+export function Inject(injectable: Injectable) {
+  return (target: ClassConstructor, _propertyKey: string | symbol, parameterIndex: number) => {
+    const ids = Reflect.getMetadata(DEP_IDS_METADATA, target) ?? [];
+
+    ids[parameterIndex] = injectable;
+
+    Reflect.defineMetadata(DEP_IDS_METADATA, ids, target);
+  };
 }

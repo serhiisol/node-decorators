@@ -1,102 +1,57 @@
 import { InjectionToken } from './injection-token';
 
-/**
- * Possible injectable type
- */
 export type Injectable
-  = Type
+  = ClassConstructor
   | InjectionToken
   | string;
 
-/**
- * Possible injectable id
- */
 export type InjectableId
   = InjectionToken
   | string;
 
-/**
- * DI Provider
- *
- * @example
- * [
- *   ServiceProvider,
- *   { provide: TOKEN, useFactory: () => service, deps: [] },
- *   { provide: TOKEN, useValue: "Token Value" },
- *   { provide: TOKEN, useClass: Service }
- * ]
- */
 export type Provider
   = ClassProvider
   | FactoryProvider
-  | ValueProvider;
+  | ValueProvider
+  | ExistingProvider;
 
-/**
- * Class provider
- *
- * @example
- * [
- *   ServiceProvider
- * ]
- */
 export interface ClassProvider {
+  multi?: boolean;
   provide: Injectable;
-  useClass: Type;
-  deps?: Injectable[];
+  useClass: ClassConstructor;
 }
 
-/**
- * Factory provider
- *
- * @example
- * [
- *   { provide: TOKEN, useFactory: () => service, deps: [] }
- * ]
- */
 export interface FactoryProvider {
+  deps?: Injectable[];
+  multi?: boolean;
   provide: Injectable;
   useFactory: Factory;
-  deps?: Injectable[];
 }
 
-/**
- * Value provider
- *
- * @example
- * [
- *   { provide: TOKEN, useValue: "Token Value" }
- * ]
- */
 export interface ValueProvider {
+  multi?: boolean;
   provide: Injectable;
   useValue: any;
 }
 
-/**
- * Registered provider in the store
- */
-export interface StoreProvider {
-  id: InjectableId;
-  deps?: Dependency[];
-  type?: Type;
-  factory?: Factory;
-  value?: any;
+export interface ExistingProvider {
+  multi?: boolean;
+  provide: Injectable;
+  useExisting: Injectable;
 }
 
-/**
- * Injectable dependency
- */
 export interface Dependency {
-  id: InjectableId;
+  id: Injectable;
   optional?: boolean;
 }
 
-/**
- * Generic interface for the service / class
- */
-export type Type = new (...args: any[]) => any;
+export interface ContainerProvider {
+  deps?: Dependency[];
+  factory?: Factory;
+  type?: ClassConstructor;
+  value?: any;
+}
 
-/**
- * Generic factory function type
- */
+export type ClassConstructor = new (...args: any[]) => any;
+
 export type Factory = (...args: any[]) => Promise<any> | any;
