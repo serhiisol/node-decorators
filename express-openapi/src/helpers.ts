@@ -4,7 +4,7 @@ import * as swaggerUi from "swagger-ui-express";
 import { OpenApiOptions, SchemaDef } from "./types";
 
 export const OPENAPI_DOCUMENT = new InjectionToken('openapi_doc');
-export function getOpenApiDoc(): any {
+export function getOpenApiDoc(): Promise<any> | any {
   try {
     return Container.get(OPENAPI_DOCUMENT);
   } catch (error) {
@@ -23,8 +23,8 @@ export function getOpenApiDoc(): any {
   }
 }
 
-export function enableOpenApi(app: Express, options: OpenApiOptions = {}) {
-  const doc = getOpenApiDoc();
+export async function enableOpenApi(app: Express, options: OpenApiOptions = {}) {
+  const doc = await getOpenApiDoc();
   // add the basics
   Object.assign(doc, {
     info: {
@@ -42,8 +42,8 @@ export function enableOpenApi(app: Express, options: OpenApiOptions = {}) {
   app.use(serveOnPath, swaggerUi.serve, swaggerUi.setup(doc));
 }
 
-export function registerSchema(name: string, schema: SchemaDef): void {
-  const doc = getOpenApiDoc();
+export async function registerSchema(name: string, schema: SchemaDef): Promise<void> {
+  const doc = await getOpenApiDoc();
   const schemas = doc.components.schemas = doc.components.schemas || {};
   schemas[name] = schema;
 }
