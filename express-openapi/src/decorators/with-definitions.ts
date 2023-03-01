@@ -10,35 +10,37 @@ type WithDefinitionsOpts = {
 
 export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
   return (target: any) => {
-    const meta = getOpenApiMeta(target.prototype);
-    const paths = getOpenApiDoc().paths;
-    const { routes, params } = getMeta(target.prototype);
-    const basePath = options?.basePath || '/';
-    const globalTags = options.tags || [];
-
-    Object.keys(meta).forEach(methodName => {
-      const pathMeta = meta[methodName];
-      const routeParams = params[methodName];
-      getRoutes(routes, methodName).forEach((route: { method: string; url: string; }) => {
-        // as openapi does not support nested urls, need to concat the controller url with the one from the method
-        const url = getPathName(basePath, route.url);
-        // the path might exist already (because of another http verb - ie GET /users and POST /users).
-        // do not override but extend it
-        const path = paths[url] = paths[url] || {};
-        // if the same path and method was already defined, then override the previous one
-        const method = path[route.method] = {};
-        // add method specifications to the open api document
-        Object.assign(method, {
-          tags: getTags(pathMeta.tags, globalTags, target.name),
-          summary: pathMeta.summary,
-          description: pathMeta.description,
-          parameters: getParameters(pathMeta, getRouteParams(routeParams)),
-          deprecated: isDeprecated(route.url, pathMeta),
-          requestBody: pathMeta.requestBody,
-          responses: pathMeta.responses,
-        })
+    (async () => {
+      const meta = getOpenApiMeta(target.prototype);
+      const { paths } = await getOpenApiDoc();
+      const { routes, params } = getMeta(target.prototype);
+      const basePath = options?.basePath || '/';
+      const globalTags = options.tags || [];
+  
+      Object.keys(meta).forEach(methodName => {
+        const pathMeta = meta[methodName];
+        const routeParams = params[methodName];
+        getRoutes(routes, methodName).forEach((route: { method: string; url: string; }) => {
+          // as openapi does not support nested urls, need to concat the controller url with the one from the method
+          const url = getPathName(basePath, route.url);
+          // the path might exist already (because of another http verb - ie GET /users and POST /users).
+          // do not override but extend it
+          const path = paths[url] = paths[url] || {};
+          // if the same path and method was already defined, then override the previous one
+          const method = path[route.method] = {};
+          // add method specifications to the open api document
+          Object.assign(method, {
+            tags: getTags(pathMeta.tags, globalTags, target.name),
+            summary: pathMeta.summary,
+            description: pathMeta.description,
+            parameters: getParameters(pathMeta, getRouteParams(routeParams)),
+            deprecated: isDeprecated(route.url, pathMeta),
+            requestBody: pathMeta.requestBody,
+            responses: pathMeta.responses,
+          })
+        });
       });
-    });
+    })();
   }
 }
 
