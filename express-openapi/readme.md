@@ -12,7 +12,7 @@ npm install @decorators/express-openapi
 ### Functions
 
 ```ts
-enableOpenApi(app: express.Application, options: OpenApiOptions = {}): void
+enableOpenApi(app: express.Application, options: OpenApiOptions = {}): Promise<void>
 ```
 
 Initiates the openapi document and attaches it to the application.
@@ -41,7 +41,7 @@ Initiates the openapi document and attaches it to the application.
 <hr>
 
 ```ts
-registerSchema(name: string, schema: SchemaDef): void
+registerSchema(name: string, schema: SchemaDef): Promise<void>
 ```
 
 Defines a schema on the openapi document
