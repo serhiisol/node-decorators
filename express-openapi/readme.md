@@ -37,6 +37,8 @@ Initiates the openapi document and attaches it to the application.
 | options.externalDocs | `object` | <ul><li>optional</li></ul> | External documents definition following the openapi specifications. |
 | options.externalDocs.url | `string` | | |
 | options.externalDocs.description | `string` | <ul><li>optional</li></ul> | |
+| options.security | `object[]` | <ul><li>optional</li></ul> | Security schemes to be applied to the api |
+| options.components.securitySchemes | `object` | <ul><li>optional</li></ul> | An object that represents the `components.securitySchemes` on the openapi document. For more info see https://swagger.io/docs/specification/authentication/ |
 
 <hr>
 
@@ -71,6 +73,8 @@ Enables openapi definitions for a controller class (using `@Controller()` from `
 | ---- |----- | --------- | ----------- |
 | options | `object` |  |  |
 | options.tags | `string[]` | <ul><li>optional</li></ul> | Tags to be applied to all routes on the controller |
+| options.security | `object[]` | <ul><li>optional</li></ul> | Security schemes to be applied to all routes on the controller |
+| options.responses | `object` | <ul><li>optional</li></ul> | Tags to be applied to all routes on the controller |
 | options.basePath | `string` |  | The base path for all routes on the controller |
 
 <hr>
@@ -247,7 +251,7 @@ Defines the description for a response
 
 | Name | Type | Attribute | Description |
 | ---- |----- | --------- | ----------- |
-| status | `string | number` |  | The response status |
+| status | `string \| number` |  | The response status |
 | description | `string` |  | The description |
 
 <hr>
@@ -262,9 +266,24 @@ Defines one response schema for the operation
 
 | Name | Type | Attribute | Description |
 | ---- |----- | --------- | ----------- |
-| status | `string` `number` |  | The response status |
+| status | `string \| number` |  | The response status |
 | produces | `string` |  | The media type described |
 | schema | `object` |  | A schema definition following the openapi specifications |
+
+<hr>
+
+```ts
+@Security(schemeName: string, scopes?: string[])
+```
+
+Applies a security scheme to the operation
+
+**Params:**
+
+| Name | Type | Attribute | Description |
+| ---- | ---- | --------- | ----------- |
+| schemeName | `string` |  | The scheme name |
+| scopes | `string[]` | <ul><li>optional</li></ul> | list of required scopes |
 
 <hr>
 
