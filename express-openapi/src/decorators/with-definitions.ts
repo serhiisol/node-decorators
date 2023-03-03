@@ -1,10 +1,12 @@
 import { getMeta } from '@decorators/express/lib/src/meta';
 import { getOpenApiDoc } from '../helpers';
 import { getOpenApiMeta } from '../meta';
-import { ParamDef, ParamLocation, PathMeta } from '../types';
+import { ParamDef, ParamLocation, PathMeta, PathResponses, PathSecurity } from '../types';
 
 type WithDefinitionsOpts = {
-  tags?: string[]
+  tags?: string[];
+  security?: PathSecurity;
+  responses?: PathResponses;
   basePath: string;
 }
 
@@ -15,7 +17,9 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
       const { paths } = await getOpenApiDoc();
       const { routes, params } = getMeta(target.prototype);
       const basePath = options?.basePath || '/';
-      const globalTags = options.tags || [];
+      const globalTags = options.tags ?? [];
+      const globalSecurity = options.security ?? [];
+      const globalResponses = options.responses ?? {};
   
       Object.keys(meta).forEach(methodName => {
         const pathMeta = meta[methodName];
@@ -36,7 +40,8 @@ export function WithDefinitions(options: WithDefinitionsOpts): ClassDecorator {
             parameters: getParameters(pathMeta, getRouteParams(routeParams)),
             deprecated: isDeprecated(route.url, pathMeta),
             requestBody: pathMeta.requestBody,
-            responses: pathMeta.responses,
+            responses: getRespones(pathMeta.responses, globalResponses),
+            security: getSecurity(pathMeta.security, globalSecurity),
           })
         });
       });
@@ -57,8 +62,29 @@ function getPathName(basePath: string, url: string) {
   // if url does not start with a slash, then add it
   if (!url.startsWith('/')) url = `/${url}`;
   const result = `${basePath}${url}`;
-  if (result.length === 1) return result;
-  return result.replace(/\/+$/, '');
+  if (result.length === 1) return fixRouteParams(result);
+  return fixRouteParams(result.replace(/\/+$/, ''));
+}
+
+function fixRouteParams(url: string) {
+  // openapi requires route parameters to be in `/foo/{bar}` format as opposed to `/foo/:bar`
+  return url.replace(/\/:([a-zA-Z\d-]*)/g, "/{$1}")
+}
+
+function getSecurity(pathSecurity?: PathSecurity, globalSecurity?: PathSecurity) {
+  const security = [];
+  if (pathSecurity) security.push(...pathSecurity);
+  if (globalSecurity) security.push(...globalSecurity);
+  return security.length ? security : undefined;
+}
+
+function getRespones(pathResponses?: PathResponses, globalResponses?: PathResponses): PathResponses {
+  const responses = [
+    ...Object.entries(globalResponses ?? {}),
+    ...Object.entries(pathResponses ?? {}),
+  ]
+  
+  return responses.reduce<PathResponses>((a, [k, v]) => ({ ...a, [k]: v }), {})
 }
 
 function getTags(pathTags: string[], globalTags: string[], defaultTag: string) {
