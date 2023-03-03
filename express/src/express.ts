@@ -171,13 +171,19 @@ function getParam(source: any, paramType: string, name: string): any {
 
 /**
  * Attach middleware to controller metadata
+ * @param {boolean} unshift if set to false all the custom decorator middlewares will be exectuted after the middlewares attached through controller 
  * 
- * Note- Please use custom decorators before express method decorators @Get @Post etc.
+ * 
+ * Note- Please use custom decorators before express method decorators Get Post etc.
  */
 
-export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction){
+export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction,unshift : boolean = true){
   const meta  : ExpressMeta = getMeta(target as ExpressClass);
   if(property in meta.routes){
-    meta.routes[property].routes[0].middleware.push(middleware);
+    if(unshift == true){
+      meta.routes[property].routes[0].middleware.unshift(middleware);
+    }else{
+      meta.routes[property].routes[0].middleware.push(middleware);
+    }
   }
 }
