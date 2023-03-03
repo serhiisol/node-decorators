@@ -35,6 +35,11 @@ export async function enableOpenApi(app: Express, options: OpenApiOptions = {}) 
     tags: options.tags,
     servers: options.servers,
     externalDocs: options.externalDocs,
+    security: options.security,
+  });
+  
+  Object.assign(doc.components, {
+    securitySchemes: options.components?.securitySchemes
   });
 
   // setup swagger UI

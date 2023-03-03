@@ -67,3 +67,14 @@ export function OpenApiResponse(status: string | number, descriptionOrProduces: 
     return descriptor;
   }
 }
+export function Security(schemeName: string, scopes?: string[]): MethodDecorator {
+  return (target: any, method: string, descriptor: any) => {
+    const meta = getOpenApiMeta(target);
+    const methodMeta = meta[method] = meta[method] || {};
+    const security = methodMeta.security = methodMeta.security || [];
+    security.push({
+      [schemeName]: scopes || []
+    });
+    return descriptor;
+  }
+}
