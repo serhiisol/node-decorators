@@ -179,7 +179,9 @@ function getParam(source: any, paramType: string, name: string): any {
 
 export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction,unshift : boolean = true){
   const meta  : ExpressMeta = getMeta(target as ExpressClass);
-  if(property in meta.routes){
+  if(meta.url !== ''){
+    meta.middleware.unshift(middleware);
+  }else if(property in meta.routes){
     if(unshift == true){
       meta.routes[property].routes[0].middleware.unshift(middleware);
     }else{
