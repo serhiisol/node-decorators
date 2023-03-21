@@ -177,15 +177,11 @@ function getParam(source: any, paramType: string, name: string): any {
  * Note- Please use custom decorators before express method decorators Get Post etc.
  */
 
-export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction,unshift : boolean = true){
+export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction){
   const meta  : ExpressMeta = getMeta(target as ExpressClass);
   if(meta.url !== ''){
     meta.middleware.unshift(middleware);
   }else if(property in meta.routes){
-    if(unshift == true){
-      meta.routes[property].routes[0].middleware.unshift(middleware);
-    }else{
-      meta.routes[property].routes[0].middleware.push(middleware);
-    }
+    meta.routes[property].routes[0].middleware.unshift(middleware);
   }
 }
