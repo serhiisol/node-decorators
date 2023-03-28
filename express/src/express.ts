@@ -1,8 +1,8 @@
 import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
 import { Container } from '@decorators/di';
 
-import { getMeta, ParameterType, ExpressClass, ParameterConfiguration } from './meta';
-import { middlewareHandler, errorMiddlewareHandler, Type } from './middleware';
+import { getMeta, ParameterType, ExpressClass, ParameterConfiguration, ExpressMeta} from './meta';
+import { middlewareHandler, errorMiddlewareHandler, Type, MiddlewareFunction} from './middleware';
 
 /**
  * Attach controllers to express application
@@ -165,4 +165,23 @@ function getParam(source: any, paramType: string, name: string): any {
   const param = source[paramType] || source;
 
   return name ? param[name] : param;
+}
+
+
+
+/**
+ * Attach middleware to controller metadata
+ * @param {boolean} unshift if set to false all the custom decorator middlewares will be exectuted after the middlewares attached through controller 
+ * 
+ * 
+ * Note- Please use custom decorators before express method decorators Get Post etc.
+ */
+
+export function attachMiddleware(target : any,property : string,middleware : MiddlewareFunction){
+  const meta  : ExpressMeta = getMeta(target as ExpressClass);
+  if(meta.url !== ''){
+    meta.middleware.unshift(middleware);
+  }else if(property in meta.routes){
+    meta.routes[property].routes[0].middleware.unshift(middleware);
+  }
 }

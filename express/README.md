@@ -129,4 +129,68 @@ attachControllers(apiRouter, [UsersController]);
 app.use('/v1/api', apiRouter);
 ```
 
+
+You can also use custom decorators as middleware :
+
+Custom Decorator
+```typescript
+import { attachMiddleware } from "@decorators/express";
+import {Request,Response,NextFunction} from '@decorators/express/node_modules/express';
+
+export function Access(key: string) {
+    return function (target: any,propertyKey: string,descriptor: PropertyDescriptor) {
+      attachMiddleware(target,propertyKey,(req : Request,res : Response,next : NextFunction)=>{
+            if(["CAN_ACCESS_TEST","CAN_ACCESS_HOME"].includes(key)){
+              next();
+            }else{
+              res.send("ACCESS DENIED");
+            }
+        })
+    };
+  }
+
+```
+
+
+Controller Code 
+
+```typescript
+@Controller("/")
+export class MainController {
+
+    @Access("CAN_ACCESS_TEST")
+    @Get("/test")
+    getB() {
+        return "You can access the test";
+    }
+
+    @Access("CAN_ACCESS_HOME")
+    @Get("/home")
+    getB() {
+        return "You can access the home";
+    }
+}
+
+```
+
+*Note:-*``` Please use custom decorators before express decorators otherwise system will not detect any controller metadata and your decorator will not invoked.```
+
+Will work:
+```typescript
+    @Access("CAN_ACCESS_TEST")
+    @Get("/test")
+    getB() {
+        return "You can access the test";
+    }
+```
+Will not work:
+```typescript
+    @Get("/test")
+    @Access("CAN_ACCESS_TEST")
+    getB() {
+        return "You can access the test";
+    }
+```
+
+
 [ExpressJS]:http://expressjs.com
