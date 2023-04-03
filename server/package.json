@@ -1,0 +1,60 @@
+{
+  "author": "Serhii Sol",
+  "bugs": {
+    "url": "https://github.com/serhiisol/node-decorators/issues"
+  },
+  "description": "node decorators - decorators for express library",
+  "devDependencies": {
+    "@decorators/di": "../di",
+    "@types/express": "4.17.8",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "eslint": "^8.37.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsdoc": "^40.1.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "express": "^4.18.2",
+    "jest": "^29.5.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./express": "./lib/platforms/express/index.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "node decorators",
+    "typescript"
+  ],
+  "license": "MIT",
+  "name": "@decorators/server",
+  "peerDependencies": {
+    "@decorators/di": "^3.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serhiisol/node-decorators.git"
+  },
+  "scripts": {
+    "build": "rm -rf ./lib && tsc",
+    "test": "jest"
+  },
+  "types": "lib/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "express": [
+        "./lib/platforms/express/index.d.ts"
+      ]
+    }
+  },
+  "version": "1.0.0-beta.1"
+}

@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Server Example",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceFolder}/example/main.ts"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
+      },
+      "outputCapture": "std",
+      "presentation": {
+        "group": "SERVER",
+        "order": 1
+      }
+    }
+  ],
+}

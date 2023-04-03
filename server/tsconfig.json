@@ -1,0 +1,27 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "rootDir": "./src",
+    "inlineSourceMap": true,
+    "target": "ES2019",
+    "inlineSources": true,
+    "pretty": true,
+    "outDir": "lib"
+  },
+  "exclude": [
+    "src/**/*.spec.ts"
+  ],
+  "include": [
+    "./src/index.ts",
+    "./src/platforms/express/index.ts"
+  ]
+}
