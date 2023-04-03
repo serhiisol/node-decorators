@@ -39,7 +39,10 @@
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
   "scripts": {
-    "compile": "tsc --project tsconfig.build.json",
+    "build": "tsc --project tsconfig.build.json",
     "test": "mocha test.ts --require ts-node/register test.ts"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }

@@ -12,14 +12,15 @@
     "noUnusedParameters": true,
     "rootDir": ".",
     "inlineSourceMap": true,
-    "target": "es6",
+    "target": "ES2017",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
     "pretty": true,
     "outDir": "lib"
   },
   "exclude": ["node_modules"],
-  "files": [
-    "./index.ts"
+  "include": [
+    "example/**/*.ts",
+    "src/**/*.ts"
   ]
 }

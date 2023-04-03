@@ -1,0 +1,43 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "DI Example",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceFolder}/example/index.ts"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "tsconfig.example.json"
+      },
+      "outputCapture": "std",
+      "presentation": {
+        "hidden": false,
+        "group": "DI",
+        "order": 1
+      },
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "DI Test",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+      "args": [
+        "-i"
+      ],
+      "env": {
+        // "TS_NODE_PROJECT": "tsconfig.test.json"
+      },
+      "outputCapture": "std",
+      "presentation": {
+        "hidden": false,
+        "group": "DI",
+        "order": 1
+      },
+    }
+  ],
+}

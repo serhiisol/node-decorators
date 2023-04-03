@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+
 import * as express from 'express';
 import { Container } from '@decorators/di';
 import { attachControllers, Controller, ERROR_MIDDLEWARE, ErrorMiddleware, Get } from '../src';
@@ -11,7 +13,7 @@ class InternalServerError extends Error {}
 class IndexController {
   @Get('/')
   index() {
-    return 'Hello World'
+    return 'Hello World';
   }
 
   @Get('/not-found-error')
@@ -39,16 +41,16 @@ class ServerErrorMiddleware implements ErrorMiddleware {
   }
 }
 
-export function start() {
+export async function start() {
   Container.provide([
-    { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
+    { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware },
   ]);
 
-  attachControllers(app, [IndexController]);
+  await attachControllers(app, [IndexController]);
 
   app.listen(3000, () => {
-    console.info(`Server is running on port 3000`);
+    console.info('Server is running on port 3000');
   });
 }
 
-start();
+start().catch(console.error);
