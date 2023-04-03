@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "exclude": ["src/**/*.spec.ts"],
-  "files": [
+  "include": [
     "./index.ts"
   ]
 }

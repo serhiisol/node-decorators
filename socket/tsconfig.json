@@ -6,19 +6,21 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noEmitOnError": true,
-    "noImplicitAny": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noEmitOnError": true,
+    // "noImplicitAny": false,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "rootDir": ".",
     "inlineSourceMap": true,
-    "target": "es6",
+    "target": "ES2017",
     "inlineSources": true,
     "typeRoots": ["node_modules/@types"],
     "pretty": true,
     "outDir": "lib"
   },
-  "files": [
-    "./index.ts"
+  "exclude": ["node_modules"],
+  "include": [
+    "example/**/*.ts",
+    "src/**/*.ts"
   ]
 }

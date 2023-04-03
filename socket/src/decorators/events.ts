@@ -36,7 +36,7 @@ export function Event(event: string, middleware?: Middleware[]) {
 /**
  * Listener decorator factory, creates listener decorator
  */
-function decoratorFactory(type: EventType, event: string, middleware?: Middleware[]): MethodDecorator {
+function decoratorFactory(type: EventType, event: string, middleware: Middleware[] = []): MethodDecorator {
   return (target: object, methodName: string, descriptor?: any) => {
     const meta = getMeta(target);
 
