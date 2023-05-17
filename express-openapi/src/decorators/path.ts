@@ -16,16 +16,26 @@ export function Summary(summary: string): MethodDecorator {
 export function Description(description: string): MethodDecorator {
   return basicDecoratorFactory('description', description);
 }
-export function Param(name: string, location: ParamLocation, options: ParamOptions = {}): MethodDecorator {
+export function Param(name: string, location: ParamLocation, schema: SchemaDef, options: ParamOptions = {}): MethodDecorator {
   return (target: any, method: string, descriptor: any) => {
     const meta = getOpenApiMeta(target);
     const methodMeta = meta[method] = meta[method] || {};
     const parameters = methodMeta.parameters = methodMeta.parameters || [];
-    parameters.push({
+    const { contentMediaType, ...opts } = options;
+    const param = {
       name,
       in: location,
-      ...options,
-    });
+      ...opts,
+      ...(!!contentMediaType
+        ? {
+          content: {
+            [contentMediaType]: { schema }
+          }
+        }
+        : { schema }
+      ),
+    };
+    parameters.push(param);
     return descriptor;
   }
 }
