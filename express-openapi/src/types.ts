@@ -133,6 +133,7 @@ export type ParamOptions = {
   required?: boolean;
   deprecated?: boolean;
   allowEmptyValue?: boolean;
+  contentMediaType?: string;
 };
 
 export type ParamDef = {
