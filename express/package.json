@@ -1,6 +1,6 @@
 {
   "name": "@decorators/express",
-  "version": "2.9.3",
+  "version": "2.9.4",
   "description": "node decorators - decorators for express library",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
