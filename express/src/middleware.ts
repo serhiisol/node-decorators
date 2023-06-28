@@ -48,16 +48,10 @@ async function invokeMiddleware(
   const next = args[args.length - 1] as NextFunction;
 
   try {
-    let instance: MiddlewareClass | ErrorMiddlewareClass | MiddlewareFunction;
+    const instance = await getMiddlewareInstance(middleware);
 
-    if (typeof middleware === 'function') {
-      if (middleware.prototype?.use) {
-        instance = new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)(...args);
-      } else {
-        instance = middleware as MiddlewareFunction;
-      }
-    } else {
-      instance = await Container.get(middleware);
+    if (!instance) {
+      return next();
     }
 
     const handler = (instance as MiddlewareClass | ErrorMiddlewareClass)?.use ?? instance;
@@ -68,5 +62,19 @@ async function invokeMiddleware(
     }
   } catch (err) {
     next(err);
+  }
+}
+
+function getMiddlewareInstance(middleware: InjectionToken | Middleware | ErrorMiddleware) {
+  try {
+    return Container.get(middleware);
+  } catch {
+    if (typeof middleware === 'function') {
+      return (middleware as Middleware | ErrorMiddleware).prototype?.use
+        ? new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)()
+        : middleware;
+    }
+
+    return null;
   }
 }
