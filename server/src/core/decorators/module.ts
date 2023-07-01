@@ -15,6 +15,16 @@ interface ModuleOptions {
   providers?: (ClassConstructor | Provider)[];
 }
 
+/**
+ * Module provides a scope providers, nested namespace
+ *
+ * Module options:
+ * * controllers - list of controllers to handle namespace-based endpoints.
+ * Each enpoint consists of parent module.namespace + controller.url + method.url
+ * * modules - list of child modules
+ * * namespace - prefix to be added to all nested modules and provided controllers
+ * * providers - list of required providers
+ */
 export function Module(options: ModuleOptions) {
   return (target: ClassConstructor) => {
     const providers = (options.providers ?? []).map(injectable => (injectable as Provider).provide ? injectable : ({

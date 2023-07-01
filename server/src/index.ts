@@ -1,6 +1,7 @@
 import 'reflect-metadata';
-export * from './core/application';
+export { Application } from './core/application';
 export * from './core/decorators';
+export * from './core/helpers/constants/http-status';
 export * from './core/helpers/constants/injectables';
 export { createParamDecorator, Decorate } from './core/helpers/decorators';
 export * from './core/helpers/errors';
