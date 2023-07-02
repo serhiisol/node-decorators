@@ -1,276 +1,347 @@
-import { expect } from 'chai';
-
-import { Store } from './store';
+import 'reflect-metadata';
 import { Container } from './container';
 import { InjectionToken } from './injection-token';
-import { Injectable } from './decorators';
-import { MissingProviderError, RecursiveProviderError } from './errors';
-
-@Injectable()
-class TestInjectable {
-  constructor(public str: string) {}
-}
-
-@Injectable()
-class AnotherInjectable {
-  constructor(public str: string) {}
-}
-
-function delay(data: any) {
-  return new Promise(resolve =>
-    setTimeout(() => resolve(data), 1000),
-  );
-}
+import { Injectable, Inject } from './decorators';
+import { InvalidDependencyError, MissingDependencyError, RecursiveDependencyError } from './errors';
 
 describe('Container', () => {
-
-  beforeEach(() => Store.providers = []);
-
-  describe('.provide(provider: Providers[])', () => {
-
-    describe('ValueProvider', () => {
-
-      it('should register provider', () => {
-        const token = new InjectionToken('token');
-
-        Container.provide([
-          { provide: token, useValue: 1 },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.value).to.equal(1);
-      });
-
-      it('should replace provider', () => {
-        const token = new InjectionToken('token');
-
-        Container.provide([
-          { provide: token, useValue: 1 },
-          { provide: token, useValue: 2 },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.value).to.equal(2);
-      });
-
-    });
-
-    describe('FactoryProvider', () => {
-
-      it('should register provider', () => {
-        const token = new InjectionToken('token');
-        const factory = () => 1;
-
-        Container.provide([
-          { provide: token, useFactory: factory },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.factory).to.equal(factory);
-      });
-
-      it('should replace provider', () => {
-        const token = new InjectionToken('token');
-        const factory = () => 1;
-        const factory2 = () => 2;
-
-        Container.provide([
-          { provide: token, useFactory: factory },
-          { provide: token, useFactory: factory2 },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.factory).to.equal(factory2);
-      });
-
-      it('should create provider with deps', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: dep, useValue: 1 },
-          { provide: token, deps: [dep], useFactory: (val) => val },
-        ]);
-
-        const provider = await Container.get(token);
-        expect(provider).to.equal(1);
-      });
-
-      it('should create provider with delayed deps', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: dep, useFactory: () => delay(1) },
-          { provide: token, deps: [dep], useFactory: (val) => val },
-        ]);
-
-        const provider = await Container.get(token);
-        expect(provider).to.equal(1);
-      });
-
-      it('should throw error {MissingProviderError}', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: token, deps: [dep], useFactory: (val) => val },
-        ]);
-
-        try {
-          await Container.get(token);
-        } catch (error) {
-          expect(error).to.be;
-          expect(error instanceof MissingProviderError).to.be.true;
-        }
-      });
-
-      it('should throw error {RecursiveProviderError}', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: token, deps: [dep], useFactory: (val) => val },
-          { provide: dep, deps: [token], useFactory: (val) => val },
-        ]);
-
-        try {
-          await Container.get(token);
-        } catch (error) {
-          expect(error).to.be;
-          expect(error instanceof RecursiveProviderError).to.be.true;
-        }
-      });
-
-      it('should not throw error {RecursiveProviderError}', async () => {
-        const mod1 = new InjectionToken('mod1');
-        const mod2 = new InjectionToken('mod2');
-        const mod3 = new InjectionToken('mod3');
-
-        Container.provide([
-          { provide: mod1, deps: [mod2, mod3], useFactory: (val) => val },
-          { provide: mod2, useFactory: (val) => val },
-          { provide: mod3, deps: [mod2], useFactory: (val) => val },
-        ]);
-
-        const r = await Container.get(mod1);
-        expect(r).to.be;
-      });
-
-    });
-
-    describe('ClassProvider', () => {
-
-      it('should register provider', () => {
-        const token = new InjectionToken('token');
-        Container.provide([
-          { provide: token, useClass: TestInjectable },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.type).to.equal(TestInjectable);
-      });
-
-      it('should replace provider', () => {
-        const token = new InjectionToken('token');
-
-        Container.provide([
-          { provide: token, useClass: TestInjectable },
-          { provide: token, useClass: AnotherInjectable },
-        ]);
-
-        expect(Store.providers.length).to.equal(1);
-
-        const provider = Store.findProvider(token);
-
-        expect(provider.id).to.equal(token);
-        expect(provider.type).to.equal(AnotherInjectable);
-      });
-
-      it('should create provider with deps', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: dep, useValue: 'test' },
-          { provide: token, useClass: TestInjectable, deps: [dep] },
-        ]);
-
-        const provider = await Container.get(token);
-
-        expect(provider instanceof TestInjectable).to.be.true;
-        expect((provider as TestInjectable).str).to.equal('test');
-      });
-
-      it('should throw error {MissingProviderError}', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: token, useClass: TestInjectable, deps: [dep] },
-        ]);
-
-        try {
-          await Container.get(token);
-        } catch (error) {
-          expect(error).to.be;
-          expect(error instanceof MissingProviderError).to.be.true;
-        }
-      });
-
-      it('should throw error {RecursiveProviderError}', async () => {
-        const token = new InjectionToken('token');
-        const dep = new InjectionToken('dep');
-
-        Container.provide([
-          { provide: token, useClass: TestInjectable, deps: [dep] },
-          { provide: dep, useClass: AnotherInjectable, deps: [token] },
-        ]);
-
-        try {
-          await Container.get(token);
-        } catch (error) {
-          expect(error).to.be;
-          expect(error instanceof RecursiveProviderError).to.be.true;
-        }
-      });
-
-      it('should not throw error {RecursiveProviderError}', async () => {
-        const mod1 = new InjectionToken('mod1');
-        const mod2 = new InjectionToken('mod2');
-        const mod3 = new InjectionToken('mod3');
-
-        Container.provide([
-          { provide: mod1, useClass: TestInjectable, deps: [mod2, mod3] },
-          { provide: mod2, useClass: AnotherInjectable },
-          { provide: mod3, useClass: AnotherInjectable, deps: [mod2]},
-        ]);
-
-        const r = await Container.get(mod1);
-        expect(r).to.be;
-      });
-    });
-
+  let extraContainer: Container;
+  let container: Container;
+
+  beforeEach(() => {
+    extraContainer = new Container();
+    container = new Container();
+    container.setParent(extraContainer);
   });
 
+  describe('ValueProvider', () => {
+    it('registers a provider', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useValue: 1 },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+
+    it('replaces a provider', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useValue: 1 },
+        { provide: token, useValue: 2 },
+      ]);
+
+      expect(await container.get(token)).toEqual(2);
+    });
+  });
+
+  describe('FactoryProvider', () => {
+    it('registers a provider', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useFactory: () => 1 },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+
+    it('replaces a provider', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useFactory: () => 1 },
+      ]);
+
+      await container.get(token);
+
+      container.provide([
+        { provide: token, useFactory: () => 2 },
+      ]);
+
+      expect(await container.get(token)).toEqual(2);
+    });
+
+    it('creates a provider with deps', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: dep, useValue: 1 },
+        { provide: token, deps: [dep], useFactory: val => val },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+
+    it('throwss a {MissingDependencyError} error', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, deps: [dep], useFactory: (val) => val },
+      ]);
+
+      try {
+        await container.get(token);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MissingDependencyError);
+      }
+    });
+
+    it('throwss a {RecursiveDependencyError} error', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: dep, deps: [token], useFactory: (val) => val },
+        { provide: token, deps: [dep], useFactory: (val) => val },
+      ]);
+
+      try {
+        await container.get(token);
+      } catch (error) {
+        expect(error).toBeInstanceOf(RecursiveDependencyError);
+      }
+    });
+  });
+
+  describe('ClassProvider', () => {
+    it('registers a provider', async () => {
+      @Injectable()
+      class TestInjectable {}
+
+      container.provide([
+        { provide: TestInjectable, useClass: TestInjectable },
+      ]);
+
+      expect(await container.get(TestInjectable)).toBeInstanceOf(TestInjectable);
+    });
+
+    it('replaces a provider', async () => {
+      @Injectable()
+      class TestInjectable {}
+
+      @Injectable()
+      class AnotherInjectable {}
+
+      container.provide([
+        { provide: TestInjectable, useClass: TestInjectable },
+      ]);
+
+      await container.get(TestInjectable);
+
+      container.provide([
+        { provide: TestInjectable, useClass: AnotherInjectable },
+      ]);
+
+      expect(await container.get(TestInjectable)).toBeInstanceOf(AnotherInjectable);
+    });
+
+    it('creates a provider with deps', async () => {
+      const dep = new InjectionToken('dep');
+
+      @Injectable()
+      class TestInjectable {
+        constructor(@Inject(dep) public number: number) { }
+      }
+
+      container.provide([
+        { provide: dep, useFactory: () => 1 },
+        { provide: TestInjectable, useClass: TestInjectable },
+      ]);
+
+      const provider = await container.get<TestInjectable>(TestInjectable);
+
+      expect(provider).toBeInstanceOf(TestInjectable);
+      expect(provider.number).toEqual(1);
+    });
+
+    it('throws a {MissingDependencyError} error', async () => {
+      const dep = new InjectionToken('dep');
+
+      @Injectable()
+      class TestInjectable {
+        constructor(@Inject(dep) public number: number) { }
+      }
+
+      container.provide([
+        { provide: TestInjectable, useClass: TestInjectable, deps: [dep] },
+      ]);
+
+      try {
+        await container.get(TestInjectable);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MissingDependencyError);
+      }
+    });
+
+    it('throws a {RecursiveDependencyError} error', async () => {
+      const token = new InjectionToken('token');
+      const dep = new InjectionToken('dep');
+
+      @Injectable()
+      class TestInjectable {
+        constructor(@Inject(dep) public number: number) { }
+      }
+
+      @Injectable()
+      class AnotherInjectable {
+        constructor(@Inject(token) public number: number) { }
+      }
+
+      container.provide([
+        { provide: token, useClass: TestInjectable },
+        { provide: dep, useClass: AnotherInjectable },
+      ]);
+
+      try {
+        await container.get(token);
+      } catch (error) {
+        expect(error).toBeInstanceOf(RecursiveDependencyError);
+      }
+    });
+
+    it('throws a {InvalidDependencyError} error', async () => {
+      const dep = new InjectionToken('dep');
+
+      @Injectable()
+      class TestInjectable {
+        constructor(@Inject(dep) public number: number) { }
+      }
+
+      container.provide([
+        { provide: TestInjectable, useClass: TestInjectable, deps: [dep] },
+      ]);
+
+      try {
+        await container.get(TestInjectable);
+      } catch (error) {
+        expect(error).toBeInstanceOf(InvalidDependencyError);
+      }
+    });
+  });
+
+  describe('ExistingProvider', () => {
+    it('registers a provider for existing value', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: dep, useValue: 1 },
+        { provide: token, useExisting: dep },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+
+    it('registers a provider for existing factory', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: dep, useFactory: () => 1 },
+        { provide: token, useExisting: dep },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+
+    it('registers a provider for existing class', async () => {
+      @Injectable()
+      class TestInjectable {}
+
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: TestInjectable, useClass: TestInjectable },
+        { provide: token, useExisting: TestInjectable },
+      ]);
+
+      expect(await container.get(token)).toBeInstanceOf(TestInjectable);
+    });
+  });
+
+  describe('MultiProvider', () => {
+    it('registers a multi provider for a value', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useValue: 1, multi: true },
+        { provide: token, useValue: 2, multi: true },
+        { provide: token, useValue: 3, multi: true },
+      ]);
+
+      expect(await container.get(token)).toEqual([1, 2, 3]);
+    });
+
+    it('registers a multi provider for a factory', async () => {
+      const token = new InjectionToken('token');
+
+      container.provide([
+        { provide: token, useFactory: () => 1, multi: true },
+        { provide: token, useFactory: () => 2, multi: true },
+        { provide: token, useFactory: () => 3, multi: true },
+      ]);
+
+      expect(await container.get(token)).toEqual([1, 2, 3]);
+    });
+
+    it('registers a multi provider for a class', async () => {
+      const token = new InjectionToken('token');
+
+      @Injectable()
+      class TestInjectable {}
+
+      container.provide([
+        { provide: token, useClass: TestInjectable, multi: true },
+        { provide: token, useClass: TestInjectable, multi: true },
+        { provide: token, useClass: TestInjectable, multi: true },
+      ]);
+
+      const value = await container.get(token);
+
+      expect(value[0]).toBeInstanceOf(TestInjectable);
+      expect(value[1]).toBeInstanceOf(TestInjectable);
+      expect(value[2]).toBeInstanceOf(TestInjectable);
+    });
+
+    it('registers a multi provider for a mix of providers', async () => {
+      const token = new InjectionToken('token');
+
+      @Injectable()
+      class TestInjectable {}
+
+      container.provide([
+        { provide: token, useValue: 1, multi: true },
+        { provide: token, useFactory: () => 2, multi: true },
+        { provide: token, useClass: TestInjectable, multi: true },
+      ]);
+
+      const value = await container.get(token);
+
+      expect(value[0]).toEqual(1);
+      expect(value[1]).toEqual(2);
+      expect(value[2]).toBeInstanceOf(TestInjectable);
+    });
+  });
+
+  describe('With ExtraContainer', () => {
+    it('registers a provider with parent container dependency', async () => {
+      const dep = new InjectionToken('dep');
+      const token = new InjectionToken('token');
+
+      extraContainer.provide([
+        { provide: dep, useValue: 1 },
+      ]);
+
+      container.provide([
+        { provide: token, useFactory: val => val, deps: [dep] },
+      ]);
+
+      expect(await container.get(token)).toEqual(1);
+    });
+  });
 });

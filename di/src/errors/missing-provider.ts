@@ -1,12 +1,8 @@
-import { StoreProvider, Dependency, Injectable } from '../types';
-import { DiError, id } from './error';
+import { Injectable } from '../types';
+import { injectableToString } from '../helpers';
 
-export class MissingProviderError extends DiError {
-  constructor(provider: StoreProvider | Injectable, dep?: Dependency) {
-    const message = dep ?
-      `Missing dependency ${id(dep)} for ${id(provider)}` :
-      `Missing provider ${id(provider)}`;
-
-    super(message);
+export class MissingProviderError extends Error {
+  constructor(injectable: Injectable) {
+    super(injectableToString(injectable));
   }
 }
