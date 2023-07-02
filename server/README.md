@@ -2,6 +2,7 @@
 
 ## Installation
 ```
+npm install @decorators/di --save
 npm install @decorators/server --save
 ```
 
@@ -50,7 +51,6 @@ bootstrap().catch(console.error);
 ```
 Fully working example can be found in [example](example) folder.
 
-## API
 ## Application
 In order to create an application, use **Application** class with app root module.
 ```typescript
@@ -67,7 +67,7 @@ module.use(json());
 await module.listen(3000);
 ```
 
-### Modules
+## Modules
 * **HttpModule** - main module to start entire application, registers custom middlewares, params
 ```typescript
 import { Application, HttpModule, Module } from '@decorators/server';
@@ -91,41 +91,20 @@ async function bootstrap() {
 }
 ```
 
-### Decorators
-#### Class
-* **@Module(options: ModuleOptions)** - Defines a module (namespace) for DI providers, controllers etc.
-* **@Controller(url: string, options?: Record<string, unknown>)** - Registers controller for base url with optional options
-* **@Pipe(pipe: ClassConstructor<ProcessPipe>)** - Registers a pipe for a controller
+## Adapters
+Currently there's only one supported adapter Express. In the future there will be support of Fastify and Koa, Hapi.
 
-#### Method
-* **@Pipe(pipe: ClassConstructor<ProcessPipe>)** - Registers a pipe for a method
-
-* **@Delete(url: string, status?: number)** - Registers delete route
-* **@Get(url: string, status?: number)** - Registers get route
-* **@Head(url: string, status?: number)** - Registers head route
-* **@Options(url: string, status?: number)** - Registers options route
-* **@Patch(url: string, status?: number)** - Registers patch route
-* **@Post(url: string, status?: number)** - Registers post route
-* **@Put(url: string, status?: number)** - Registers put route
-
-* **@Render(template: string)** - Renders a template in the configured views folder
+## Payload vaidation
+Package supports [class-validator](https://github.com/typestack/class-validator) and [class-transformer](https://github.com/typestack/class-transformer) package primarily for validation. Additionally, basic types validation is supported:
 ```typescript
-const app = await Application.create(AppModule);
-const module = await app.inject<HttpModule>(HttpModule);
-
-module.set('views', join(__dirname, '/views'));
+  @Get(':id', 200)
+  @Render('post')
+  post(@Params('id') id: string) {
+    return { id, name: 'hello world' };
+  }
 ```
 
-#### Parameter
-* **@Body(paramName?: string)** - Request body object or single body param
-* **@Cookies(paramName?: string)** - Request cookies or single cookies param
-* **@Headers(paramName?: string)** - Request headers object or single headers param
-* **@Params(paramName?: string)** -  Request params object or single param
-* **@Query(paramName?: string)** - Request query object or single query param
-* **@Request(paramName?: string)** - Returns request object or any other object available in req object itself
-* **@Response(paramName?: string)** - Returns response object or any other object available in response object itself
-
-### Pipes
+## Pipes
 Pipes allow to add additional interceptors before and after main route function.
 In order to implement a pipe import `ProcessPipe` interface and implement it like so:
 
@@ -149,7 +128,7 @@ process(@Body() body: object)
 
 Pipes can be used both for controller and methods.
 
-### Injectables
+## Injectables
 Global server pipes can be applied by providing them via **GLOBAL_PIPE** injectable:
 ```typescript
 import { GLOBAL_PIPE, Module } from '@decorators/server';
@@ -166,7 +145,7 @@ import { GLOBAL_PIPE, Module } from '@decorators/server';
 export class AppModule { }
 ```
 
-#### App prefix
+### App prefix
 To create global application prefix (aka version, namespace) use **APP_VERSION** injectable:
 ```typescript
 import { APP_VERSION, Module } from '@decorators/server';
@@ -182,5 +161,70 @@ import { APP_VERSION, Module } from '@decorators/server';
 export class AppModule { }
 ```
 
-#### Dependency injection
+## Dependency injection
 This module supports dependency injection provided by `@decorators/di` module. For convinience, `@decorators/server` reexports all decorators from `@decorators/di` package.
+
+## Decorators
+### Class
+* **@Module(options: ModuleOptions)** - Defines a module (namespace) for DI providers, controllers etc.
+* **@Controller(url: string, options?: Record<string, unknown>)** - Registers controller for base url with optional options
+* **@Pipe(pipe: ClassConstructor<ProcessPipe>)** - Registers a pipe for a controller
+
+### Method
+* **@Pipe(pipe: ClassConstructor<ProcessPipe>)** - Registers a pipe for a method
+
+* **@Delete(url: string, status?: number)** - Registers delete route
+* **@Get(url: string, status?: number)** - Registers get route
+* **@Head(url: string, status?: number)** - Registers head route
+* **@Options(url: string, status?: number)** - Registers options route
+* **@Patch(url: string, status?: number)** - Registers patch route
+* **@Post(url: string, status?: number)** - Registers post route
+* **@Put(url: string, status?: number)** - Registers put route
+
+* **@Render(template: string)** - Renders a template in the configured views folder
+```typescript
+const app = await Application.create(AppModule);
+const module = await app.inject<HttpModule>(HttpModule);
+
+module.set('views', join(__dirname, '/views'));
+```
+
+### Parameter
+* **@Body(paramName?: string)** - Request body object or single body param
+* **@Cookies(paramName?: string)** - Request cookies or single cookies param
+* **@Headers(paramName?: string)** - Request headers object or single headers param
+* **@Params(paramName?: string)** -  Request params object or single param
+* **@Query(paramName?: string)** - Request query object or single query param
+* **@Request(paramName?: string)** - Returns request object or any other object available in req object itself
+* **@Response(paramName?: string)** - Returns response object or any other object available in response object itself
+
+## Custom Decorators
+Package exports two main helpers to create custom decorators:
+* **Decorate** - allows to create custom class or method decorators
+```typescript
+import { createParamDecorator } from '@decorators/server';
+
+export function Access(access: string) {
+  return Decorate('access', access);
+}
+
+@Access('granted')
+create() {}
+```
+
+* **createParamDecorator(factory: (context: Context) => unknown)** - allows to create custom parameter decorators
+```typescript
+import { createParamDecorator } from '@decorators/server';
+
+function AccessParam() {
+  return createParamDecorator((context: HttpContext) => {
+    const req = context.getRequest<Request>();
+
+    return req.query.access;
+  });
+}
+
+// ...
+@Access('granted')
+create(@AccessParam() access: string) {}
+```
