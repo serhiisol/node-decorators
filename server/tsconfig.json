@@ -8,13 +8,20 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
-    "rootDir": ".",
-    "inlineSourceMap": true,
-    "target": "es6",
-    "inlineSources": true,
-    "typeRoots": ["node_modules/@types"],
-    "pretty": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+    "noUnusedParameters": true,
+    "rootDir": "./src",
+    "inlineSourceMap": true,
+    "target": "ES2019",
+    "inlineSources": true,
+    "pretty": true,
+    "outDir": "lib"
+  },
+  "exclude": [
+    "src/**/*.spec.ts"
+  ],
+  "include": [
+    "./src/index.ts",
+    "./src/platforms/express/index.ts"
+  ]
 }

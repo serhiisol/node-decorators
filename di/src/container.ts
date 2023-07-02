@@ -14,11 +14,11 @@ import { injectableToString } from './helpers';
 import { InjectionToken } from './injection-token';
 
 export class Container {
-  private extraContainer?: Container;
-  private providers = new Map<Injectable, ContainerProvider>();
+  parentContainer?: Container;
+  providers = new Map<Injectable, ContainerProvider>();
 
   setParent(container: Container) {
-    this.extraContainer = container;
+    this.parentContainer = container;
   }
 
   /**
@@ -45,7 +45,7 @@ export class Container {
    * Verifies that injectable
    */
   has(injectable: Injectable): boolean {
-    return this.providers.has(injectable);
+    return this.providers.has(injectable) || this.parentContainer?.has(injectable);
   }
 
   /**
@@ -58,6 +58,10 @@ export class Container {
   ) {
     let provider = this.providers.get(injectable);
 
+    if (!provider && this.parentContainer?.has(injectable)) {
+      return this.parentContainer.get(injectable);
+    }
+
     if (!provider && !optional) {
       throw new MissingProviderError(injectable);
     }
@@ -68,7 +72,9 @@ export class Container {
       return provider.value;
     }
 
-    const promises = provider.deps.map(async (dep, index) => {
+    const resolvedDeps = [] as unknown[];
+
+    for (const [index, dep] of provider.deps.entries()) {
       if (!dep.id) {
         throw new InvalidDependencyError(provider.type ?? injectable, provider.deps, index);
       }
@@ -80,19 +86,23 @@ export class Container {
       const depProvider = this.providers.get(dep.id);
 
       if (depProvider) {
-        return this.resolve(dep.id, dep.optional, [...sequenceDeps, ...provider.deps]);
+        resolvedDeps.push(await this.resolve(dep.id, dep.optional, [...sequenceDeps, ...provider.deps]));
+
+        continue;
       }
 
-      if (this.extraContainer?.has(dep.id)) {
-        return await this.extraContainer.get(dep.id);
+      if (this.parentContainer?.has(dep.id)) {
+        resolvedDeps.push(await this.parentContainer.get(dep.id));
+
+        continue;
       }
 
       if (!dep.optional) {
         throw new MissingDependencyError(provider.type ?? injectable, provider.deps, index);
       }
-    });
 
-    const resolvedDeps = await Promise.all(promises) as unknown[];
+      resolvedDeps.push(null);
+    }
 
     let value: unknown;
 
