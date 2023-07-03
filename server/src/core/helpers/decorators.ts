@@ -6,9 +6,9 @@ export function paramDecoratorFactory(metadata: object) {
   return function (target: InstanceType<any>, methodName: string, index: number) {
     const params = Reflect.getMetadata(PARAMS_METADATA, target.constructor) ?? [];
     const validator = Reflect.getMetadata(PARAM_TYPE_METADATA, target, methodName)[index];
-    const paramName = extractParamNames(target[methodName])[index];
+    const argName = extractParamNames(target[methodName])[index];
 
-    params.push({ index, methodName, paramName, validator, ...metadata });
+    params.push({ argName, index, methodName, validator, ...metadata });
 
     Reflect.defineMetadata(PARAMS_METADATA, params, target.constructor);
   };
@@ -16,11 +16,11 @@ export function paramDecoratorFactory(metadata: object) {
 
 export function methodDecoratorFactory(metadata: object) {
   return (target: object, methodName: string, descriptor: TypedPropertyDescriptor<any>) => {
-    const routes = Reflect.getMetadata(METHOD_METADATA, target.constructor) ?? [];
+    const methods = Reflect.getMetadata(METHOD_METADATA, target.constructor) ?? [];
 
-    routes.push({ methodName, ...metadata });
+    methods.push({ methodName, ...metadata });
 
-    Reflect.defineMetadata(METHOD_METADATA, routes, target.constructor);
+    Reflect.defineMetadata(METHOD_METADATA, methods, target.constructor);
 
     return descriptor;
   };

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@decorators/di';
 
 import { ApiError, Handler, HttpStatus, ParamMetadata, ParamValidator, Pipeline, ProcessPipe, toStandardType } from '../../../core';
-import { HTTP_ADAPTER, HttpParameterType } from './constants';
+import { HTTP_ADAPTER, ParameterType } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { HttpContext } from './http-context';
 
@@ -24,8 +24,8 @@ export class RouteHandler {
     const handler = controller[methodName].bind(controller);
 
     return async (...args: unknown[]) => {
-      const req = this.adapter.getParam(HttpParameterType.REQUEST, null, ...args);
-      const res = this.adapter.getParam(HttpParameterType.RESPONSE, null, ...args);
+      const req = this.adapter.getParam(ParameterType.REQUEST, null, ...args);
+      const res = this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
       const handlerParams = [];
       const context = new HttpContext(
         controller.constructor,
@@ -83,7 +83,7 @@ export class RouteHandler {
     return params
       .sort((a, b) => a.index - b.index)
       .map(param =>
-        param.factory?.(context) ?? this.adapter.getParam(param.paramType as HttpParameterType, param.paramName, ...args),
+        param.factory?.(context) ?? this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
       )
       .map(toStandardType);
   }

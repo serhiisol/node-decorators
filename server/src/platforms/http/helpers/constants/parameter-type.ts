@@ -4,4 +4,6 @@ export enum ParameterType {
   HEADERS = 'headers',
   PARAMS = 'params',
   QUERY = 'query',
+  REQUEST = 'request',
+  RESPONSE = 'response',
 }

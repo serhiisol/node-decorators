@@ -1,9 +1,9 @@
-import { Handler, ParameterType } from '../../../core';
-import { HttpParameterType } from './constants';
+import { Handler } from '../../../core';
+import { ParameterType } from './constants';
 
 export abstract class HttpApplicationAdapter {
   abstract close(): void;
-  abstract getParam(type: ParameterType | HttpParameterType, name?: string, ...args: any[]): unknown;
+  abstract getParam(type: ParameterType, name?: string, ...args: any[]): unknown;
   abstract isHeadersSent(response: unknown): boolean;
   abstract listen(port: number): Promise<void> | void;
   abstract render(response: unknown, template: string, message: unknown): Promise<unknown> | unknown;
