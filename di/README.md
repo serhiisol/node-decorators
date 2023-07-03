@@ -1,20 +1,21 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
-## Dependency Injection module
-
-### Installation
+## Installation
 ```
 npm install @decorators/di --save
 ```
-### API
 
-* **@Injectable()** - Registers class as provider in the container
+## Example
+Fully working example can be found in [example](example) folder.
+
+## API
+* `@Injectable()` - Registers class as provider in the container
 ```typescript
 @Injectable()
 class HttpService {}
 ```
 
-* **@Inject(injectable: Injectable)** - A parameter decorator that marks parameter as dependency.
+* `@Inject(injectable: Injectable)` - A parameter decorator that marks parameter as dependency.
 ```typescript
 @Injectable()
 class HttpService {
@@ -22,7 +23,7 @@ class HttpService {
 }
 ```
 
-* **@Optional()** - A parameter decorator that marks parameter as optional dependency.
+* `@Optional()` - A parameter decorator that marks parameter as optional dependency.
 ```typescript
 @Injectable()
 class HttpService {
@@ -30,7 +31,7 @@ class HttpService {
 }
 ```
 
-* **InjectionToken** - Creates a token that can be used in DI as Provider.
+* `InjectionToken` - Creates a token that can be used in DI as Provider.
 ```typescript
 const API_URL = new InjectionToken('API_URL');
 ...
@@ -40,39 +41,42 @@ class HttpService {
 }
 ```
 
-* **Container** - Container interface
-  * **.provide(providers: Providers[])** - Registers an array of providers.
-  * **.get<T>(injectable: Injectable): Promise<T>** - Retrieves a Promise with an instance of the injectable, throws:
-    * **MissingProviderError** if dependency provider wasn't found
-    * **RecursiveProviderError** in case of recursive dependency injection
-
-### Full example
+* `Container` - Container interface
+  * `.setParent(container: Container)` - set parent container
+  * `.provide(providers: Providers[])` - Registers an array of providers.
+  * `.get<T>(injectable: Injectable): Promise<T>` - Retrieves a Promise with an instance of the injectable, throws:
+    * `MissingProviderError` if dependency provider wasn't found
+    * `RecursiveProviderError` in case of recursive dependency injection
 ```typescript
-import {
-  Injectable,
-  Inject,
-  Container,
-  InjectionToken
-} from '@decorators/di';
+const container = new Container();
 
-const API_URL = new InjectionToken('API_URL');
-
-@Injectable()
-export class HttpService {
-  constructor(
-    @Inject(API_URL) private apiUrl: string
-  ) {}
-
-  public send(options: object): Promise<any> {
-    return fetch(this.apiUrl, options);
-  }
-}
-
-Container.provide([
-  { provide: API_URL, useValue: 'http://server.localhost' }
+container.provide([
+  {
+    provide: 'Message',
+    async useFactory() {
+      return delay('Async Provider');
+    },
+  },
+  {
+    provide: 'Hello World',
+    useClass: Service,
+  },
 ]);
+```
 
-...
-const httpService = await Container.get<HttpService>(HttpService);
-...
+## Multi-support
+It's possible to provide multiple things using one injection token via `multi` flag:
+```typescript
+container.provide([
+  {
+    provide: GLOBAL_PIPE,
+    useClass: ServerPipe,
+    multi: true
+  },
+  {
+    provide: GLOBAL_PIPE,
+    useClass: ErrorPipe,
+    multi: true
+  },
+]);
 ```

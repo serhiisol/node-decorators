@@ -42,9 +42,9 @@ export class Container {
   }
 
   /**
-   * Verifies that injectable
+   * Verifies that injectable is provided within the scope
    */
-  has(injectable: Injectable): boolean {
+  private has(injectable: Injectable): boolean {
     return this.providers.has(injectable) || this.parentContainer?.has(injectable);
   }
 
