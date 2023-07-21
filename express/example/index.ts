@@ -1,15 +1,33 @@
 /* eslint-disable max-classes-per-file */
 
 import * as express from 'express';
-import { Container } from '@decorators/di';
-import { attachControllers, Controller, ERROR_MIDDLEWARE, ErrorMiddleware, Get } from '../src';
+import { Container, Injectable } from '@decorators/di';
+import { attachControllers, Controller, ERROR_MIDDLEWARE, ErrorMiddleware, Get, Middleware } from '../src';
 
 const app: express.Express = express();
 
-class NotFoundError extends Error {}
-class InternalServerError extends Error {}
+class NotFoundError extends Error { }
+class InternalServerError extends Error { }
 
-@Controller('/')
+@Injectable()
+class DataProvider {
+  data() {
+    return { hello: 'world' };
+  }
+}
+
+@Injectable()
+class RequestMiddleware implements Middleware {
+  constructor(private dataProvider: DataProvider) { }
+
+  use(_request: express.Request, _response: express.Response, next: express.NextFunction) {
+    console.log('RequestMiddleware', this.dataProvider.data());
+
+    next();
+  }
+}
+
+@Controller('/', [RequestMiddleware])
 class IndexController {
   @Get('/')
   index() {
@@ -27,8 +45,14 @@ class IndexController {
   }
 }
 
+@Injectable()
 class ServerErrorMiddleware implements ErrorMiddleware {
-  use(error: Error, _: express.Request, response: express.Response, next: express.NextFunction) {
+
+  constructor(private dataProvider: DataProvider) { }
+
+  use(error: Error, _request: express.Request, response: express.Response, next: express.NextFunction) {
+    console.log(this.dataProvider.data());
+
     if (error instanceof NotFoundError) {
       return response.send('Not Found Error');
     }
@@ -43,6 +67,7 @@ class ServerErrorMiddleware implements ErrorMiddleware {
 
 export async function start() {
   Container.provide([
+    { provide: DataProvider, useClass: DataProvider },
     { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware },
   ]);
 

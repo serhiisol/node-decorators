@@ -122,7 +122,7 @@ Defines the description of the operation
 <hr>
 
 ```ts
-@Param(name: string, location: ParamLocation, options: ParamOptions)
+@Param(name: string, location: ParamLocation, schema: SchemaDef, options: ParamOptions)
 ```
 Adds a param definition to the operation
 
@@ -132,11 +132,13 @@ Adds a param definition to the operation
 | ---- |----- | --------- | ----------- |
 | name | `string` |  | The parameter name |
 | location | `string` | <ul><li>oneOf: `query`, `header`, `path` or `cookie`</li></ul> | Where the parameter is located |
+| schema | `object` | | A schema definition following openapi specifications |
 | options | `object` | <ul><li>optional</li></ul>  | Options for the parameter following openapi specifications |
 | options.description | `string` | <ul><li>optional</li></ul>  |  |
 | options.required | `boolean` | <ul><li>optional</li></ul>  |  |
 | options.deprecated | `boolean` | <ul><li>optional</li></ul>  |  |
 | options.allowEmptyValue | `boolean` | <ul><li>optional</li></ul>  |  |
+| options.contentMediaType | `string` | <ul><li>optional</li></ul>  | Media type definition complying with [RFC 6838](http://tools.ietf.org/html/rfc6838). If present, `schema` is rendered under `content` |
 
 **Note:**
 
