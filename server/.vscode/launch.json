@@ -19,6 +19,21 @@
         "group": "SERVER",
         "order": 1
       }
+    },
+    {
+      "name": "Server Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand"
+      ],
+      "outputCapture": "std",
+      "presentation": {
+        "group": "SERVER",
+        "order": 1
+      }
     }
   ],
 }

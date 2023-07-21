@@ -1,4 +1,10 @@
-# TS Files
-index.ts
-tsconfig.json
+.vscode/
+example/
+integration/
 src/
+
+.editorconfig
+.eslintrc.json
+jest.config.js
+tsconfig.json
+tsconfi.lint.json

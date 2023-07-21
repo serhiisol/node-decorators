@@ -17,11 +17,7 @@
     "pretty": true,
     "outDir": "lib"
   },
-  "exclude": [
-    "src/**/*.spec.ts"
-  ],
   "include": [
-    "./src/index.ts",
-    "./src/platforms/express/index.ts"
+    "./src",
   ]
 }
