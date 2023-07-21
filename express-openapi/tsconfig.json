@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "rootDir": ".",
+    "inlineSourceMap": true,
+    "target": "es6",
+    "inlineSources": true,
+    "typeRoots": ["node_modules/@types"],
+    "pretty": true,
+    "outDir": "lib"
+  },
+  "exclude": ["node_modules", "src/example"],
+  "files": ["./index.ts"]
+}

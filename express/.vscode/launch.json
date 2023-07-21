@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Express Example",
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceFolder}/example/index.ts"
+      ],
+      "env": {
+        "TS_NODE_PROJECT": "tsconfig.example.json"
+      },
+      "outputCapture": "std",
+      "presentation": {
+        "hidden": false,
+        "group": "EXPRESS",
+        "order": 1
+      },
+    }
+  ],
+}

@@ -1,0 +1,3 @@
+# TS Files
+src/**/*.ts
+!src/**/*.d.ts
