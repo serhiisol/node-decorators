@@ -11,6 +11,7 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@server$': '<rootDir>/src/index.ts',
+    '^@server\/http$': '<rootDir>/src/platforms/http/index.ts',
     '^@server\/express$': '<rootDir>/src/platforms/express/index.ts',
   },
 };

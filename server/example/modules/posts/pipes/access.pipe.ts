@@ -1,7 +1,6 @@
 import { Request } from 'express';
 
-import { HttpContext, Injectable, PipeHandle, ProcessPipe } from '../../../../src';
-import { ApiError, Reflector } from '../../../../src/core';
+import { ApiError, HttpContext, Injectable, PipeHandle, ProcessPipe, Reflector } from '../../../../src';
 
 @Injectable()
 export class AccessPipe implements ProcessPipe {

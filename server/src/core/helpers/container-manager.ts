@@ -18,7 +18,7 @@ export class ContainerManager {
     return this.containers.get(module);
   }
 
-  async scan<T>(target: InjectionToken | ClassConstructor): Promise<T> {
+  async scan<T>(target: InjectionToken | ClassConstructor, pickAll = false): Promise<T> {
     const providers = [];
 
     for (const container of [...this.containers.values()]) {
@@ -27,6 +27,6 @@ export class ContainerManager {
       }
     }
 
-    return (providers.length > 1 ? providers : providers[0]) as T;
+    return pickAll ? providers : providers[0];
   }
 }

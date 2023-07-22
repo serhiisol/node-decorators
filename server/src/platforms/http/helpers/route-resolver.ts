@@ -31,7 +31,7 @@ export class RouteResolver {
         controller,
         metadata.methodName,
         metadata.params,
-        [...this.globalPipes, ...routePipes],
+        [...(this.globalPipes ?? []), ...routePipes],
         metadata.status,
         metadata.template,
       );

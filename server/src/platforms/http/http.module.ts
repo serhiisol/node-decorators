@@ -28,7 +28,15 @@ export class HttpModule {
     private routeResolver: RouteResolver,
   ) { }
 
-  async listen(port: number) {
+  close() {
+    this.adapter.close();
+  }
+
+  getHttpServer() {
+    return this.adapter.server;
+  }
+
+  async listen(port?: number) {
     await this.routeResolver.resolve(this.rootModule);
 
     return this.adapter.listen(port);

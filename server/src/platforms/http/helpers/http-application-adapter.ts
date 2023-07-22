@@ -1,7 +1,10 @@
+import { Server } from 'http';
+
 import { Handler } from '../../../core';
 import { ParameterType } from './constants';
 
 export abstract class HttpApplicationAdapter {
+  abstract server?: Server;
   abstract close(): void;
   abstract getParam(type: ParameterType, name?: string, ...args: any[]): unknown;
   abstract isHeadersSent(response: unknown): boolean;

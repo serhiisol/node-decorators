@@ -34,5 +34,6 @@ export function toStandardType(param: unknown) {
 export function extractParamNames(handler: Handler) {
   return /\(\s*([^)]+?)\s*\)/
     .exec(handler.toString())[1]
-    .split(',');
+    .split(',')
+    .map(key => key.trim());
 }

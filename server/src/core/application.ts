@@ -34,6 +34,10 @@ export class Application {
   constructor(private containerManager: ContainerManager) { }
 
   inject<T>(target: InjectionToken | ClassConstructor): Promise<T> {
-    return this.containerManager.scan<T>(target);
+    return this.containerManager.scan<T>(target, false);
+  }
+
+  scan<T>(target: InjectionToken | ClassConstructor): Promise<T[]> {
+    return this.containerManager.scan<T[]>(target, true);
   }
 }

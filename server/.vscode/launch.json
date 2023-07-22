@@ -27,7 +27,8 @@
       "runtimeArgs": [
         "--inspect",
         "${workspaceRoot}/node_modules/.bin/jest",
-        "--runInBand"
+        "--runInBand",
+        "--testMatch=**/*.spec.ts"
       ],
       "outputCapture": "std",
       "presentation": {
