@@ -34,7 +34,7 @@ export class Application {
   constructor(private containerManager: ContainerManager) { }
 
   inject<T>(target: InjectionToken | ClassConstructor): Promise<T> {
-    return this.containerManager.scan<T>(target, false);
+    return this.containerManager.scan<T>(target);
   }
 
   scan<T>(target: InjectionToken | ClassConstructor): Promise<T[]> {
