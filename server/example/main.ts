@@ -1,7 +1,7 @@
+import { Application, HttpModule } from '@server';
 import { json } from 'body-parser';
 import { join } from 'path';
 
-import { Application, HttpModule } from '../src';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

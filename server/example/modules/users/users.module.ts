@@ -1,4 +1,5 @@
-import { Module } from '../../../src';
+import { Module } from '@server';
+
 import { UsersController } from './users.controller';
 
 @Module({

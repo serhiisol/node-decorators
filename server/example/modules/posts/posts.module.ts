@@ -1,4 +1,5 @@
-import { Module } from '../../../src';
+import { Module } from '@server';
+
 import { PostsController } from './posts.controller';
 
 @Module({

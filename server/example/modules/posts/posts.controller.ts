@@ -1,6 +1,6 @@
+import { Body, Controller, Get, Params, Pipe, Post, Render } from '@server';
 import { IsString } from 'class-validator';
 
-import { Body, Controller, Get, Params, Pipe, Post, Render } from '../../../src';
 import { PostsService } from '../../services';
 import { Access, AccessParam } from './decorators';
 import { AccessPipe } from './pipes';

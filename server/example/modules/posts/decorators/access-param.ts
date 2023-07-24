@@ -1,6 +1,5 @@
+import { createParamDecorator, HttpContext } from '@server';
 import { Request } from 'express';
-
-import { createParamDecorator, HttpContext } from '../../../../src';
 
 export function AccessParam() {
   return createParamDecorator((context: HttpContext) => {

@@ -1,17 +1,16 @@
+const { pathsToModuleNameMapper } = require('ts-jest');
+const { compilerOptions } = require('./tsconfig');
+
 module.exports = {
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        tsconfig: './tsconfig.test.json'
+        tsconfig: './tsconfig.test.json',
       },
     ],
-  },
-  moduleNameMapper: {
-    '^@server$': '<rootDir>/src/index.ts',
-    '^@server\/http$': '<rootDir>/src/platforms/http/index.ts',
-    '^@server\/express$': '<rootDir>/src/platforms/express/index.ts',
   },
 };

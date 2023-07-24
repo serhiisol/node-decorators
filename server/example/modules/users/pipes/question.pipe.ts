@@ -1,4 +1,4 @@
-import { HttpContext, PipeHandle, ProcessPipe } from '../../../../src';
+import { HttpContext, PipeHandle, ProcessPipe } from '@server';
 
 export class QuestionPipe implements ProcessPipe {
   async run(_context: HttpContext, handle: PipeHandle<string>) {

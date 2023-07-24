@@ -1,20 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./dist",
-    "paths": {
-      "@server": [
-        "./src/index.ts"
-      ],
-      "@server/http": [
-        "./src/platforms/http/index.ts"
-      ],
-      "@server/express": [
-        "./src/platforms/express/index.ts",
-      ]
-    }
-  },
   "include": [
     "./integration"
   ]
