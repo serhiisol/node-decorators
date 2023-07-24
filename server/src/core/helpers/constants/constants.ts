@@ -6,3 +6,4 @@ export const METHOD_METADATA = '__server__:method';
 
 export const PARAMS_METADATA = '__server__:peram';
 export const PARAM_TYPE_METADATA = 'design:paramtypes';
+export const RETURN_TYPE_METADATA = 'design:returntype';

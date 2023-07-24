@@ -54,6 +54,7 @@
   },
   "scripts": {
     "build": "rimraf ./lib && tsc",
+    "eslint": "eslint \"**/*.ts\"",
     "test": "jest"
   },
   "types": "lib/index.d.ts",

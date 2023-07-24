@@ -1,5 +1,5 @@
 import { extractParamNames } from '../utils';
-import { METHOD_METADATA, PARAM_TYPE_METADATA, PARAMS_METADATA } from './constants';
+import { METHOD_METADATA, PARAM_TYPE_METADATA, PARAMS_METADATA, RETURN_TYPE_METADATA } from './constants';
 import { Context } from './context';
 
 export function paramDecoratorFactory(metadata: object) {
@@ -17,8 +17,9 @@ export function paramDecoratorFactory(metadata: object) {
 export function methodDecoratorFactory(metadata: object) {
   return (target: object, methodName: string, descriptor: TypedPropertyDescriptor<any>) => {
     const methods = Reflect.getMetadata(METHOD_METADATA, target.constructor) ?? [];
+    const returnType = Reflect.getMetadata(RETURN_TYPE_METADATA, target, methodName);
 
-    methods.push({ methodName, ...metadata });
+    methods.push({ methodName, returnType: returnType === Promise ? null : returnType, ...metadata });
 
     Reflect.defineMetadata(METHOD_METADATA, methods, target.constructor);
 
@@ -71,10 +72,10 @@ export function createParamDecorator(factory: (context: Context) => unknown) {
  * ...
  */
 export function Decorate(key: string, value: unknown) {
-  return (target: object, _?: any, descriptor?: any) => {
+  return (target: object, propertyKey?: any, descriptor?: any) => {
     const metaTarget = descriptor?.value ?? target;
 
-    Reflect.defineMetadata(key, value, metaTarget);
+    Reflect.defineMetadata(key, value, metaTarget, descriptor ? undefined : propertyKey);
 
     return descriptor ?? target;
   };

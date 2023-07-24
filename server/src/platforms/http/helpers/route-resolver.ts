@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { addLeadingSlash, APP_VERSION, asyncMap, buildUrl, ClassConstructor, ContainerManager, GLOBAL_PIPE, ProcessPipe } from '../../../core';
+import { asyncMap, ClassConstructor, ContainerManager, GLOBAL_PIPE, ProcessPipe } from '../../../core';
 import { HTTP_ADAPTER } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { MetadataScanner } from './metadata-scanner';
@@ -11,14 +11,13 @@ export class RouteResolver {
   constructor(
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
     @Inject(GLOBAL_PIPE) @Optional() private globalPipes: ProcessPipe[],
-    @Inject(APP_VERSION) @Optional() private appVersion: string,
     private containerManager: ContainerManager,
     private metadataScanner: MetadataScanner,
-    private routeHandler: RouteHandler
+    private routeHandler: RouteHandler,
   ) { }
 
-  async resolve(module: ClassConstructor) {
-    const metadatas = this.metadataScanner.scan(module);
+  async resolve() {
+    const metadatas = this.metadataScanner.scan();
 
     for (const metadata of metadatas) {
       const container = this.containerManager.get(metadata.module);
@@ -36,11 +35,7 @@ export class RouteResolver {
         metadata.template,
       );
 
-      this.adapter.route(
-        addLeadingSlash(buildUrl(this.appVersion ?? '', metadata.url)),
-        metadata.type,
-        handler,
-      );
+      this.adapter.route(metadata.url, metadata.type, handler);
     }
   }
 }

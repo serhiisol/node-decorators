@@ -8,14 +8,14 @@ export class Reflector {
   getControllerMetadata(controller: ClassConstructor) {
     const metadata = Reflect.getMetadata(CONTROLLER_METADATA, controller) as ControllerMetadata;
     const methods = (Reflect.getMetadata(METHOD_METADATA, controller) ?? []) as MethodMetadata[];
-    const pipes = (Reflect.getMetadata(PIPES_METADATA, controller) ?? []) as [ClassConstructor, string?][];
     const params = (Reflect.getMetadata(PARAMS_METADATA, controller) ?? []) as ParamMetadata[];
+    const pipes = (Reflect.getMetadata(PIPES_METADATA, controller) ?? []) as [ClassConstructor, string?][];
 
-    return { ...metadata, methods, pipes, params };
+    return { ...metadata, methods, params, pipes };
   }
 
-  getMetadata(key: string, target: unknown) {
-    return Reflect.getMetadata(key, target);
+  getMetadata(key: string, target: unknown, propertyKey?: string) {
+    return Reflect.getMetadata(key, target, propertyKey);
   }
 
   getModuleMetadata(module: ClassConstructor) {

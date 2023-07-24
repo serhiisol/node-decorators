@@ -10,7 +10,7 @@ import { TOKEN } from './injectable';
 })
 export class PostsModule {
   constructor(
-    @Inject(TOKEN) token: string
+    @Inject(TOKEN) token: string,
   ) {
     if (token !== 'posts') {
       throw new ApiError('scope-error');

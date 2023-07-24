@@ -8,7 +8,11 @@ import { Sequence } from './sequence';
   controllers: [AppController],
   providers: [
     Sequence,
-    { provide: GLOBAL_PIPE, useClass: ServerPipe, multi: true },
+    {
+      multi: true,
+      provide: GLOBAL_PIPE,
+      useClass: ServerPipe,
+    },
   ],
 })
 export class AppModule { }

@@ -18,9 +18,9 @@ import { ServicesModule } from './services';
       useValue: 'v1',
     },
     {
+      multi: true,
       provide: GLOBAL_PIPE,
       useClass: ServerPipe,
-      multi: true,
     },
   ],
 })

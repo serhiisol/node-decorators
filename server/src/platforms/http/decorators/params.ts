@@ -6,15 +6,15 @@ export function Body(paramName?: string) {
 }
 
 export function Cookies(paramName?: string) {
-  return paramDecoratorFactory({ paramName, paramType: ParameterType.COOKIES });
+  return paramDecoratorFactory({ paramName, paramType: ParameterType.COOKIE });
 }
 
 export function Headers(paramName?: string) {
-  return paramDecoratorFactory({ paramName, paramType: ParameterType.HEADERS });
+  return paramDecoratorFactory({ paramName, paramType: ParameterType.HEADER });
 }
 
 export function Params(paramName?: string) {
-  return paramDecoratorFactory({ paramName, paramType: ParameterType.PARAMS });
+  return paramDecoratorFactory({ paramName, paramType: ParameterType.PARAM });
 }
 
 export function Query(paramName?: string) {

@@ -167,7 +167,13 @@
     ],
     "comma-dangle": [
       "error",
-      "always-multiline"
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }
     ],
     "complexity": "off",
     "constructor-super": "error",
@@ -221,6 +227,7 @@
     "semi": "error",
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error",
+    "sort-keys": "error",
     "spaced-comment": [
       "error",
       "always",
