@@ -8,9 +8,24 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
+  "overrides": [
+    {
+      "files": [
+        "./src/**/*.spec.ts"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.test.json",
+        "sourceType": "module"
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off",
+        "max-classes-per-file": "off"
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json",
+    "project": "./tsconfig.lint.json",
     "sourceType": "module"
   },
   "plugins": [
@@ -31,17 +46,17 @@
       "error",
       {
         "types": {
-          "Object": {
-            "message": "Avoid using the `Object` type. Did you mean `object`?"
+          "Boolean": {
+            "message": "Avoid using the `Boolean` type. Did you mean `boolean`?"
           },
           "Function": {
             "message": "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."
           },
-          "Boolean": {
-            "message": "Avoid using the `Boolean` type. Did you mean `boolean`?"
-          },
           "Number": {
             "message": "Avoid using the `Number` type. Did you mean `number`?"
+          },
+          "Object": {
+            "message": "Avoid using the `Object` type. Did you mean `object`?"
           },
           "String": {
             "message": "Avoid using the `String` type. Did you mean `string`?"
@@ -107,7 +122,13 @@
     ],
     "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-parameter-properties": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
     "@typescript-eslint/no-unused-expressions": "error",
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-var-requires": "error",
     "@typescript-eslint/prefer-for-of": "error",
@@ -117,22 +138,17 @@
       "error",
       "single"
     ],
+    "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/triple-slash-reference": [
       "error",
       {
+        "lib": "always",
         "path": "always",
-        "types": "prefer-import",
-        "lib": "always"
+        "types": "prefer-import"
       }
     ],
-    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/unified-signatures": "error",
-    "@typescript-eslint/no-unsafe-argument": "off",
-    "@typescript-eslint/no-unsafe-assignment": "off",
-    "@typescript-eslint/no-unsafe-call": "off",
-    "@typescript-eslint/no-unsafe-member-access": "off",
-    "@typescript-eslint/no-unsafe-return": "off",
-    "@typescript-eslint/no-unused-vars": "off",
     "arrow-parens": [
       "off",
       "always"
@@ -191,6 +207,8 @@
     "prefer-const": "error",
     "radix": "error",
     "semi": "error",
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error",
     "spaced-comment": [
       "error",
       "always",
@@ -201,23 +219,6 @@
       }
     ],
     "use-isnan": "error",
-    "valid-typeof": "off",
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
-  },
-  "overrides": [
-    {
-      "parserOptions": {
-        "project": "./tsconfig.test.json",
-        "sourceType": "module"
-      },
-      "rules": {
-        "@typescript-eslint/no-unused-expressions": "off",
-        "max-classes-per-file": "off"
-      },
-      "files": [
-        "./src/**/*.spec.ts"
-      ]
-    }
-  ]
+    "valid-typeof": "off"
+  }
 }

@@ -5,8 +5,9 @@ import { Handler } from '../../core';
 import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
 
 export class ExpressAdapter implements HttpApplicationAdapter {
-  protected app = express();
-  protected server?: Server;
+  server?: Server;
+
+  constructor(public app: express.Express = express()) { }
 
   close() {
     this.server?.close();
@@ -14,11 +15,11 @@ export class ExpressAdapter implements HttpApplicationAdapter {
 
   getParam(type: ParameterType, name: string, req: express.Request, res: express.Response) {
     switch (type) {
-      case ParameterType.BODY: return req.body && name ? req.body[name] : req.body;
-      case ParameterType.COOKIES: return name ? req.cookies[name] : req.cookies;
-      case ParameterType.HEADERS: return name ? req.headers[name] : req.headers;
-      case ParameterType.PARAMS: return name ? req.params[name] : req.params;
-      case ParameterType.QUERY: return name ? req.query[name] : req.query;
+      case ParameterType.BODY: return name ? req.body?.[name] : req.body;
+      case ParameterType.COOKIES: return name ? req.cookies?.[name] : req.cookies;
+      case ParameterType.HEADERS: return name ? req.headers?.[name] : req.headers;
+      case ParameterType.PARAMS: return name ? req.params?.[name] : req.params;
+      case ParameterType.QUERY: return name ? req.query?.[name] : req.query;
       case ParameterType.REQUEST: return req;
       case ParameterType.RESPONSE: return res;
       default: return req;

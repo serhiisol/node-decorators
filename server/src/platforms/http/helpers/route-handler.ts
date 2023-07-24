@@ -82,8 +82,9 @@ export class RouteHandler {
   params(params: ParamMetadata[], context: HttpContext, args: unknown[]) {
     return params
       .sort((a, b) => a.index - b.index)
-      .map(param =>
-        param.factory?.(context) ?? this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
+      .map(param => param.factory
+        ? param.factory(context)
+        : this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
       )
       .map(toStandardType);
   }
