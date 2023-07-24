@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
+    "./jest.config.js",
     "./src",
     "./example",
     "./integration"

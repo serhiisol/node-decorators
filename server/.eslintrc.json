@@ -21,6 +21,18 @@
         "@typescript-eslint/no-unused-expressions": "off",
         "max-classes-per-file": "off"
       }
+    },
+    {
+      "files": [
+        "./jest.config.js"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.lint.json",
+        "sourceType": "module"
+      },
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
     }
   ],
   "parser": "@typescript-eslint/parser",

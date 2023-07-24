@@ -1,4 +1,5 @@
-import { Module } from '../../src';
+import { Module } from '@server';
+
 import { PostsService } from './posts.service';
 
 @Module({

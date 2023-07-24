@@ -1,4 +1,5 @@
-import { Controller, Get, Pipe } from '../../../src';
+import { Controller, Get, Pipe } from '@server';
+
 import { ExclamationPipe, QuestionPipe, UnderscorePipe } from './pipes';
 
 @Controller()

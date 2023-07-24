@@ -44,7 +44,7 @@ export class Container {
   /**
    * Verifies that injectable is provided within the scope
    */
-  private has(injectable: Injectable): boolean {
+  has(injectable: Injectable): boolean {
     return this.providers.has(injectable) || this.parentContainer?.has(injectable);
   }
 
@@ -123,11 +123,8 @@ export class Container {
     providers.forEach(provider => {
       const injectableId = new InjectionToken(injectableToString(provider.provide));
 
-      this.registerSingleProviders([{
-        ...provider,
-        provide: injectableId,
-        multi: false,
-      }]);
+      // creates dependency provider for the main provider
+      this.registerSingleProviders([{ ...provider, provide: injectableId }]);
 
       const containerProvider = this.providers.get(provider.provide);
 
@@ -135,6 +132,7 @@ export class Container {
         return containerProvider.deps.push({ id: injectableId });
       }
 
+      // creates main provider that will hold all other providers as deps
       this.registerSingleProviders([{
         provide: provider.provide,
         useFactory: (...deps) => deps,

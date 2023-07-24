@@ -1,5 +1,6 @@
-import { APP_VERSION, GLOBAL_PIPE, HttpModule, Module } from '../src';
-import { ExpressAdapter } from '../src/platforms/express';
+import { APP_VERSION, GLOBAL_PIPE, HttpModule, Module } from '@server';
+import { ExpressAdapter } from '@server/express';
+
 import { PostsModule, UsersModule } from './modules';
 import { ServerPipe } from './pipes';
 import { ServicesModule } from './services';

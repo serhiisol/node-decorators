@@ -1,12 +1,12 @@
 {
-  "name": "@decorators/di",
-  "version": "3.0.0",
-  "description": "node decorators - decorators for dependency injection",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "author": "Serhii Sol",
+  "bugs": {
+    "url": "https://github.com/serhiisol/node-decorators/issues"
+  },
   "dependencies": {
     "reflect-metadata": "^0.1.13"
   },
+  "description": "node decorators - decorators for dependency injection",
   "devDependencies": {
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
@@ -15,6 +15,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsdoc": "^40.0.0",
     "jest": "^29.4.3",
+    "rimraf": "^5.0.1",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.3"
@@ -25,20 +26,20 @@
     "node decorators",
     "typescript"
   ],
-  "author": "Serhii Sol",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/serhiisol/node-decorators/issues"
+  "main": "lib/index.js",
+  "name": "@decorators/di",
+  "overrides": {
+    "typescript": "$typescript"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rimraf ./lib && tsc --project tsconfig.build.json",
     "test": "jest"
   },
-  "overrides": {
-    "typescript": "$typescript"
-  }
+  "types": "lib/index.d.ts",
+  "version": "3.0.0"
 }

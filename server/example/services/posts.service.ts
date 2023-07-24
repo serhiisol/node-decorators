@@ -1,4 +1,4 @@
-import { Injectable } from '@decorators/di';
+import { Injectable } from '@server';
 
 @Injectable()
 export class PostsService {

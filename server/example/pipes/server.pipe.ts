@@ -1,6 +1,5 @@
+import { HttpContext, PipeHandle, ProcessPipe } from '@server';
 import { Response } from 'express';
-
-import { HttpContext, PipeHandle, ProcessPipe } from '../../src';
 
 export class ServerPipe implements ProcessPipe {
   async run(_context: HttpContext, handle: PipeHandle<string>) {
