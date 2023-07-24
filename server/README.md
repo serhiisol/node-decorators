@@ -1,4 +1,4 @@
-![Node Decorators](../decorators.png?raw=true)
+![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
 ## Installation
 ```
@@ -193,3 +193,39 @@ function AccessParam() {
 // ...
 create(@AccessParam() access: string) {}
 ```
+
+# Swagger
+Swagger decorators are available in
+```typescript
+import { SwaggerModule } from '@decorators/server/swagger';
+```
+
+To start with swagger decorators provide `SwaggerModule` in the `AppModule`, for example:
+
+```typescript
+import { SwaggerModule } from '@decorators/server/swagger';
+
+@Module({
+  modules: [
+    HttpModule.create(ExpressAdapter),
+    SwaggerModule.forRoot({
+      description: 'Decorators Example App',
+      title: '@decorators/server',
+    }),
+    ...
+  ],
+})
+export class AppModule { }
+```
+
+## Decorators
+### Method
+* `@ApiOperation(operation: OpenAPIV3_1.OperationObject)` - Registers an operation
+* `@ApiResponse(description: string, type?: ClassConstructor)` - Registers simple response for a method. This decorator uses status provided by the route decorator, e.g. `@Get(route, status)`.
+* `@ApiResponseSchema(responses: ApiResponses)` - Registers a response for a method. This method accepts more complex types of responses, if method returns more than one.
+* `@ApiBearerAuth()` - Defines a bearer authentication method for a route
+* `@ApiSecurity(security: OpenAPIV3_1.SecuritySchemeObject)` - Defines more complex authentication methods for a route.
+
+### Property
+* `@ApiParameter(parammeter: { description?: string })` - Specifies a description for a property defined in the class-decorator based classes
+

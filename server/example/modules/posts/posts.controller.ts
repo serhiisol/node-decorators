@@ -1,12 +1,27 @@
 import { Controller, Pipe } from '@server';
 import { Body, Get, Params, Post, Render } from '@server/http';
-import { IsString } from 'class-validator';
+import { ApiParameter, ApiResponse, ApiSecurity } from '@server/swagger';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
+import { ApiResponseSchema } from '../../../src/platforms/swagger/decorators/api-response';
 import { PostsService } from '../../services';
 import { Access, AccessParam } from './decorators';
 import { AccessPipe } from './pipes';
 
 class PostType {
+  @IsNumber()
+  @Min(5)
+  @Max(10)
+  @ApiParameter({
+    description: 'Super Count',
+  })
+  @IsOptional()
+  count: number;
+
+  @IsString({ each: true })
+  @IsOptional()
+  name: string[];
+
   @IsString()
   title: string;
 }
@@ -24,6 +39,20 @@ export class PostsController {
 
   @Access('granted')
   @Pipe(AccessPipe)
+  @ApiResponse('Returns newly created post')
+  @ApiResponseSchema({
+    200: {
+      description: 'Returns newly created post',
+      type: PostType,
+    },
+  })
+  @ApiSecurity({
+    description: 'Auth',
+    in: 'query',
+    name: 'access',
+    type: 'apiKey',
+  })
+  // @ApiBearerAuth()
   @Get(':id', 200)
   @Render('post')
   post(@Params('id', Number) id: number, @AccessParam() access: string) {

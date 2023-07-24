@@ -22,6 +22,9 @@
       ],
       "@server/http": [
         "./src/platforms/http/index.ts"
+      ],
+      "@server/swagger": [
+        "./src/platforms/swagger/index.ts"
       ]
     },
     "pretty": true,
