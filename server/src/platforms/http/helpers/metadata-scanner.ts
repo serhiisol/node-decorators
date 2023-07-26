@@ -1,14 +1,22 @@
-import { Injectable } from '@decorators/di';
+import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { buildUrl, ClassConstructor, MethodMetadata, Reflector } from '../../../core';
+import { addLeadingSlash, APP_VERSION, buildUrl, ClassConstructor, MethodMetadata, Reflector, ROOT_MODULE } from '../../../core';
 import { RouteMetadata } from '../types';
 import { METHOD_TEMPLATE_METADATA } from './constants';
 
 @Injectable()
 export class MetadataScanner {
-  constructor(private reflector: Reflector) { }
+  constructor(
+    @Inject(APP_VERSION) @Optional() private appVersion: string,
+    @Inject(ROOT_MODULE) private rootModule: ClassConstructor,
+    private reflector: Reflector,
+  ) { }
 
-  scan(module: ClassConstructor, parentNamespace = ''): RouteMetadata[] {
+  scan() {
+    return this.scanModule(this.rootModule);
+  }
+
+  private scanModule(module: ClassConstructor, parentNamespace = ''): RouteMetadata[] {
     const { controllers, modules, namespace } = this.reflector.getModuleMetadata(module);
 
     const routes = controllers.map(controller => {
@@ -20,6 +28,7 @@ export class MetadataScanner {
         const pipes = metadata.pipes
           .filter(([, methodName]) => !methodName || methodName === method.methodName)
           .map(([pipe]) => pipe);
+        const url = addLeadingSlash(buildUrl(this.appVersion ?? '', parentNamespace, namespace, metadata.url, method.url));
 
         return {
           ...method,
@@ -28,12 +37,12 @@ export class MetadataScanner {
           params,
           pipes,
           template,
-          url: buildUrl(parentNamespace, namespace, metadata.url, method.url),
+          url,
         } as RouteMetadata;
       });
     });
 
-    const nestedRoutes = modules.map(module => this.scan(module, namespace));
+    const nestedRoutes = modules.map(module => this.scanModule(module, namespace));
 
     return [...nestedRoutes.flat(), ...routes.flat()];
   }

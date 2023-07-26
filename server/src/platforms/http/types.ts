@@ -1,13 +1,10 @@
-import { ClassConstructor, ParamMetadata } from '../../core';
+import { ClassConstructor, MethodMetadata, ParamMetadata } from '../../core';
 
-export interface RouteMetadata {
+export interface RouteMetadata extends MethodMetadata {
   controller: ClassConstructor;
-  methodName: string;
   module: ClassConstructor;
   params: ParamMetadata[];
   pipes: ClassConstructor[];
   status?: number;
   template?: string;
-  type: string;
-  url: string;
 }

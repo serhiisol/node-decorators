@@ -1,8 +1,8 @@
 export enum ParameterType {
   BODY = 'body',
-  COOKIES = 'cookies',
-  HEADERS = 'headers',
-  PARAMS = 'params',
+  COOKIE = 'cookie',
+  HEADER = 'header',
+  PARAM = 'path',
   QUERY = 'query',
   REQUEST = 'request',
   RESPONSE = 'response',

@@ -16,9 +16,9 @@ export class ExpressAdapter implements HttpApplicationAdapter {
   getParam(type: ParameterType, name: string, req: express.Request, res: express.Response) {
     switch (type) {
       case ParameterType.BODY: return name ? req.body?.[name] : req.body;
-      case ParameterType.COOKIES: return name ? req.cookies?.[name] : req.cookies;
-      case ParameterType.HEADERS: return name ? req.headers?.[name] : req.headers;
-      case ParameterType.PARAMS: return name ? req.params?.[name] : req.params;
+      case ParameterType.COOKIE: return name ? req.cookies?.[name] : req.cookies;
+      case ParameterType.HEADER: return name ? req.headers?.[name] : req.headers;
+      case ParameterType.PARAM: return name ? req.params?.[name] : req.params;
       case ParameterType.QUERY: return name ? req.query?.[name] : req.query;
       case ParameterType.REQUEST: return req;
       case ParameterType.RESPONSE: return res;
@@ -56,6 +56,10 @@ export class ExpressAdapter implements HttpApplicationAdapter {
 
   route(url: string, type: string, handler: Handler) {
     this.app[type]?.(url, handler);
+  }
+
+  serveStatic(prefix: string, path: string, options?: unknown) {
+    this.app.use(prefix, express.static(path, options));
   }
 
   set(setting: string, value: unknown) {

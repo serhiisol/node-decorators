@@ -13,6 +13,9 @@ export class ApiError extends Error {
   }
 
   toObject() {
-    return { message: this.message, errors: this.errors };
+    return {
+      errors: this.errors,
+      message: this.message,
+    };
   }
 }

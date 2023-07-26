@@ -44,8 +44,8 @@ export function Module(options: ModuleOptions) {
     Reflect.defineMetadata(MODULE_METADATA, {
       controllers: options.controllers ?? [],
       modules,
-      providers,
       namespace: options.namespace ?? '',
+      providers,
     }, target);
 
     Injectable()(target);
