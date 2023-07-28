@@ -63,7 +63,7 @@ function userMiddleware(request: Request, response: Response, next: NextFunction
 To add error middleware, that handles unhandled errors simply implement `ErrorMiddleware` interface and provide it using `ERROR_MIDDLEWARE` token, like so:
 
 ```typescript
-import { ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
+import { Container, ErrorMiddleware, ERROR_MIDDLEWARE } from '@decorators/express';
 
 @Injectable()
 class ServerErrorMiddleware implements ErrorMiddleware {
@@ -80,7 +80,7 @@ Container.provide([
 or as a function
 
 ```typescript
-import { ERROR_MIDDLEWARE } from '@decorators/express';
+import { Container, ERROR_MIDDLEWARE } from '@decorators/express';
 
 function serverErrorMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
   next();

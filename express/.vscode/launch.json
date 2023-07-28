@@ -12,7 +12,7 @@
         "${workspaceFolder}/example/index.ts"
       ],
       "env": {
-        "TS_NODE_PROJECT": "tsconfig.example.json"
+        "TS_NODE_PROJECT": "example/tsconfig.json"
       },
       "outputCapture": "std",
       "presentation": {

@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 
 import * as express from 'express';
-import { Container, Injectable } from '@decorators/di';
-import { attachControllers, Controller, ERROR_MIDDLEWARE, ErrorMiddleware, Get, Middleware } from '../src';
+import { Injectable } from '@decorators/di';
+import { Container, attachControllers, Controller, ERROR_MIDDLEWARE, ErrorMiddleware, Get, Middleware } from '../src';
 
 const app: express.Express = express();
 
