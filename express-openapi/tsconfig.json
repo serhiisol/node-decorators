@@ -4,20 +4,20 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "rootDir": ".",
-    "inlineSourceMap": true,
-    "target": "es6",
-    "inlineSources": true,
-    "typeRoots": ["node_modules/@types"],
+    "outDir": "lib",
     "pretty": true,
-    "outDir": "lib"
+    "rootDir": ".",
+    "target": "ES2017"
   },
-  "exclude": ["node_modules", "src/example"],
-  "files": ["./index.ts"]
+  "include": [
+    "./index.ts"
+  ]
 }
