@@ -29,7 +29,8 @@ await module.listen(3000);
 ## Modules
 * `HttpModule` - main module to start an application:
 ```typescript
-import { Application, HttpModule, Module } from '@decorators/server';
+import { Application, Module } from '@decorators/server';
+import { HttpModule } from '@decorators/server/http';
 
 @Module({
   modules: [
@@ -56,7 +57,8 @@ Pipes allow to add additional "interceptors" before and after main route functio
 In order to implement a pipe import `ProcessPipe` interface and implement it:
 
 ```typescript
-import { HttpContext, PipeHandle, ProcessPipe } from '@decorators/server';
+import { PipeHandle, ProcessPipe } from '@decorators/server';
+import { HttpContext } from '@decorators/server/http';
 
 export class TransformPipe implements ProcessPipe {
   async run(context: HttpContext, handle: PipeHandle<string>) {
@@ -120,6 +122,7 @@ This module supports dependency injection provided by `@decorators/di` package. 
 ### Method
 * `@Pipe(pipe: ClassConstructor<ProcessPipe>)` - Registers a pipe for a method
 
+#### @decorators/server/http
 * `@Delete(url: string, status?: number)` - Registers delete route
 * `@Get(url: string, status?: number)` - Registers get route
 * `@Head(url: string, status?: number)` - Registers head route
