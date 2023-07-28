@@ -1,4 +1,5 @@
-import { ApiError, HttpContext, Injectable, PipeHandle, ProcessPipe, Reflector } from '@server';
+import { ApiError, Injectable, PipeHandle, ProcessPipe, Reflector } from '@server';
+import { HttpContext } from '@server/http';
 import { Request } from 'express';
 
 @Injectable()

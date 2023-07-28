@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Params, Pipe, Post, Render } from '@server';
+import { Controller, Pipe } from '@server';
+import { Body, Get, Params, Post, Render } from '@server/http';
 import { IsString } from 'class-validator';
 
 import { PostsService } from '../../services';

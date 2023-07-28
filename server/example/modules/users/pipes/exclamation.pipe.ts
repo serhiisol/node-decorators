@@ -1,4 +1,5 @@
-import { HttpContext, PipeHandle, ProcessPipe } from '@server';
+import { PipeHandle, ProcessPipe } from '@server';
+import { HttpContext } from '@server/http';
 
 export class ExclamationPipe implements ProcessPipe {
   run(_context: HttpContext, _handle: PipeHandle<string>) {

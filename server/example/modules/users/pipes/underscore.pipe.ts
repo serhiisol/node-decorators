@@ -1,4 +1,5 @@
-import { HttpContext, PipeHandle, ProcessPipe } from '../../../../src';
+import { PipeHandle, ProcessPipe } from '@server';
+import { HttpContext } from '@server/http';
 
 export class UnderscorePipe implements ProcessPipe {
   async run(_context: HttpContext, handle: PipeHandle<string>) {

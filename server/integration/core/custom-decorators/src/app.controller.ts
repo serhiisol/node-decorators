@@ -1,4 +1,5 @@
-import { Controller, Get, Pipe } from '@server';
+import { Controller, Pipe } from '@server';
+import { Get } from '@server/http';
 
 import { Method } from './method';
 import { Param } from './param';

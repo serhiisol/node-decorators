@@ -1,4 +1,5 @@
-import { Body, Controller, Cookies, Headers, Params, Post, Query, Request, Response } from '@server';
+import { Controller } from '@server';
+import { Body, Cookies, Headers, Params, Post, Query, Request, Response } from '@server/http';
 
 import { BodyDto } from './body.dto';
 

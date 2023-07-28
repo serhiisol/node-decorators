@@ -7,5 +7,4 @@ export { createParamDecorator, Decorate } from './core/helpers/decorators';
 export * from './core/helpers/errors';
 export { PipeHandle, ProcessPipe } from './core/helpers/pipe';
 export { Reflector } from './core/helpers/reflector';
-export * from './platforms/http';
 export * from '@decorators/di';

@@ -1,4 +1,5 @@
-import { Application, HttpModule } from '@server';
+import { Application } from '@server';
+import { HttpModule } from '@server/http';
 import { json } from 'body-parser';
 import { join } from 'path';
 

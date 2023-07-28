@@ -8,6 +8,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
+  "ignorePatterns": [
+    "lib"
+  ],
   "overrides": [
     {
       "files": [
@@ -169,10 +172,10 @@
       "error",
       {
         "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
         "exports": "always-multiline",
-        "functions": "always-multiline"
+        "functions": "always-multiline",
+        "imports": "always-multiline",
+        "objects": "always-multiline"
       }
     ],
     "complexity": "off",

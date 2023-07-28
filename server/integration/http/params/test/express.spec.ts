@@ -1,5 +1,6 @@
-import { Application, HttpModule, Module } from '@server';
+import { Application, Module } from '@server';
 import { ExpressAdapter } from '@server/express';
+import { HttpModule } from '@server/http';
 import { json } from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';

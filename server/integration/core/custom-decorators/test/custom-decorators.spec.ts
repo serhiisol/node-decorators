@@ -1,5 +1,6 @@
-import { Application, HttpModule, Module, Reflector } from '@server';
+import { Application, Module, Reflector } from '@server';
 import { ExpressAdapter } from '@server/express';
+import { HttpModule } from '@server/http';
 import * as request from 'supertest';
 
 import { AppModule } from '../src/app.module';
