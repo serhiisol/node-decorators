@@ -1,4 +1,5 @@
-import { HttpContext, PipeHandle, ProcessPipe } from '@server';
+import { PipeHandle, ProcessPipe } from '@server';
+import { HttpContext } from '@server/http';
 import { Response } from 'express';
 
 export class ServerPipe implements ProcessPipe {

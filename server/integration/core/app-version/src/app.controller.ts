@@ -1,4 +1,5 @@
-import { Controller, Get } from '@server';
+import { Controller } from '@server';
+import { Get } from '@server/http';
 
 @Controller()
 export class AppController {

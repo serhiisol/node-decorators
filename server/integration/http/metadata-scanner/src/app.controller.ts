@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@server';
+import { Controller } from '@server';
+import { Body, Post } from '@server/http';
 
 @Controller()
 export class AppController {

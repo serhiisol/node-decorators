@@ -1,5 +1,6 @@
-import { Application, HttpModule, Module } from '@server';
+import { Application, Module } from '@server';
 import { ExpressAdapter } from '@server/express';
+import { HttpModule } from '@server/http';
 import { MetadataScanner } from '@server/http';
 
 import { AppModule } from '../src/app.module';
@@ -22,7 +23,7 @@ describe('Metadata Scanner', () => {
   });
 
   it('provides access to the metadata', () => {
-    const routesMetadata = scanner.scan(AppModule);
+    const routesMetadata = scanner.scan();
 
     expect(routesMetadata).toEqual(expect.arrayContaining([expect.objectContaining({
       methodName: 'post',

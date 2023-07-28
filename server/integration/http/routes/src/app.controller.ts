@@ -1,4 +1,5 @@
-import { Controller, Delete, Get, Head, HttpStatus, Options, Patch, Post, Put } from '@server';
+import { Controller, HttpStatus } from '@server';
+import { Delete, Get, Head, Options, Patch, Post, Put } from '@server/http';
 
 @Controller()
 export class AppController {

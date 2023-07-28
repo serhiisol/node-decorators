@@ -1,4 +1,5 @@
-import { HttpContext, Injectable, PipeHandle, ProcessPipe } from '@server';
+import { Injectable, PipeHandle, ProcessPipe } from '@server';
+import { HttpContext } from '@server/http';
 
 import { Sequence } from '../sequence';
 

@@ -1,4 +1,5 @@
-import { ApiError, Controller, Get, Pipe } from '@server';
+import { ApiError, Controller, Pipe } from '@server';
+import { Get } from '@server/http';
 
 import { ControllerPipe, MethodPipe } from './pipes';
 

@@ -1,4 +1,5 @@
-import { createParamDecorator, HttpContext } from '@server';
+import { createParamDecorator } from '@server';
+import { HttpContext } from '@server/http';
 
 export function Param() {
   return createParamDecorator((context: HttpContext) => {
