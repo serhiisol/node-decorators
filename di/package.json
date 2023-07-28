@@ -37,7 +37,8 @@
     "url": "https://github.com/serhiisol/node-decorators.git"
   },
   "scripts": {
-    "build": "rimraf ./lib && tsc --project tsconfig.build.json",
+    "build": "rimraf ./lib && tsc",
+    "eslint": "eslint \"**/*.ts\"",
     "test": "jest"
   },
   "types": "lib/index.d.ts",
