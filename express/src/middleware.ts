@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction, RequestHandler, ErrorRequestHandler } from 'express';
-import { Container, InjectionToken } from '@decorators/di';
+import { InjectionToken } from '@decorators/di';
 
-export type Type<C extends object = object> = new (...args: any) => C;
+import { Container } from './container';
+import { Type } from './types';
 
 export type MiddlewareFunction = (req: Request, res: Response, next: NextFunction) => void;
 export interface MiddlewareClass {
@@ -65,12 +66,19 @@ async function invokeMiddleware(
   }
 }
 
-function getMiddlewareInstance(middleware: InjectionToken | Middleware | ErrorMiddleware) {
+async function getMiddlewareInstance(middleware: InjectionToken | Middleware | ErrorMiddleware) {
   try {
-    return Container.get(middleware);
-  } catch {
+    if (!Container.has(middleware) && (middleware as Type).prototype?.use) {
+      Container.provide([{
+        provide: middleware,
+        useClass: middleware as Type,
+      }]);
+    }
+
+    return await Container.get(middleware);
+  } catch (e) {
     if (typeof middleware === 'function') {
-      return (middleware as Middleware | ErrorMiddleware).prototype?.use
+      return middleware.prototype?.use
         ? new (middleware as Type<MiddlewareClass | ErrorMiddlewareClass>)()
         : middleware;
     }

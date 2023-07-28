@@ -1,8 +1,9 @@
 import { RequestHandler, Application, Router, Express, Request, Response, NextFunction } from 'express';
-import { Container } from '@decorators/di';
 
+import { Type } from './types';
+import { Container } from './container';
 import { getMeta, ParameterType, ExpressClass, ParameterConfiguration, ExpressMeta } from './meta';
-import { middlewareHandler, errorMiddlewareHandler, Type, MiddlewareFunction } from './middleware';
+import { middlewareHandler, errorMiddlewareHandler, MiddlewareFunction } from './middleware';
 
 /**
  * Attach controllers to express application
@@ -150,9 +151,16 @@ function extractParameters(req: Request, res: Response, next: NextFunction, para
 /**
  * Get controller instance from container or instantiate one
  */
-function getController(Controller: Type): Promise<ExpressClass> | ExpressClass {
+async function getController(Controller: Type): Promise<ExpressClass> {
   try {
-    return Container.get(Controller);
+    if (!Container.has(Controller)) {
+      Container.provide([{
+        provide: Controller,
+        useClass: Controller,
+      }]);
+    }
+
+    return await Container.get(Controller);
   } catch {
     return new Controller();
   }
