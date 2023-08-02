@@ -101,7 +101,7 @@ export class Container {
         throw new MissingDependencyError(provider.type ?? injectable, provider.deps, index);
       }
 
-      resolvedDeps.push(null);
+      resolvedDeps.push(undefined);
     }
 
     let value: unknown;
