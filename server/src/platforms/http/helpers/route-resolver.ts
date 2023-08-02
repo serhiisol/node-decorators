@@ -1,6 +1,6 @@
-import { Inject, Injectable, Optional } from '@decorators/di';
+import { Inject, Injectable } from '@decorators/di';
 
-import { asyncMap, ClassConstructor, ContainerManager, GLOBAL_PIPE, ProcessPipe } from '../../../core';
+import { asyncMap, ClassConstructor, ContainerManager, ProcessPipe } from '../../../core';
 import { HTTP_ADAPTER } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { MetadataScanner } from './metadata-scanner';
@@ -10,7 +10,6 @@ import { RouteHandler } from './route-handler';
 export class RouteResolver {
   constructor(
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
-    @Inject(GLOBAL_PIPE) @Optional() private globalPipes: ProcessPipe[],
     private containerManager: ContainerManager,
     private metadataScanner: MetadataScanner,
     private routeHandler: RouteHandler,
@@ -30,7 +29,7 @@ export class RouteResolver {
         controller,
         metadata.methodName,
         metadata.params,
-        [...(this.globalPipes ?? []), ...routePipes],
+        routePipes,
         metadata.status,
         metadata.template,
       );

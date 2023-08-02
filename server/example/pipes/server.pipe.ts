@@ -1,19 +1,12 @@
-import { ApiError, HttpStatus, PipeHandle, ProcessPipe } from '@server';
+import { ApiError, InternalServerError, PipeHandle, ProcessPipe } from '@server';
 import { HttpContext } from '@server/http';
-import { Response } from 'express';
 
 export class ServerPipe implements ProcessPipe {
-  async run(context: HttpContext, handle: PipeHandle<string>) {
-    const res = context.getResponse<Response>();
-
+  async run(_context: HttpContext, handle: PipeHandle<string>) {
     try {
       return await handle();
     } catch (e) {
-      if (e instanceof ApiError) {
-        res.status(e.status).send(e.toObject());
-      } else {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: e.message, stack: e.stack.split('\n') });
-      }
+      return e instanceof ApiError ? e : new InternalServerError(e.message, e.stack.split('\n'));
     }
   }
 }

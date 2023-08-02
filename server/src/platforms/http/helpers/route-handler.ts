@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@decorators/di';
+import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { ApiError, Handler, HttpStatus, ParamMetadata, ParamValidator, Pipeline, ProcessPipe, toStandardType } from '../../../core';
+import { ApiError, GLOBAL_PIPE, Handler, HttpStatus, ParamMetadata, ParamValidator, Pipeline, ProcessPipe, toStandardType } from '../../../core';
 import { HTTP_ADAPTER, ParameterType } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { HttpContext } from './http-context';
@@ -9,6 +9,7 @@ import { HttpContext } from './http-context';
 export class RouteHandler {
   constructor(
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
+    @Inject(GLOBAL_PIPE) @Optional() private globalPipes: ProcessPipe[] = [],
     private pipeline: Pipeline,
     private paramValidator: ParamValidator,
   ) { }
@@ -26,39 +27,38 @@ export class RouteHandler {
     return async (...args: unknown[]) => {
       const req = this.adapter.getParam(ParameterType.REQUEST, null, ...args);
       const res = this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
-      const handlerParams = [];
+
+      const verifiedParams = [];
       const context = new HttpContext(
         controller.constructor,
         controller[methodName],
         this.adapter,
         req,
         res,
-        handlerParams,
+        verifiedParams,
       );
 
-      handlerParams.push(...this.params(params, context, args));
+      let message = await this.runHandlerSafe(async () => {
+        verifiedParams.push(...this.params(params, context, args));
 
-      let message: unknown;
+        await this.paramValidator.validate(params, verifiedParams);
+      });
 
-      try {
-        await this.paramValidator.validate(params, handlerParams);
+      // Runs either all the pipes with the handler if validation was successfully completed
+      // or just global pipes with validation error
+      message = await this.runHandlerSafe(() =>
+        this.pipeline.run(this.globalPipes.concat(message ? [] : pipes), context, async () => {
+          if (message) {
+            throw message;
+          }
 
-        message = await this.pipeline.run(
-          pipes,
-          () => handler(...handlerParams),
-          context,
-        );
+          message = await handler(...verifiedParams);
 
-        if (template) {
-          return this.adapter.render(res, template, message);
-        }
-      } catch (error) {
-        message = error;
-      }
-
-      if (this.adapter.isHeadersSent(res)) {
-        return;
-      }
+          return template
+            ? this.adapter.render(res, template, message)
+            : message;
+        }),
+      );
 
       await context.reply(
         this.message(message),
@@ -94,6 +94,18 @@ export class RouteHandler {
       return message.status;
     }
 
+    if (message instanceof Error) {
+      return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
     return status;
+  }
+
+  private async runHandlerSafe(handler: Handler) {
+    try {
+      return await handler();
+    } catch (error) {
+      return error;
+    }
   }
 }

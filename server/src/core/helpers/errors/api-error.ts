@@ -1,12 +1,10 @@
-import { ValidationError } from 'class-validator';
-
 import { HttpStatus } from '../constants';
 
 export class ApiError extends Error {
-  errors?: ValidationError[];
+  errors?: unknown[];
   status = HttpStatus.BAD_REQUEST;
 
-  constructor(message?: string, errors?: ValidationError[]) {
+  constructor(message?: string, errors?: unknown[]) {
     super(message);
 
     this.errors = errors;
