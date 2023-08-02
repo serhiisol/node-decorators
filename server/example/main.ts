@@ -10,7 +10,7 @@ async function bootstrap() {
   const module = await app.inject<HttpModule>(HttpModule);
 
   module.set('view engine', 'ejs');
-  module.set('views', join(__dirname, '/views'));
+  module.set('views', join(__dirname, 'views'));
   module.use(json());
 
   await module.listen(3000);

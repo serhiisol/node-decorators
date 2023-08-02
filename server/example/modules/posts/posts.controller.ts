@@ -15,21 +15,18 @@ class PostType {
 export class PostsController {
   constructor(private postsService: PostsService) { }
 
+  @Post('', 200)
+  create(@Body() post: PostType) {
+    const list = this.postsService.getPosts();
+
+    return [...list, post];
+  }
+
   @Access('granted')
   @Pipe(AccessPipe)
-  @Post('', 200)
-  create(@Body() post: PostType, @AccessParam() access: string) {
-    return { ...post, access };
-  }
-
-  @Get('', 200)
-  list() {
-    return this.postsService.list();
-  }
-
   @Get(':id', 200)
   @Render('post')
-  post(@Params('id') id: string) {
-    return { id, name: 'hello world' };
+  post(@Params('id') id: string, @AccessParam() access: string) {
+    return { access, id };
   }
 }
