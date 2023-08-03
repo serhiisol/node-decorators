@@ -1,4 +1,4 @@
-import { ApiError, Injectable, PipeHandle, ProcessPipe, Reflector } from '@server';
+import { Injectable, PipeHandle, ProcessPipe, Reflector, UnauthorizedError } from '@server';
 import { HttpContext } from '@server/http';
 import { Request } from 'express';
 
@@ -14,6 +14,6 @@ export class AccessPipe implements ProcessPipe {
       return handle();
     }
 
-    throw new ApiError('unauthorized');
+    throw new UnauthorizedError('unauthorized');
   }
 }
