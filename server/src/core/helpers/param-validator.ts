@@ -19,19 +19,19 @@ export class ParamValidator {
         continue;
       }
 
-      if (!this.hasDecorators(type)) {
-        continue;
-      }
-
       const instance = plainToInstance(type as ClassConstructor, arg);
 
-      if (instance instanceof type) {
+      if (this.hasDecorators(type)) {
         const errors = await validate(instance, { validationError: { target: false } });
 
         if (errors.length) {
           throw new BadRequestError(`Invalid param “${params[i].argName}”`, errors);
         }
 
+        continue;
+      }
+
+      if (instance instanceof type) {
         continue;
       }
 
