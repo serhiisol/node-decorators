@@ -10,10 +10,14 @@ export function Schema(name?: string): ClassDecorator {
       properties,
       required,
     });
-  }
+  };
 }
 
-export function Property(opts: SchemaDef & { required?: boolean }): PropertyDecorator {
+interface PropertyDef {
+  required?: boolean;
+}
+
+export function Property(opts: SchemaDef & PropertyDef): PropertyDecorator {
   return (target: any, key: string) => {
     const meta = getSchemaMeta(target);
     const properties = meta.properties = meta.properties || {};
@@ -23,5 +27,5 @@ export function Property(opts: SchemaDef & { required?: boolean }): PropertyDeco
       meta.required.push(key);
     }
     properties[key] = schema;
-  }
+  };
 }

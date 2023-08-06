@@ -14,15 +14,16 @@ type AllOf = {
 };
 type Not = {
   not: Type | Ref;
-}
+};
 
 type CommonAttrs<T> = {
   default?: T;
+  deprecated?: boolean;
   example?: T;
+  nullable?: boolean;
   readOnly?: boolean;
   writeOnly?: boolean;
-  deprecated?: boolean;
-}
+};
 
 type StringAttrs = {
   minLength?: number;
@@ -44,32 +45,32 @@ type ArrayAttrs = {
   minItems?: number;
   maxItems?: number;
   uniqueItems?: boolean;
-} & CommonAttrs<any[]>
+} & CommonAttrs<any[]>;
 type ObjectAttrs = {
   properties?: Properties;
   required?: string[];
 } & CommonAttrs<object>;
-export type StringSchemaDef = { type: 'string' } & StringAttrs;
-export type NumericSchemaDef = { type: 'number' | 'integer' } & NumericAttrs;
-export type BooleanSchemaDef = { type: 'boolean' } & CommonAttrs<boolean>;
-export type ArraySchemaDef = { type: 'array' } & ArrayAttrs;
-export type ObjectSchemaDef = { type: 'object' } & ObjectAttrs;
+export type StringSchemaDef = { type: 'string'; } & StringAttrs;
+export type NumericSchemaDef = { type: 'number' | 'integer'; } & NumericAttrs;
+export type BooleanSchemaDef = { type: 'boolean'; } & CommonAttrs<boolean>;
+export type ArraySchemaDef = { type: 'array'; } & ArrayAttrs;
+export type ObjectSchemaDef = { type: 'object'; } & ObjectAttrs;
 export type SchemaDef = Ref | OneOf | AnyOf | AllOf | Not |
   StringSchemaDef | NumericSchemaDef | BooleanSchemaDef | ArraySchemaDef | ObjectSchemaDef;
 export type Properties = {
   [key: string]: SchemaDef;
-}
+};
 
 export type StandardHttpSecurityScheme = {
   type: "http";
   scheme: "basic" | "digest" | "hoba" | "mutual" | "negotiate" | "oauth" | "scram-sha-1" | "scram-sha-256" | "vapid";
-}
+};
 
 export type BearerHttpSecurityScheme = {
   type: "http";
   scheme: "bearer";
   bearerFormat?: "JWT" | Omit<string, "JWT">;
-}
+};
 
 export type HttpSecurityScheme = StandardHttpSecurityScheme | BearerHttpSecurityScheme;
 
@@ -77,17 +78,17 @@ export type ApiKeySecurityScheme = {
   type: "apiKey";
   in: "header" | "query" | "cookie";
   name: string;
-}
+};
 
 export type OpenIdConnectSecurityScheme = {
   type: "openIdConnect";
   openIdConnectUrl: string;
-}
+};
 
 export type OAuth2SecuritySchemeFlowBase = {
   refreshUrl?: string;
-  scopes: { [scope: string]: string };
-}
+  scopes: { [scope: string]: string; };
+};
 
 export type OAuth2SecurityScheme = {
   type: "oauth2";
@@ -104,9 +105,9 @@ export type OAuth2SecurityScheme = {
     };
     clientCredentials?: OAuth2SecuritySchemeFlowBase & {
       tokenUrl: string;
-    }
+    };
   };
-}
+};
 
 export type SecurityScheme = HttpSecurityScheme | ApiKeySecurityScheme | OpenIdConnectSecurityScheme | OAuth2SecurityScheme;
 
@@ -117,14 +118,14 @@ export type OpenApiOptions = {
     description?: string;
     version?: string;
   };
-  tags?: { name: string, description?: string }[];
-  servers?: { url: string, description?: string }[];
+  tags?: { name: string, description?: string; }[];
+  servers?: { url: string, description?: string; }[];
   externalDocs?: { url: string, description?: string; };
   security?: PathSecurity;
   components?: {
-    securitySchemes?: { [schemeName: string]: SecurityScheme };
+    securitySchemes?: { [schemeName: string]: SecurityScheme; };
   };
-}
+};
 
 export type ParamLocation = 'query' | 'header' | 'path' | 'cookie';
 
@@ -142,21 +143,21 @@ export type ParamDef = {
 } & ParamOptions;
 
 export type Content = {
-  [mediaType: string]: { schema: SchemaDef }
+  [mediaType: string]: { schema: SchemaDef; };
 };
 
 export type RequestBody = {
   description?: string;
   required?: boolean;
   content: Content;
-}
+};
 
 export type ResponseDescriptor = {
   description: string;
   content: Content;
-}
+};
 
-export type PathResponses = { [httpStatus: string]: ResponseDescriptor }
+export type PathResponses = { [httpStatus: string]: ResponseDescriptor; };
 
 export type PathMeta = {
   summary?: string;
@@ -167,18 +168,18 @@ export type PathMeta = {
   requestBody?: RequestBody;
   responses?: PathResponses;
   security?: PathSecurity;
-}
+};
 
-export type PathSecurity = Array<{ [schemeName: string]: string[] }>
+export type PathSecurity = Array<{ [schemeName: string]: string[]; }>;
 
 export type OpenApiMeta = {
   [methodName: string]: PathMeta;
-}
+};
 
 export type SchemaMeta = {
   properties?: Properties;
   required?: string[];
-}
+};
 
 export interface OpenApiClass {
   __openapi_meta__?: OpenApiMeta;
