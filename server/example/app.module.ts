@@ -2,15 +2,16 @@ import { APP_VERSION, GLOBAL_PIPE, Module } from '@server';
 import { ExpressAdapter } from '@server/express';
 import { HttpModule } from '@server/http';
 
-import { PostsModule } from './modules';
+import { MiscModule, PostsModule } from './modules';
 import { ServerPipe } from './pipes';
 import { ServicesModule } from './services';
 
 @Module({
   modules: [
     HttpModule.create(ExpressAdapter),
-    PostsModule,
     ServicesModule,
+    MiscModule,
+    PostsModule,
   ],
   providers: [
     {
