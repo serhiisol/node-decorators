@@ -13,7 +13,7 @@ export class HttpContext extends Context {
     super(controller, handler);
   }
 
-  getArgs<T>() {
+  getArgs<T = unknown[]>() {
     return this.args as T;
   }
 
@@ -26,6 +26,11 @@ export class HttpContext extends Context {
   }
 
   reply(message: unknown, status: number) {
+    // make sure that message still can be replied
+    if (this.adapter.isHeadersSent(this.res)) {
+      return;
+    }
+
     return this.adapter.reply(this.res, message, status);
   }
 }

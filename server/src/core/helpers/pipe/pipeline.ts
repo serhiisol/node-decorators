@@ -5,8 +5,8 @@ import { ProcessPipe } from './pipe';
 export class Pipeline {
   run(
     pipes: ProcessPipe[],
-    handler: Handler,
     context: Context,
+    handler: Handler,
   ): Promise<unknown> {
     const next = (i = 0) => {
       return i >= pipes.length ? handler() : pipes[i].run(context, () => next(i + 1));
