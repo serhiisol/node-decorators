@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@decorators/di';
 
 import { asyncMap, ClassConstructor, ContainerManager, ProcessPipe } from '../../../core';
+import { RouteMetadata } from '../types';
 import { HTTP_ADAPTER } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { MetadataScanner } from './metadata-scanner';
@@ -18,7 +19,12 @@ export class RouteResolver {
   async resolve() {
     const metadatas = this.metadataScanner.scan();
 
-    for (const metadata of metadatas) {
+    const routes = metadatas.filter(meta => !meta.url.includes('*'));
+    const wildcardRoutes = metadatas
+      .filter(meta => meta.url.includes('*'))
+      .sort(this.sortWildcardRoutes);
+
+    for (const metadata of [...routes, ...wildcardRoutes]) {
       const container = this.containerManager.get(metadata.module);
       const controller = await container.get<InstanceType<ClassConstructor>>(metadata.controller);
       const routePipes = await asyncMap(metadata.pipes, (pipe: ClassConstructor) =>
@@ -36,5 +42,16 @@ export class RouteResolver {
 
       this.adapter.route(metadata.url, metadata.type, handler);
     }
+  }
+
+  sortWildcardRoutes(routeA: RouteMetadata, routeB: RouteMetadata) {
+    const segmentsA = routeA.url.split('/').length;
+    const segmentsB = routeB.url.split('/').length;
+
+    if (segmentsA === segmentsB) {
+      return routeB.url.length - routeA.url.length;
+    }
+
+    return segmentsB - segmentsA;
   }
 }

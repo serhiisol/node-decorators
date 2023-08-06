@@ -11,6 +11,11 @@ class PostType {
   title: string;
 }
 
+class User {
+  id: number;
+  name: string;
+}
+
 @Controller()
 export class PostsController {
   constructor(private postsService: PostsService) { }
@@ -26,7 +31,7 @@ export class PostsController {
   @Pipe(AccessPipe)
   @Get(':id', 200)
   @Render('post')
-  post(@Params('id') id: string, @AccessParam() access: string) {
+  post(@Params('id') id: string, @AccessParam() access: User) {
     return { access, id };
   }
 }

@@ -25,9 +25,9 @@ export class HttpContext extends Context {
     return this.res as Res;
   }
 
-  reply(message: unknown, status: number) {
+  async reply(message: unknown, status: number) {
     // make sure that message still can be replied
-    if (this.adapter.isHeadersSent(this.res)) {
+    if (await this.adapter.isHeadersSent(this.res)) {
       return;
     }
 

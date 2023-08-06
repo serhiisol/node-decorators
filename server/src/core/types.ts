@@ -29,7 +29,7 @@ export interface MethodMetadata {
 export interface ParamMetadata {
   // argument name defined in the function
   argName?: string;
-  factory?: (context: any) => unknown;
+  factory?: (context: any) => Promise<unknown> | unknown;
   index: number;
   methodName: string;
   paramName: string;

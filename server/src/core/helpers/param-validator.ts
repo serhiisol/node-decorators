@@ -1,6 +1,6 @@
 import { Injectable } from '@decorators/di';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { getMetadataStorage, validate } from 'class-validator';
 
 import { ClassConstructor, Handler, ParamMetadata } from '../types';
 import { BadRequestError } from './errors';
@@ -12,11 +12,15 @@ export class ParamValidator {
       const type = params[i].validator;
 
       if (!type) {
-        return;
+        continue;
       }
 
       if (this.validateSimple(arg, type as Handler)) {
-        return;
+        continue;
+      }
+
+      if (!this.hasDecorators(type)) {
+        continue;
       }
 
       const instance = plainToInstance(type as ClassConstructor, arg);
@@ -28,13 +32,20 @@ export class ParamValidator {
           throw new BadRequestError(`Invalid param “${params[i].argName}”`, errors);
         }
 
-        return;
+        continue;
       }
 
       throw new BadRequestError(
         `Invalid param “${params[i].argName}”. “${params[i].validator.name}” expected, “${typeof arg}” received`,
       );
     }
+  }
+
+  private hasDecorators(type: Handler | ClassConstructor): boolean {
+    const metadataStorage = getMetadataStorage();
+    const metadatas = metadataStorage.getTargetValidationMetadatas(type, null, null, null);
+
+    return metadatas.length > 0;
   }
 
   private validateSimple(arg: unknown, Type: Handler) {

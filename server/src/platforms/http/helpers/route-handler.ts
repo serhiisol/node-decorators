@@ -39,7 +39,7 @@ export class RouteHandler {
       );
 
       let message = await this.runHandler(async () => {
-        verifiedParams.push(...this.params(params, context, args));
+        verifiedParams.push(...await this.params(params, context, args));
 
         await this.paramValidator.validate(params, verifiedParams);
       });
@@ -53,9 +53,11 @@ export class RouteHandler {
 
         message = await handler(...verifiedParams);
 
-        return template
-          ? this.adapter.render(res, template, message)
-          : message;
+        if (await this.adapter.isHeadersSent(res) || !template) {
+          return message;
+        }
+
+        return this.adapter.render(res, template, message);
       };
 
       message = await this.runHandler(() =>
@@ -78,14 +80,16 @@ export class RouteHandler {
     return message;
   }
 
-  params(params: ParamMetadata[], context: HttpContext, args: unknown[]) {
-    return params
+  async params(metadata: ParamMetadata[], context: HttpContext, args: unknown[]) {
+    const params$ = metadata
       .sort((a, b) => a.index - b.index)
-      .map(param => param.factory
-        ? param.factory(context)
-        : this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
-      )
-      .map(toStandardType);
+      .map(async param => param.factory
+        ? await param.factory(context)
+        : await this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
+      );
+    const params = await Promise.all(params$);
+
+    return params.map(toStandardType);
   }
 
   status(message: unknown, status: number) {

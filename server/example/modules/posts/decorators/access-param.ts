@@ -6,6 +6,8 @@ export function AccessParam() {
   return createParamDecorator((context: HttpContext) => {
     const req = context.getRequest<Request>();
 
-    return req.query.access;
+    req['user'] = { id: 1, name: 'John Doe' };
+
+    return req['user'];
   });
 }
