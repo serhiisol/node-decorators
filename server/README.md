@@ -117,6 +117,7 @@ This module supports dependency injection provided by `@decorators/di` package. 
 ### Class
 * `@Module(options: ModuleOptions)` - Defines a module (namespace) for DI providers, controllers etc.
 * `@Controller(url: string, options?: Record<string, unknown>)` - Registers controller for base url with optional options
+  * `options?.ignoreVersion` - ignore global version prefix (provided `APP_VERSION`), can be useful to setup global handlers, such as 404 handling
 * `@Pipe(pipe: ClassConstructor<ProcessPipe>)` - Registers a pipe for a controller
 
 ### Method

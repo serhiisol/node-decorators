@@ -10,8 +10,12 @@ export interface ModuleMetadata {
   providers: Provider[];
 }
 
+export interface ControllerOptions {
+  ignoreVersion?: boolean;
+}
+
 export interface ControllerMetadata {
-  options?: Record<string, unknown>;
+  options?: ControllerOptions;
   url?: string;
 }
 

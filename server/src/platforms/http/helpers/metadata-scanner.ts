@@ -28,7 +28,9 @@ export class MetadataScanner {
         const pipes = metadata.pipes
           .filter(([, methodName]) => !methodName || methodName === method.methodName)
           .map(([pipe]) => pipe);
-        const url = addLeadingSlash(buildUrl(this.appVersion ?? '', parentNamespace, namespace, metadata.url, method.url));
+
+        const version = metadata.options?.ignoreVersion || !this.appVersion ? '' : this.appVersion;
+        const url = addLeadingSlash(buildUrl(version, parentNamespace, namespace, metadata.url, method.url));
 
         return {
           ...method,
