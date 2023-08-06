@@ -9,7 +9,7 @@ import { HttpContext } from './http-context';
 export class RouteHandler {
   constructor(
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
-    @Inject(GLOBAL_PIPE) @Optional() private globalPipes: ProcessPipe[] = [],
+    @Inject(GLOBAL_PIPE) @Optional() private pipes: ProcessPipe[] = [],
     private pipeline: Pipeline,
     private paramValidator: ParamValidator,
   ) { }
@@ -38,7 +38,7 @@ export class RouteHandler {
         verifiedParams,
       );
 
-      let message = await this.runHandlerSafe(async () => {
+      let message = await this.runHandler(async () => {
         verifiedParams.push(...this.params(params, context, args));
 
         await this.paramValidator.validate(params, verifiedParams);
@@ -46,24 +46,23 @@ export class RouteHandler {
 
       // Runs either all the pipes with the handler if validation was successfully completed
       // or just global pipes with validation error
-      message = await this.runHandlerSafe(() =>
-        this.pipeline.run(this.globalPipes.concat(message ? [] : pipes), context, async () => {
-          if (message) {
-            throw message;
-          }
+      const routeHandler = async () => {
+        if (message) {
+          throw message;
+        }
 
-          message = await handler(...verifiedParams);
+        message = await handler(...verifiedParams);
 
-          return template
-            ? this.adapter.render(res, template, message)
-            : message;
-        }),
+        return template
+          ? this.adapter.render(res, template, message)
+          : message;
+      };
+
+      message = await this.runHandler(() =>
+        this.pipeline.run(this.pipes.concat(message ? [] : pipes), context, routeHandler),
       );
 
-      await context.reply(
-        this.message(message),
-        this.status(message, status),
-      );
+      await context.reply(this.message(message), this.status(message, status));
     };
   }
 
@@ -101,7 +100,7 @@ export class RouteHandler {
     return status;
   }
 
-  private async runHandlerSafe(handler: Handler) {
+  private async runHandler(handler: Handler) {
     try {
       return await handler();
     } catch (error) {
