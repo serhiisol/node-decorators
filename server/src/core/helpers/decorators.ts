@@ -5,10 +5,10 @@ import { Context } from './context';
 export function paramDecoratorFactory(metadata: object) {
   return function (target: InstanceType<any>, methodName: string, index: number) {
     const params = Reflect.getMetadata(PARAMS_METADATA, target.constructor) ?? [];
-    const validator = Reflect.getMetadata(PARAM_TYPE_METADATA, target, methodName)[index];
+    const argType = Reflect.getMetadata(PARAM_TYPE_METADATA, target, methodName)[index];
     const argName = extractParamNames(target[methodName])[index];
 
-    params.push({ argName, index, methodName, validator, ...metadata });
+    params.push({ argName, argType, index, methodName, ...metadata });
 
     Reflect.defineMetadata(PARAMS_METADATA, params, target.constructor);
   };
@@ -45,7 +45,7 @@ export function methodDecoratorFactory(metadata: object) {
  * authorize(@AccessParam() access: string)
  * ...
  */
-export function createParamDecorator(factory: (context: Context) => unknown) {
+export function createParamDecorator(factory: (context: Context) => Promise<any> | any) {
   return paramDecoratorFactory({ factory });
 }
 

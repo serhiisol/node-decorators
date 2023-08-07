@@ -95,17 +95,21 @@ describe('Express Params', () => {
     });
   });
 
-  describe('with simple validator', () => {
+  describe('with custom validator', () => {
     it('passes validation', () => {
       return request(module.getHttpServer())
-        .post('/with-simple-validator/example')
-        .expect('example');
+        .post('/with-custom-validator')
+        .send({ example: 'param' })
+        .expect('param');
     });
 
     it('fails validation', () => {
       return request(module.getHttpServer())
-        .post('/with-simple-validator/123')
-        .expect(({ body }) => expect(body.message).toBeDefined());
+        .post('/with-custom-validator')
+        .send({ example: 100 })
+        .expect(({ body }) => {
+          expect(body.message).toBeDefined();
+        });
     });
   });
 });

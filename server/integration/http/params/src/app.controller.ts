@@ -66,9 +66,9 @@ export class AppController {
     return body;
   }
 
-  @Post('with-simple-validator/:example')
-  withSimpleValidator(
-    @Params('example') param: string,
+  @Post('with-custom-validator')
+  withCustomValidator(
+    @Body('example', (arg: unknown) => typeof arg === 'string') param: string,
   ) {
     return param;
   }

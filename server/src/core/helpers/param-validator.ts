@@ -3,41 +3,23 @@ import { plainToInstance } from 'class-transformer';
 import { getMetadataStorage, validate } from 'class-validator';
 
 import { ClassConstructor, Handler, ParamMetadata } from '../types';
+import { isClass, isFunction } from '../utils';
 import { BadRequestError } from './errors';
 
 @Injectable()
 export class ParamValidator {
   async validate(params: ParamMetadata[], args: any[]) {
     for (const [i, arg] of args.entries()) {
-      const type = params[i].validator;
+      const validator = params[i].paramValidator;
+      const type = isClass(validator) ? validator : params[i].argType;
 
-      if (!type) {
-        continue;
+      if (isFunction(validator)) {
+        await this.useFunctionValidator(params[i], arg);
       }
-
-      if (this.validateSimple(arg, type as Handler)) {
-        continue;
-      }
-
-      const instance = plainToInstance(type as ClassConstructor, arg);
 
       if (this.hasDecorators(type)) {
-        const errors = await validate(instance, { validationError: { target: false } });
-
-        if (errors.length) {
-          throw new BadRequestError(`Invalid param “${params[i].argName}”`, errors);
-        }
-
-        continue;
+        await this.useMetadataValidator(type as ClassConstructor, params[i], arg);
       }
-
-      if (instance instanceof type) {
-        continue;
-      }
-
-      throw new BadRequestError(
-        `Invalid param “${params[i].argName}”. “${params[i].validator.name}” expected, “${typeof arg}” received`,
-      );
     }
   }
 
@@ -48,11 +30,25 @@ export class ParamValidator {
     return metadatas.length > 0;
   }
 
-  private validateSimple(arg: unknown, Type: Handler) {
-    try {
-      return typeof arg === typeof Type();
-    } catch {
-      return false;
+  private async useFunctionValidator(meta: ParamMetadata, arg: any) {
+    if (await (meta.paramValidator as Handler)(arg)) {
+      return;
+    }
+
+    throw new BadRequestError(
+      `Invalid param "${meta.argName}". "${typeof arg}" received`,
+    );
+  }
+
+  private async useMetadataValidator(type: ClassConstructor, meta: ParamMetadata, arg: any) {
+    const instance = plainToInstance(type, arg);
+
+    if (this.hasDecorators(type)) {
+      const errors = await validate(instance, { validationError: { target: false } });
+
+      if (errors.length) {
+        throw new BadRequestError(`Invalid param "${meta.argName}".`, errors);
+      }
     }
   }
 }
