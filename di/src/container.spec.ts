@@ -3,6 +3,7 @@ import { Container } from './container';
 import { InjectionToken } from './injection-token';
 import { Injectable, Inject } from './decorators';
 import { InvalidDependencyError, MissingDependencyError, RecursiveDependencyError } from './errors';
+import { RootContainer } from './root-container';
 
 describe('Container', () => {
   let extraContainer: Container;
@@ -111,7 +112,7 @@ describe('Container', () => {
   describe('ClassProvider', () => {
     it('registers a provider', async () => {
       @Injectable()
-      class TestInjectable {}
+      class TestInjectable { }
 
       container.provide([
         { provide: TestInjectable, useClass: TestInjectable },
@@ -122,10 +123,10 @@ describe('Container', () => {
 
     it('replaces a provider', async () => {
       @Injectable()
-      class TestInjectable {}
+      class TestInjectable { }
 
       @Injectable()
-      class AnotherInjectable {}
+      class AnotherInjectable { }
 
       container.provide([
         { provide: TestInjectable, useClass: TestInjectable },
@@ -251,7 +252,7 @@ describe('Container', () => {
 
     it('registers a provider for existing class', async () => {
       @Injectable()
-      class TestInjectable {}
+      class TestInjectable { }
 
       const token = new InjectionToken('token');
 
@@ -293,7 +294,7 @@ describe('Container', () => {
       const token = new InjectionToken('token');
 
       @Injectable()
-      class TestInjectable {}
+      class TestInjectable { }
 
       container.provide([
         { provide: token, useClass: TestInjectable, multi: true },
@@ -312,7 +313,7 @@ describe('Container', () => {
       const token = new InjectionToken('token');
 
       @Injectable()
-      class TestInjectable {}
+      class TestInjectable { }
 
       container.provide([
         { provide: token, useValue: 1, multi: true },
@@ -343,5 +344,14 @@ describe('Container', () => {
 
       expect(await container.get(token)).toEqual(1);
     });
+  });
+});
+
+describe('RootContainer', () => {
+  it('registers a provider in RootContainer', async () => {
+    @Injectable({ providedIn: 'root' })
+    class TestInjectable { }
+
+    expect(await RootContainer.has(TestInjectable)).toBeTruthy();
   });
 });
