@@ -1,10 +1,18 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
 ## Installation
+Main dependencies
 ```
-npm install express --save
 npm install @decorators/di --save
 npm install @decorators/server --save
+```
+And adapter specific imports
+```
+npm install express --save
+```
+Or
+```
+npm install fastify --save
 ```
 
 ## Example

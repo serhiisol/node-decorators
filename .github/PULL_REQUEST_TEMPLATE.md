@@ -12,7 +12,7 @@ Closes:
   steps to reproduce etc.
 -->
 
-### What was changed:
+### What was added:
 
 <!--
   Let us know what you are changing.
