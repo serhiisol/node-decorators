@@ -18,13 +18,13 @@ export function Injectable(options?: InjectableOptions) {
       return ids[index] ?? depId;
     });
 
+    Reflect.defineMetadata(DEP_IDS_METADATA, verifiedIds, target);
+
     if (options?.providedIn === 'root') {
       RootContainer.provide([{
         provide: target,
         useClass: target,
       }]);
     }
-
-    Reflect.defineMetadata(DEP_IDS_METADATA, verifiedIds, target);
   };
 }
