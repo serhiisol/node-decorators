@@ -1,4 +1,4 @@
-import { InjectionToken } from '@decorators/di';
+import { InjectionToken, RootContainer } from '@decorators/di';
 
 import { ContainerManager, ModuleResolver, ROOT_MODULE } from './helpers';
 import { DEFAULT_PROVIDERS } from './providers';
@@ -8,6 +8,8 @@ export class Application {
   static async create(rootModule: ClassConstructor) {
     const containerManger = new ContainerManager();
     const container = containerManger.create(Application);
+
+    container.setParent(RootContainer);
 
     container.provide([
       {

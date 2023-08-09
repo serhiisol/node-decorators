@@ -44,7 +44,7 @@
   "license": "MIT",
   "name": "@decorators/server",
   "peerDependencies": {
-    "@decorators/di": "^3.0.1",
+    "@decorators/di": "^3.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "reflect-metadata": "^0.1.13"
@@ -69,5 +69,5 @@
       ]
     }
   },
-  "version": "1.0.0-beta.6"
+  "version": "1.0.0-beta.7"
 }

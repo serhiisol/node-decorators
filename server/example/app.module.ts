@@ -4,12 +4,10 @@ import { HttpModule } from '@server/http';
 
 import { MiscModule, PostsModule } from './modules';
 import { ServerPipe } from './pipes';
-import { ServicesModule } from './services';
 
 @Module({
   modules: [
     HttpModule.create(ExpressAdapter),
-    ServicesModule,
     MiscModule,
     PostsModule,
   ],
