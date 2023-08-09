@@ -1,7 +1,13 @@
 import { ClassConstructor } from '../types';
 import { DEP_IDS_METADATA } from '../constants';
 
-export function Injectable() {
+import { RootContainer } from '../root-container';
+
+interface InjectableOptions {
+  providedIn?: 'root';
+}
+
+export function Injectable(options?: InjectableOptions) {
   return (target: ClassConstructor) => {
     const params = Reflect.getMetadata('design:paramtypes', target) ?? [];
     const ids = Reflect.getMetadata(DEP_IDS_METADATA, target) ?? [];
@@ -13,5 +19,12 @@ export function Injectable() {
     });
 
     Reflect.defineMetadata(DEP_IDS_METADATA, verifiedIds, target);
+
+    if (options?.providedIn === 'root') {
+      RootContainer.provide([{
+        provide: target,
+        useClass: target,
+      }]);
+    }
   };
 }
