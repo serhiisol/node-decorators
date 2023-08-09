@@ -1,6 +1,6 @@
 import { Injectable } from '@server';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PostsService {
   getPosts() {
     return [
