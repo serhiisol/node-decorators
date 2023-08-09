@@ -1,9 +1,8 @@
 import { Controller, Pipe } from '@server';
 import { Body, Get, Params, Post, Render } from '@server/http';
-import { ApiParameter, ApiResponse, ApiSecurity } from '@server/swagger';
+import { ApiParameter, ApiResponse, ApiResponseSchema, ApiSecurity } from '@server/swagger';
 import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
-import { ApiResponseSchema } from '../../../src/platforms/swagger/decorators/api-response';
 import { PostsService } from '../../services';
 import { Access, AccessParam } from './decorators';
 import { AccessPipe } from './pipes';

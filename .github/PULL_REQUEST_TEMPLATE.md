@@ -12,9 +12,10 @@ Closes:
   steps to reproduce etc.
 -->
 
-### What was changed (if possible, include any code snippets, videos, screenshots, or gifs):
+### What was changed:
 
 <!--
   Let us know what you are changing.
   Share as mush as possible that could provide the whole context of the change.
+  If possible, include any code snippets, videos, screenshots, or gifs.
 -->
