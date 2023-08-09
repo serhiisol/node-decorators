@@ -26,13 +26,17 @@ export interface MethodMetadata {
   url: string;
 }
 
+export type ValidatorFn = (arg: any) => Promise<boolean> | boolean;
+export type Validator = Handler | ClassConstructor | ValidatorFn;
+
 export interface ParamMetadata {
   // argument name defined in the function
   argName?: string;
-  factory?: (context: any) => Promise<unknown> | unknown;
+  argType?: Handler | ClassConstructor;
+  factory?: (context: any) => Promise<any> | any;
   index: number;
   methodName: string;
   paramName: string;
   paramType: string;
-  validator?: Handler | ClassConstructor;
+  paramValidator?: Validator;
 }

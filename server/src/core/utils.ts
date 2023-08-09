@@ -1,4 +1,4 @@
-import { Handler } from './types';
+import { ClassConstructor, Handler } from './types';
 
 export function addLeadingSlash(url: string): string {
   if (url.startsWith('/')) {
@@ -24,8 +24,8 @@ export function toStandardType(param: unknown) {
     return param === 'true';
   }
 
-  if (!isNaN(Number(param))) {
-    return Number(param);
+  if (!isNaN(Number(param)) && !isNaN(parseFloat(param as string))) {
+    return parseFloat(param as string);
   }
 
   return param;
@@ -36,4 +36,12 @@ export function extractParamNames(handler: Handler) {
     .exec(handler.toString())[1]
     .split(',')
     .map(key => key.trim());
+}
+
+export function isClass(type: Handler | ClassConstructor) {
+  return typeof type === 'function' && type.toString().startsWith('class');
+}
+
+export function isFunction(type: Handler | ClassConstructor) {
+  return typeof type === 'function' && !isClass(type);
 }

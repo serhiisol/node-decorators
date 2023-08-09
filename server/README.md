@@ -141,11 +141,11 @@ module.set('views', join(__dirname, '/views'));
 ```
 
 ### Parameter
-* `@Body(paramName?: string)` - Request body object or single body param
-* `@Cookies(paramName?: string)` - Request cookies or single cookies param
-* `@Headers(paramName?: string)` - Request headers object or single headers param
-* `@Params(paramName?: string)` -  Request params object or single param
-* `@Query(paramName?: string)` - Request query object or single query param
+* `@Body(paramName?: string, paramValidator?: Validator)` - Request body object or single body param
+* `@Cookies(paramName?: string, paramValidator?: Validator)` - Request cookies or single cookies param
+* `@Headers(paramName?: string, paramValidator?: Validator)` - Request headers object or single headers param
+* `@Params(paramName?: string, paramValidator?: Validator)` -  Request params object or single param
+* `@Query(paramName?: string, paramValidator?: Validator)` - Request query object or single query param
 * `@Request(paramName?: string)` - Returns request object or any other object available in req object itself
 * `@Response(paramName?: string)` - Returns response object or any other object available in response object itself
 
