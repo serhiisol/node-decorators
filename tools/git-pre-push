@@ -1,0 +1,27 @@
+#!/bin/bash
+
+folder_contains_changes() {
+  git diff --name-only HEAD HEAD~1 | grep -q "^$1"
+}
+
+folder_contains_tests() {
+  cat package.json | grep -q 'test'
+}
+
+run_tests() {
+  if [ -f package.json ]; then
+    if folder_contains_tests; then
+      npm test
+    fi
+  fi
+}
+
+for folder in */; do
+  if folder_contains_changes "$folder"; then
+    (cd "$folder" && run_tests)
+
+    if [ $? -eq 1 ]; then
+      exit 1
+    fi
+  fi
+done
