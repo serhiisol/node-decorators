@@ -57,6 +57,8 @@ export class RouteHandler {
           return message;
         }
 
+        this.adapter.setHeader(res, 'Content-Type', 'text/html');
+
         return this.adapter.render(res, template, message);
       };
 

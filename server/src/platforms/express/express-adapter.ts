@@ -6,6 +6,7 @@ import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
 
 export class ExpressAdapter implements HttpApplicationAdapter {
   server?: Server;
+  type = 'express';
 
   constructor(public app: express.Express = express()) { }
 
@@ -34,8 +35,8 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     this.server = this.app.listen(port);
   }
 
-  render(response: express.Response, template: string, message: object): Promise<string> {
-    return new Promise((resolve, reject) => response.render(template, message,
+  render(response: express.Response, template: string, message: object) {
+    return new Promise<string>((resolve, reject) => response.render(template, message,
       (err, html) => err ? reject(err) : resolve(html),
     ));
   }

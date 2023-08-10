@@ -41,7 +41,7 @@ export class HttpModule {
   }
 
   set(setting: string, value: unknown) {
-    this.adapter.set(setting, value);
+    this.adapter.set?.(setting, value);
   }
 
   use(...args: unknown[]) {
