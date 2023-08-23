@@ -25,16 +25,16 @@ export class RouteHandler {
     const handler = controller[methodName].bind(controller);
 
     return async (...args: unknown[]) => {
-      const req = this.adapter.getParam(ParameterType.REQUEST, null, ...args);
-      const res = this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
+      const req = await this.adapter.getParam(ParameterType.REQUEST, null, ...args);
+      const res = await this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
 
       const verifiedParams = [];
       const context = new HttpContext(
         controller.constructor,
         controller[methodName],
         this.adapter,
-        req,
-        res,
+        req(),
+        res(),
         verifiedParams,
       );
 
@@ -53,13 +53,13 @@ export class RouteHandler {
 
         message = await handler(...verifiedParams);
 
-        if (await this.adapter.isHeadersSent(res) || !template) {
+        if (await this.adapter.isHeadersSent(res()) || !template) {
           return message;
         }
 
-        this.adapter.setHeader(res, 'Content-Type', 'text/html');
+        this.adapter.setHeader(res(), 'Content-Type', 'text/html');
 
-        return this.adapter.render(res, template, message);
+        return this.adapter.render(res(), template, message);
       };
 
       message = await this.runHandler(() =>
@@ -85,13 +85,13 @@ export class RouteHandler {
   async params(metadata: ParamMetadata[], context: HttpContext, args: unknown[]) {
     const params$ = metadata
       .sort((a, b) => a.index - b.index)
-      .map(async param => param.factory
-        ? await param.factory(context)
-        : await this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
+      .map(param => param.factory
+        ? param.factory(context)
+        : this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
       );
     const params = await Promise.all(params$);
 
-    return params.map(toStandardType);
+    return params.map(paramFn => toStandardType(paramFn()));
   }
 
   status(message: unknown, status: number) {

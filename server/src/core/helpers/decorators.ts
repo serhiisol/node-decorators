@@ -46,7 +46,7 @@ export function methodDecoratorFactory(metadata: object) {
  * ...
  */
 export function createParamDecorator(factory: (context: Context) => Promise<any> | any) {
-  return paramDecoratorFactory({ factory });
+  return paramDecoratorFactory({ factory: (context: Context) => () => factory(context) });
 }
 
 /**

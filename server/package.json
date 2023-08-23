@@ -54,6 +54,7 @@
   "name": "@decorators/server",
   "peerDependencies": {
     "@decorators/di": "^3.1.0",
+    "@fastify/cookie": "^9.0.4",
     "@fastify/static": "^6.10.2",
     "@fastify/view": "^8.0.0",
     "class-transformer": "^0.5.1",

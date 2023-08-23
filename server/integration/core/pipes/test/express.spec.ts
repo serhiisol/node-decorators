@@ -14,7 +14,7 @@ import { Sequence } from '../src/sequence';
 })
 class TestModule { }
 
-describe('Pipes', () => {
+describe('Express :: Pipes', () => {
   let app: Application;
   let module: HttpModule;
   let seq: Sequence;

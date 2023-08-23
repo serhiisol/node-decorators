@@ -17,14 +17,14 @@ export class FastifyAdapter implements HttpApplicationAdapter {
 
   getParam(type: ParameterType, name: string, req: Fastify.FastifyRequest, res: Fastify.FastifyReply) {
     switch (type) {
-      case ParameterType.BODY: return name ? req.body?.[name] : req.body;
-      case ParameterType.COOKIE: return name ? req.cookies?.[name] : req.cookies;
-      case ParameterType.HEADER: return name ? req.headers?.[name] : req.headers;
-      case ParameterType.PARAM: return name ? req.params?.[name] : req.params;
-      case ParameterType.QUERY: return name ? req.query?.[name] : req.query;
-      case ParameterType.REQUEST: return req;
-      case ParameterType.RESPONSE: return res;
-      default: return req;
+      case ParameterType.BODY: return () => name ? req.body?.[name] : req.body;
+      case ParameterType.COOKIE: return () => name ? req.cookies?.[name] : req.cookies;
+      case ParameterType.HEADER: return () => name ? req.headers?.[name] : req.headers;
+      case ParameterType.PARAM: return () => name ? req.params?.[name] : req.params;
+      case ParameterType.QUERY: return () => name ? req.query?.[name] : req.query;
+      case ParameterType.REQUEST: return () => req;
+      case ParameterType.RESPONSE: return () => res;
+      default: return () => req;
     }
   }
 
