@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { Server } from 'http';
 
-import { Handler } from '../../core';
 import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
+import { Route } from '../http/types';
 
 export class ExpressAdapter implements HttpApplicationAdapter {
   server?: Server;
@@ -49,7 +49,7 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     }
 
     if (isJson) {
-      response.setHeader('Content-Type', 'application/json');
+      this.setHeader(response, 'Content-Type', 'application/json');
 
       return response.json(message);
     }
@@ -57,8 +57,10 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     return response.send(message);
   }
 
-  route(url: string, type: string, handler: Handler) {
-    this.app[type]?.(url, handler);
+  routes(routes: Route[]) {
+    for (const route of routes) {
+      this.app[route.type]?.(route.url, route.handler);
+    }
   }
 
   serveStatic(prefix: string, path: string, options?: unknown) {

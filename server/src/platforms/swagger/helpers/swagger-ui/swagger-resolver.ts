@@ -21,29 +21,38 @@ export class SwaggerResolver {
     const swaggerPath = addLeadingSlash(this.config.path);
     const swaggerFilePath = addLeadingSlash(buildUrl(this.config.path, 'swagger.json'));
 
-    this.simpleGetRoute(
-      swaggerFilePath,
-      JSON.stringify(this.document.generate()),
-      { 'content-type': 'application/json' },
-    );
-
-    this.simpleGetRoute(
-      `${swaggerPath}/index.css`,
-      indexStyles(this.config.theme),
-      { 'content-type': 'text/css' },
-    );
-
-    this.simpleGetRoute(
-      `${swaggerPath}/swagger-initializer.js`,
-      initializerScriptContent(swaggerFilePath),
-      { 'content-type': 'text/javascript' },
-    );
+    this.adapter.routes([
+      {
+        handler: this.handler(
+          JSON.stringify(this.document.generate()),
+          { 'content-type': 'application/json' },
+        ),
+        type: 'get',
+        url: swaggerFilePath,
+      },
+      {
+        handler: this.handler(
+          indexStyles(this.config.theme),
+          { 'content-type': 'text/css' },
+        ),
+        type: 'get',
+        url: `${swaggerPath}/index.css`,
+      },
+      {
+        handler: this.handler(
+          initializerScriptContent(swaggerFilePath),
+          { 'content-type': 'text/javascript' },
+        ),
+        type: 'get',
+        url: `${swaggerPath}/swagger-initializer.js`,
+      },
+    ]);
 
     this.adapter.serveStatic(swaggerPath, absolutePath());
   }
 
-  private simpleGetRoute(path: string, response: unknown, headers: Record<string, string> = {}) {
-    this.adapter.route(path, 'get', async (...args) => {
+  private handler(response: unknown, headers: Record<string, string> = {}) {
+    return async (...args: any[]) => {
       const res = await this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
 
       Object.entries(headers).forEach(([name, value]) =>
@@ -51,7 +60,7 @@ export class SwaggerResolver {
       );
 
       this.adapter.reply(res(), response);
-    });
+    };
   }
 }
 

@@ -13,6 +13,10 @@ Or
 ```
 npm install fastify @fastify/cookie @fastify/static @fastify/view --save
 ```
+Or
+```
+npm install koa koa-bodyparser koa-mount koa-static koa-views --save
+```
 
 ## Example
 Fully working example can be found in [example](example) folder.

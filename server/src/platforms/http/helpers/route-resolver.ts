@@ -19,12 +19,14 @@ export class RouteResolver {
   async resolve() {
     const metadatas = this.metadataScanner.scan();
 
-    const routes = metadatas.filter(meta => !meta.url.includes('*'));
+    const baseRoutes = metadatas.filter(meta => !meta.url.includes('*'));
     const wildcardRoutes = metadatas
       .filter(meta => meta.url.includes('*'))
       .sort(this.sortWildcardRoutes);
 
-    for (const metadata of [...routes, ...wildcardRoutes]) {
+    const routes = [];
+
+    for (const metadata of [...baseRoutes, ...wildcardRoutes]) {
       const container = this.containerManager.get(metadata.module);
       const controller = await container.get<InstanceType<ClassConstructor>>(metadata.controller);
       const routePipes = await asyncMap(metadata.pipes, (pipe: ClassConstructor) =>
@@ -40,8 +42,14 @@ export class RouteResolver {
         metadata.template,
       );
 
-      this.adapter.route(metadata.url, metadata.type, handler);
+      routes.push({
+        handler,
+        type: metadata.type,
+        url: metadata.url,
+      });
     }
+
+    this.adapter.routes(routes);
   }
 
   sortWildcardRoutes(routeA: RouteMetadata, routeB: RouteMetadata) {

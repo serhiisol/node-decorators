@@ -2,6 +2,8 @@ import * as FastifyView from '@fastify/view';
 import { Application } from '@server';
 import { HttpModule } from '@server/http';
 import { json } from 'body-parser';
+import * as koaBodyparser from 'koa-bodyparser';
+import * as koaViews from 'koa-views';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
@@ -17,6 +19,12 @@ async function bootstrap() {
       },
       root: join(__dirname, 'views'),
     });
+  } else if (process.env.USE_KOA) {
+    module.use(koaViews(join(__dirname, 'views'), {
+      autoRender: false,
+      extension: 'ejs',
+    }));
+    module.use(koaBodyparser());
   } else {
     module.set('view engine', 'ejs');
     module.set('views', join(__dirname, 'views'));

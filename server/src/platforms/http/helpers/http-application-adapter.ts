@@ -1,6 +1,6 @@
 import { Server } from 'http';
 
-import { Handler } from '../../../core';
+import { Route } from '../types';
 import { ParameterType } from './constants';
 
 export abstract class HttpApplicationAdapter {
@@ -12,7 +12,7 @@ export abstract class HttpApplicationAdapter {
   abstract listen(port: number): Promise<void> | void;
   abstract render(response: unknown, template: string, message: unknown): Promise<string> | string;
   abstract reply(response: unknown, message: unknown, statusCode?: number): Promise<unknown> | unknown;
-  abstract route(url: string, type: string, handler: Handler): void;
+  abstract routes(routes: Route[]): void;
   abstract serveStatic(prefix: string, path: string, options?: object): void;
   abstract set?(setting: string, value: unknown): void;
   abstract setHeader(response: unknown, name: string, value: string): void;
