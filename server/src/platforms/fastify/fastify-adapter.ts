@@ -2,8 +2,8 @@ import * as FastifyStatic from '@fastify/static';
 import * as Fastify from 'fastify';
 import { Server } from 'http';
 
-import { Handler } from '../../core';
 import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
+import { Route } from '../http/types';
 
 export class FastifyAdapter implements HttpApplicationAdapter {
   server?: Server;
@@ -52,14 +52,16 @@ export class FastifyAdapter implements HttpApplicationAdapter {
     }
 
     if (isJson) {
-      response.header('Content-Type', 'application/json') as unknown;
+      this.setHeader(response, 'Content-Type', 'application/json') as unknown;
     }
 
     return response.send(message);
   }
 
-  route(url: string, type: string, handler: Handler) {
-    this.app[type]?.(url, handler);
+  routes(routes: Route[]) {
+    for (const route of routes) {
+      this.app[route.type]?.(route.url, route.handler);
+    }
   }
 
   serveStatic(prefix: string, path: string, options?: object) {
