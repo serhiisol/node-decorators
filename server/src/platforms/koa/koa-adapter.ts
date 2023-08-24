@@ -23,7 +23,7 @@ export class KoaAdapter implements HttpApplicationAdapter {
 
     switch (type) {
       case ParameterType.BODY: return () => name ? req['body']?.[name] : req['body'];
-      case ParameterType.COOKIE: return () => name ? ctx.cookies?.[name] : ctx.cookies;
+      case ParameterType.COOKIE: return () => name ? ctx.cookies?.get(name) : this.getCookies(ctx);
       case ParameterType.HEADER: return () => name ? ctx.headers?.[name] : ctx.headers;
       case ParameterType.PARAM: return () => name ? ctx.params?.[name] : ctx.params;
       case ParameterType.QUERY: return () => name ? ctx.query?.[name] : ctx.query;
@@ -81,5 +81,15 @@ export class KoaAdapter implements HttpApplicationAdapter {
 
   use(...args: any[]) {
     this.app.use.call(this.app, ...args);
+  }
+
+  private getCookies(ctx: Koa.Context) {
+    return ctx.headers.cookie
+      .split(';')
+      .reduce((acc, cookie) => {
+        const [name, value] = cookie.trim().split('=');
+
+        return { ...acc, [name]: value };
+      }, {});
   }
 }

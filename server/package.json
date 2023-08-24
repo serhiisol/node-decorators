@@ -56,6 +56,8 @@
   "keywords": [
     "nodejs",
     "express",
+    "fastify",
+    "koa",
     "node decorators",
     "typescript"
   ],

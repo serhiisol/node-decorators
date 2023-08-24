@@ -12,8 +12,7 @@
         "${workspaceFolder}/example/main.ts"
       ],
       "env": {
-        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
-        "USE_KOA": "true"
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json"
       },
       "outputCapture": "std",
       "presentation": {
