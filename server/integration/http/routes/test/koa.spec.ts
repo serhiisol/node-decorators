@@ -13,7 +13,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Express :: Routes', () => {
+describe('Koa :: Routes', () => {
   let app: Application;
   let module: HttpModule;
 

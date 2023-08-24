@@ -23,7 +23,7 @@ export class SwaggerResolver {
 
     this.adapter.routes([
       {
-        handler: this.simpleHandler(
+        handler: this.handler(
           JSON.stringify(this.document.generate()),
           { 'content-type': 'application/json' },
         ),
@@ -31,7 +31,7 @@ export class SwaggerResolver {
         url: swaggerFilePath,
       },
       {
-        handler: this.simpleHandler(
+        handler: this.handler(
           indexStyles(this.config.theme),
           { 'content-type': 'text/css' },
         ),
@@ -39,7 +39,7 @@ export class SwaggerResolver {
         url: `${swaggerPath}/index.css`,
       },
       {
-        handler: this.simpleHandler(
+        handler: this.handler(
           initializerScriptContent(swaggerFilePath),
           { 'content-type': 'text/javascript' },
         ),
@@ -51,7 +51,7 @@ export class SwaggerResolver {
     this.adapter.serveStatic(swaggerPath, absolutePath());
   }
 
-  private simpleHandler(response: unknown, headers: Record<string, string> = {}) {
+  private handler(response: unknown, headers: Record<string, string> = {}) {
     return async (...args: any[]) => {
       const res = await this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
 

@@ -14,7 +14,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Express :: Params', () => {
+describe('Koa :: Params', () => {
   let app: Application;
   let module: HttpModule;
 

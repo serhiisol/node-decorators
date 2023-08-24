@@ -14,7 +14,7 @@ import { Sequence } from '../src/sequence';
 })
 class TestModule { }
 
-describe('Express :: Pipes', () => {
+describe('Koa :: Pipes', () => {
   let app: Application;
   let module: HttpModule;
   let seq: Sequence;

@@ -15,7 +15,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Express :: Swagger Route', () => {
+describe('Koa :: Swagger Route', () => {
   let app: Application;
   let module: HttpModule;
 
