@@ -1,5 +1,5 @@
 import { Application, HttpStatus, Module } from '@server';
-import { ExpressAdapter } from '@server/express';
+import { FastifyAdapter } from '@server/fastify';
 import { HttpModule } from '@server/http';
 import * as request from 'supertest';
 
@@ -7,13 +7,13 @@ import { AppModule } from '../src/app.module';
 
 @Module({
   modules: [
-    HttpModule.create(ExpressAdapter),
+    HttpModule.create(FastifyAdapter),
     AppModule,
   ],
 })
 class TestModule { }
 
-describe('App Version', () => {
+describe('Fastify :: App Version', () => {
   let app: Application;
   let module: HttpModule;
 

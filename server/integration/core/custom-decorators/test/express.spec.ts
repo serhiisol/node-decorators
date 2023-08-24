@@ -13,7 +13,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Custom Decorators', () => {
+describe('Express :: Custom Decorators', () => {
   let app: Application;
   let module: HttpModule;
 

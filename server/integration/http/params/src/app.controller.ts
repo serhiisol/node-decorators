@@ -56,7 +56,11 @@ export class AppController {
   response(
     @Response() res: object,
   ) {
-    return res['req']['url'];
+    if (res['req']) {
+      return res['req']['url'];
+    }
+
+    return res['request']['url'];
   }
 
   @Post('with-class-validator')

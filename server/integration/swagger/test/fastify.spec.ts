@@ -1,5 +1,5 @@
 import { Application, HttpStatus, Module } from '@server';
-import { ExpressAdapter } from '@server/express';
+import { FastifyAdapter } from '@server/fastify';
 import { HttpModule } from '@server/http';
 import { SwaggerModule } from '@server/swagger';
 import * as request from 'supertest';
@@ -8,14 +8,14 @@ import { AppModule } from '../src/app.module';
 
 @Module({
   modules: [
-    HttpModule.create(ExpressAdapter),
+    HttpModule.create(FastifyAdapter),
     SwaggerModule.forRoot(),
     AppModule,
   ],
 })
 class TestModule { }
 
-describe('Express :: Swagger Route', () => {
+describe('Fastify :: Swagger Route', () => {
   let app: Application;
   let module: HttpModule;
 

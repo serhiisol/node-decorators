@@ -43,14 +43,14 @@ export class SwaggerResolver {
   }
 
   private simpleGetRoute(path: string, response: unknown, headers: Record<string, string> = {}) {
-    this.adapter.route(path, 'get', (...args) => {
-      const res = this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
+    this.adapter.route(path, 'get', async (...args) => {
+      const res = await this.adapter.getParam(ParameterType.RESPONSE, null, ...args);
 
       Object.entries(headers).forEach(([name, value]) =>
-        this.adapter.setHeader(res, name, value),
+        this.adapter.setHeader(res(), name, value),
       );
 
-      this.adapter.reply(res, response);
+      this.adapter.reply(res(), response);
     });
   }
 }

@@ -4,21 +4,21 @@ folder_contains_changes() {
   git diff --name-only HEAD HEAD~1 | grep -q "^$1"
 }
 
-folder_contains_tests() {
-  cat package.json | grep -q 'test'
+folder_contains_script() {
+  cat package.json | grep -q 'prepush'
 }
 
-run_tests() {
+run_script() {
   if [ -f package.json ]; then
-    if folder_contains_tests; then
-      npm test
+    if folder_contains_script; then
+      npm run prepush
     fi
   fi
 }
 
 for folder in */; do
   if folder_contains_changes "$folder"; then
-    (cd "$folder" && run_tests)
+    (cd "$folder" && run_script)
 
     if [ $? -eq 1 ]; then
       exit 1

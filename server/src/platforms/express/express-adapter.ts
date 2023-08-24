@@ -6,6 +6,7 @@ import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
 
 export class ExpressAdapter implements HttpApplicationAdapter {
   server?: Server;
+  type = 'express';
 
   constructor(public app: express.Express = express()) { }
 
@@ -15,14 +16,14 @@ export class ExpressAdapter implements HttpApplicationAdapter {
 
   getParam(type: ParameterType, name: string, req: express.Request, res: express.Response) {
     switch (type) {
-      case ParameterType.BODY: return name ? req.body?.[name] : req.body;
-      case ParameterType.COOKIE: return name ? req.cookies?.[name] : req.cookies;
-      case ParameterType.HEADER: return name ? req.headers?.[name] : req.headers;
-      case ParameterType.PARAM: return name ? req.params?.[name] : req.params;
-      case ParameterType.QUERY: return name ? req.query?.[name] : req.query;
-      case ParameterType.REQUEST: return req;
-      case ParameterType.RESPONSE: return res;
-      default: return req;
+      case ParameterType.BODY: return () => name ? req.body?.[name] : req.body;
+      case ParameterType.COOKIE: return () => name ? req.cookies?.[name] : req.cookies;
+      case ParameterType.HEADER: return () => name ? req.headers?.[name] : req.headers;
+      case ParameterType.PARAM: return () => name ? req.params?.[name] : req.params;
+      case ParameterType.QUERY: return () => name ? req.query?.[name] : req.query;
+      case ParameterType.REQUEST: return () => req;
+      case ParameterType.RESPONSE: return () => res;
+      default: return () => req;
     }
   }
 
@@ -34,8 +35,8 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     this.server = this.app.listen(port);
   }
 
-  render(response: express.Response, template: string, message: object): Promise<string> {
-    return new Promise((resolve, reject) => response.render(template, message,
+  render(response: express.Response, template: string, message: object) {
+    return new Promise<string>((resolve, reject) => response.render(template, message,
       (err, html) => err ? reject(err) : resolve(html),
     ));
   }

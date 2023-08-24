@@ -1,21 +1,20 @@
+import * as cookie from '@fastify/cookie';
 import { Application, Module } from '@server';
-import { ExpressAdapter } from '@server/express';
+import { FastifyAdapter } from '@server/fastify';
 import { HttpModule } from '@server/http';
-import { json } from 'body-parser';
-import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
 import { AppModule } from '../src/app.module';
 
 @Module({
   modules: [
-    HttpModule.create(ExpressAdapter),
+    HttpModule.create(FastifyAdapter),
     AppModule,
   ],
 })
 class TestModule { }
 
-describe('Express :: Params', () => {
+describe('Fastify :: Params', () => {
   let app: Application;
   let module: HttpModule;
 
@@ -23,8 +22,7 @@ describe('Express :: Params', () => {
     app = await Application.create(TestModule);
     module = await app.inject<HttpModule>(HttpModule);
 
-    module.use(json());
-    module.use(cookieParser());
+    module.use(cookie, {});
 
     await module.listen();
   });

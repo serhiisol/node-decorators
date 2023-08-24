@@ -1,11 +1,7 @@
 import { ClassConstructor, Handler } from './types';
 
 export function addLeadingSlash(url: string): string {
-  if (url.startsWith('/')) {
-    return url;
-  }
-
-  return url ? `/${url}` : url;
+  return url.startsWith('/') ? url : `/${url}`;
 }
 
 export function buildUrl(...paths: string[]) {
@@ -24,8 +20,8 @@ export function toStandardType(param: unknown) {
     return param === 'true';
   }
 
-  if (!isNaN(Number(param)) && !isNaN(parseFloat(param as string))) {
-    return parseFloat(param as string);
+  if (typeof param === 'string' && !isNaN(Number(param)) && !isNaN(parseFloat(param))) {
+    return parseFloat(param);
   }
 
   return param;

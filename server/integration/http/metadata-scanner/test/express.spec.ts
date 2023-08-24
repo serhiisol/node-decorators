@@ -13,7 +13,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Metadata Scanner', () => {
+describe('Express :: Metadata Scanner', () => {
   let app: Application;
   let scanner: MetadataScanner;
 
@@ -33,7 +33,7 @@ describe('Metadata Scanner', () => {
         methodName: 'post',
       })]),
       type: 'post',
-      url: '',
+      url: '/',
     })]));
   });
 });

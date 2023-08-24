@@ -1,7 +1,6 @@
 import { Application, HttpStatus, Module } from '@server';
 import { ExpressAdapter } from '@server/express';
 import { HttpModule } from '@server/http';
-import { SwaggerModule } from '@server/swagger';
 import * as request from 'supertest';
 
 import { AppModule } from '../src/app.module';
@@ -9,13 +8,12 @@ import { AppModule } from '../src/app.module';
 @Module({
   modules: [
     HttpModule.create(ExpressAdapter),
-    SwaggerModule.forRoot(),
     AppModule,
   ],
 })
 class TestModule { }
 
-describe('Express :: Swagger Route', () => {
+describe('Express :: App Version', () => {
   let app: Application;
   let module: HttpModule;
 
@@ -28,15 +26,9 @@ describe('Express :: Swagger Route', () => {
 
   afterEach(() => module.close());
 
-  it('registers swagger file', async () => {
+  it('registers `get` request with app version prefix', async () => {
     return request(module.getHttpServer())
-      .get('/swagger/swagger.json')
+      .get('/app-version/get')
       .expect(HttpStatus.OK);
-  });
-
-  it('registers swagger-ui page', async () => {
-    return request(module.getHttpServer())
-      .get('/swagger')
-      .expect(301);
   });
 });
