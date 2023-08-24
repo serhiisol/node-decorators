@@ -57,6 +57,7 @@
     "@fastify/cookie": "^9.0.4",
     "@fastify/static": "^6.10.2",
     "@fastify/view": "^8.0.0",
+    "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "express": "^4.18.2",
@@ -64,10 +65,16 @@
     "reflect-metadata": "^0.1.13"
   },
   "peerDependenciesMeta": {
+    "@fastify/cookie": {
+      "optional": true
+    },
     "@fastify/static": {
       "optional": true
     },
     "@fastify/view": {
+      "optional": true
+    },
+    "body-parser": {
       "optional": true
     },
     "express": {

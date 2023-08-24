@@ -3,16 +3,15 @@
 ## Installation
 Main dependencies
 ```
-npm install @decorators/di --save
-npm install @decorators/server --save
+npm install @decorators/server @decorators/di --save
 ```
-And adapter specific imports
+Adapter specific imports
 ```
-npm install express --save
+npm install express body-parser --save
 ```
 Or
 ```
-npm install fastify --save
+npm install fastify @fastify/cookie @fastify/static @fastify/view --save
 ```
 
 ## Example
