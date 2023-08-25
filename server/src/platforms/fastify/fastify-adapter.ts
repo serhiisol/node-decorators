@@ -40,7 +40,9 @@ export class FastifyAdapter implements HttpApplicationAdapter {
 
   render(_response: Fastify.FastifyReply, template: string, message: object) {
     return new Promise<string>((resolve, reject) => (this.app as any).view(template, message,
-      (err: Error, html: string) => err ? reject(err) : resolve(html),
+      (err: Error, html: string) => err || html?.['stack']
+        ? reject(new Error((err || html).toString()))
+        : resolve(html),
     ));
   }
 

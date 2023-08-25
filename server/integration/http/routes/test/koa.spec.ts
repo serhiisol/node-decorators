@@ -1,6 +1,8 @@
 import { Application, HttpStatus, Module } from '@server';
 import { HttpModule } from '@server/http';
 import { KoaAdapter } from '@server/koa';
+import * as koaViews from 'koa-views';
+import { join } from 'path';
 import * as request from 'supertest';
 
 import { AppModule } from '../src/app.module';
@@ -20,6 +22,11 @@ describe('Koa :: Routes', () => {
   beforeEach(async () => {
     app = await Application.create(TestModule);
     module = await app.inject<HttpModule>(HttpModule);
+
+    module.use(koaViews(join(__dirname, '..', 'src'), {
+      autoRender: false,
+      extension: 'ejs',
+    }));
 
     await module.listen();
   });
@@ -66,5 +73,31 @@ describe('Koa :: Routes', () => {
     return request(module.getHttpServer())
       .put('/put')
       .expect(HttpStatus.ACCEPTED, 'put');
+  });
+
+  it('registers `*` request', async () => {
+    return request(module.getHttpServer())
+      .get('/does-not-exist')
+      .expect(HttpStatus.NOT_FOUND, 'not-found');
+  });
+
+  describe('Render', () => {
+    it('renders view', async () => {
+      return request(module.getHttpServer())
+        .get('/render')
+        .expect((req) => {
+          expect(req.status).toBe(HttpStatus.OK);
+          expect(req.text).toContain('Hello World');
+        });
+    });
+
+    it('renders non-existing view', async () => {
+      return request(module.getHttpServer())
+        .get('/render-missing')
+        .expect((req) => {
+          expect(req.status).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
+          expect(req.body.message).toBeDefined();
+        });
+    });
   });
 });

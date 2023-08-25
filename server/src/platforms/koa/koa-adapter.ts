@@ -42,9 +42,13 @@ export class KoaAdapter implements HttpApplicationAdapter {
   }
 
   async render(response: Koa.Response, template: string, message: object) {
-    const html = await response.ctx.render(template, message);
+    try {
+      const html = await response.ctx.render(template, message);
 
-    return html as unknown as string;
+      return html as unknown as string;
+    } catch (err) {
+      throw new Error(err.message);
+    }
   }
 
   reply(response: Koa.Response, message: unknown, statusCode?: number) {

@@ -1,5 +1,5 @@
 import { Controller, HttpStatus } from '@server';
-import { Delete, Get, Head, Options, Patch, Post, Put } from '@server/http';
+import { Delete, Get, Head, Options, Patch, Post, Put, Render } from '@server/http';
 
 @Controller()
 export class AppController {
@@ -28,7 +28,24 @@ export class AppController {
   }
 
   @Put('put', HttpStatus.ACCEPTED)
-  Put() {
+  put() {
     return 'put';
+  }
+
+  @Get('*', 404)
+  status404() {
+    return 'not-found';
+  }
+
+  @Get('render')
+  @Render('view')
+  tryRender() {
+    return { message: 'Hello World' };
+  }
+
+  @Get('render-missing')
+  @Render('missing')
+  tryRenderMissing() {
+    return { message: 'Hello World' };
   }
 }
