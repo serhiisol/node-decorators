@@ -1,6 +1,7 @@
 import * as FastifyView from '@fastify/view';
 import { Application } from '@server';
 import { HttpModule } from '@server/http';
+import { SocketsModule } from '@server/sockets';
 import { json } from 'body-parser';
 import * as koaBodyparser from 'koa-bodyparser';
 import * as koaViews from 'koa-views';
@@ -11,6 +12,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await Application.create(AppModule);
   const module = await app.inject<HttpModule>(HttpModule);
+  const sockets = await app.inject<SocketsModule>(SocketsModule);
 
   if (process.env.USE_FASTIFY) {
     module.use(FastifyView, {
@@ -32,6 +34,8 @@ async function bootstrap() {
   }
 
   await module.listen(3000);
+  await sockets.listen();
+
   console.info('Server is running on port 3000');
 }
 

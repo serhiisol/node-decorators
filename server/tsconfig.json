@@ -29,6 +29,12 @@
       "@server/koa": [
         "./src/platforms/koa/index.ts"
       ],
+      "@server/socket-io": [
+        "./src/platforms/socket-io/index.ts"
+      ],
+      "@server/sockets": [
+        "./src/platforms/sockets/index.ts"
+      ],
       "@server/swagger": [
         "./src/platforms/swagger/index.ts"
       ]

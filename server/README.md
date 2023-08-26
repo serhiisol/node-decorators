@@ -1,5 +1,6 @@
 ![Node Decorators](https://github.com/serhiisol/node-decorators/blob/master/decorators.png?raw=true)
 
+# Http
 ## Installation
 Main dependencies
 ```
@@ -40,7 +41,7 @@ await module.listen(3000);
 ## Modules
 * `HttpModule` - main module to start an application:
 ```typescript
-import { Application, Module } from '@decorators/server';
+import { Module } from '@decorators/server';
 import { HttpModule } from '@decorators/server/http';
 import { ExpressAdapter } from '@decorators/server/express';
 
@@ -66,8 +67,8 @@ HttpModule.create(new ExpressAdapter(app));
 Package supports [class-validator](https://github.com/typestack/class-validator) and [class-transformer](https://github.com/typestack/class-transformer) packages, basic types validation is supported as well:
 ```typescript
 @Get(':id', 200)
-post(@Params('id') id: string) {
-  return { id };
+post(@Params() user: UserDto) {
+  return user;
 }
 ```
 
@@ -213,6 +214,8 @@ function AccessParam() {
 create(@AccessParam() access: string) {}
 ```
 
+---
+
 # Swagger
 Swagger decorators are available in
 ```typescript
@@ -248,3 +251,84 @@ export class AppModule { }
 ### Property
 * `@ApiParameter(parammeter: { description?: string })` - Specifies a description for a property defined in the class-decorator based classes
 
+---
+
+# Sockets
+## Installation
+```
+npm install socket.io --save
+```
+
+## Setup
+To start provide `SocketsModule` with one of the provided adapters
+```typescript
+import { Module } from '@decorators/server';
+import { SocketsModule } from '@decorators/server/sockets';
+import { SocketIoAdapter } from '@decorators/server/socket-io';
+
+@Module({
+  modules: [
+    SocketsModule.create(SocketIoAdapter),
+  ],
+})
+export class AppModule { }
+```
+
+Inject `SocketsModule` to start listeners
+```ts
+const app = await Application.create(AppModule);
+const module = await app.inject<SocketsModule>(SocketsModule);
+
+await module.listen();
+```
+
+Add a controller
+```ts
+import { Controller } from '@server';
+import { Connection, Disconnect, Event, Param } from '@server/sockets';
+
+@Controller()
+export class EventsController {
+  @Connection()
+  connection() { }
+
+  @Disconnect()
+  disconnect() { }
+
+  @Event('message')
+  event(@Param() message: MessageType) {
+    return message;
+  }
+}
+```
+
+## Errors
+If error occurres, system will send `error` event to the client with an error object.
+
+## Adapters
+* `SocketIoAdapter` - adapter for [socket.io](https://socket.io) from `@decorators/server/socket-io`
+
+## Payload vaidation
+Validation works similarly to http module see [validation](#payload-vaidation) section.
+
+## Pipes
+Pipes work similarly to http module see [pipes](#pipes) section.
+
+## Decorators
+### Method
+* `@Connection()` - Registers `connection` event.
+* `@Disconnect()` - Registers `disconnect` event
+* `@Disconnecting()` - Registers `disconnecting` event
+* `@Event(event: string)` - Register custom event. Returned data from the handler will be sent through Ack.
+
+### Parameter
+* `@Param(paramValidator?: Validator)` - Returns param sent via `emit`. Not available for `connection`, `disconnect` and `disconnecting` events. Multiple params can be used to receive all the params:
+```ts
+message(
+  @Param() message1: string,
+  @Param() message2: string,
+) { }
+```
+
+* `@Server()` - Returns server object
+* `@Socket()` - Returns socket object
