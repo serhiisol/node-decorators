@@ -24,7 +24,7 @@ Fully working example can be found in [example](example) folder.
 ## Application
 In order to create an application, use `Application` class with app root module:
 ```typescript
-const app = await Application.create(AppModule);
+const app = await Application.create(AppModule, server?);
 ```
 
 Application instance provides an `inject` method to retrieve instances of any provided objects:
@@ -42,6 +42,7 @@ await module.listen(3000);
 ```typescript
 import { Application, Module } from '@decorators/server';
 import { HttpModule } from '@decorators/server/http';
+import { ExpressAdapter } from '@decorators/server/express';
 
 @Module({
   modules: [
@@ -52,7 +53,14 @@ export class AppModule { }
 ```
 
 ## Adapters
-* `ExpressAdapter` - adapter for [express](https://github.com/expressjs/express)
+* `ExpressAdapter` - adapter for [express](https://github.com/expressjs/express) from `@decorators/server/express`
+* `FastifyAdapter` - adapter for [fastify](https://github.com/fastify/fastify) from `@decorators/server/fastify`
+* `KoaAdapter` - adapter for [koa](https://github.com/koajs/koa) from `@decorators/server/koa`
+
+Adapter can be instantiated with existing application (for example express application):
+```ts
+HttpModule.create(new ExpressAdapter(app));
+```
 
 ## Payload vaidation
 Package supports [class-validator](https://github.com/typestack/class-validator) and [class-transformer](https://github.com/typestack/class-transformer) packages, basic types validation is supported as well:
