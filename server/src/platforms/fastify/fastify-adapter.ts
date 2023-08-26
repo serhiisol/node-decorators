@@ -1,18 +1,21 @@
 import * as FastifyStatic from '@fastify/static';
 import * as Fastify from 'fastify';
-import { Server } from 'http';
 
-import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
-import { Route } from '../http/types';
+import { Server } from '../../core';
+import { AdapterRoute, HttpApplicationAdapter, ParameterType } from '../http';
 
 export class FastifyAdapter implements HttpApplicationAdapter {
-  server?: Server;
   type = 'fastify';
+  private server: Server;
 
-  constructor(public app: Fastify.FastifyInstance = Fastify()) { }
+  constructor(public app = Fastify()) { }
 
-  close() {
-    this.server?.close();
+  attachServer(server: Server) {
+    this.server = server;
+  }
+
+  async close() {
+    await this.app.close();
   }
 
   getParam(type: ParameterType, name: string, req: Fastify.FastifyRequest, res: Fastify.FastifyReply) {
@@ -32,10 +35,9 @@ export class FastifyAdapter implements HttpApplicationAdapter {
     return response.sent;
   }
 
-  async listen(port: number) {
-    await this.app.listen({ port });
-
-    this.server = this.app.server;
+  async listen() {
+    await this.app.ready();
+    this.server.on('request', this.app.routing);
   }
 
   render(_response: Fastify.FastifyReply, template: string, message: object) {
@@ -60,7 +62,7 @@ export class FastifyAdapter implements HttpApplicationAdapter {
     return response.send(message);
   }
 
-  routes(routes: Route[]) {
+  routes(routes: AdapterRoute[]) {
     for (const route of routes) {
       this.app[route.type]?.(route.url, route.handler);
     }

@@ -6,6 +6,7 @@ export function addLeadingSlash(url: string): string {
 
 export function buildUrl(...paths: string[]) {
   return paths
+    .filter(Boolean)
     .map(path => path.startsWith('/') ? path.slice(1) : path)
     .filter(Boolean)
     .join('/');
@@ -40,4 +41,8 @@ export function isClass(type: Handler | ClassConstructor) {
 
 export function isFunction(type: Handler | ClassConstructor) {
   return typeof type === 'function' && !isClass(type);
+}
+
+export function isEnum(type: object, val: unknown) {
+  return Object.values(type).includes(val);
 }

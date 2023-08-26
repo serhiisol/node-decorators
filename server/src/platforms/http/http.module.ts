@@ -1,6 +1,6 @@
 import { Inject } from '@decorators/di';
 
-import { ClassConstructor, Module, ModuleWithProviders } from '../../core';
+import { APP_SERVER, ClassConstructor, Module, ModuleWithProviders, Server } from '../../core';
 import { HTTP_ADAPTER, HttpApplicationAdapter, MetadataScanner, RouteHandler, RouteResolver } from './helpers';
 
 @Module({
@@ -11,33 +11,40 @@ import { HTTP_ADAPTER, HttpApplicationAdapter, MetadataScanner, RouteHandler, Ro
   ],
 })
 export class HttpModule {
-  static create(adapter: ClassConstructor<HttpApplicationAdapter>) {
+  static create(
+    adapter: ClassConstructor<HttpApplicationAdapter> | InstanceType<ClassConstructor<HttpApplicationAdapter>>,
+  ) {
     return {
       module: HttpModule,
       providers: [{
         provide: HTTP_ADAPTER,
-        useClass: adapter,
+        ...(adapter instanceof HttpApplicationAdapter ? { useValue: adapter } : { useClass: adapter }),
       }],
     } as ModuleWithProviders;
   }
 
   constructor(
+    @Inject(APP_SERVER) private server: Server,
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
     private routeResolver: RouteResolver,
-  ) { }
+  ) {
+    this.adapter.attachServer(this.server);
+  }
 
   close() {
-    this.adapter.close();
+    return this.adapter.close();
   }
 
   getHttpServer() {
-    return this.adapter.server;
+    return this.server;
   }
 
   async listen(port?: number) {
     await this.routeResolver.resolve();
 
-    return this.adapter.listen(port);
+    await this.adapter.listen();
+
+    return this.server.listen(port);
   }
 
   set(setting: string, value: unknown) {

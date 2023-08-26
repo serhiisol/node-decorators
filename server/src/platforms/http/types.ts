@@ -9,7 +9,7 @@ export interface RouteMetadata extends MethodMetadata {
   template?: string;
 }
 
-export interface Route {
+export interface AdapterRoute {
   handler: Handler;
   type: string;
   url: string;

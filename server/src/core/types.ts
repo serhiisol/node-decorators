@@ -1,7 +1,12 @@
 import { Provider } from '@decorators/di';
+import type { Server as HttpServer } from 'http';
+import type { Http2SecureServer as Http2Server } from 'http2';
+import type { Server as HttpsServer } from 'https';
 
 export type ClassConstructor<T = object> = new (...args: any[]) => T;
 export type Handler = (...args: unknown[]) => Promise<unknown> | unknown;
+
+export type Server = HttpServer | HttpsServer | Http2Server;
 
 export interface ModuleMetadata {
   controllers: ClassConstructor[];
