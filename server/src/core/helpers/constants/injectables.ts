@@ -11,3 +11,5 @@ export const ROOT_MODULE_INSTANCE = new InjectionToken('__server__:root-module-i
  * Provides global application prefix/version for entire server
  */
 export const APP_VERSION = new InjectionToken('__server__:app-version');
+
+export const APP_SERVER = new InjectionToken('__server__');

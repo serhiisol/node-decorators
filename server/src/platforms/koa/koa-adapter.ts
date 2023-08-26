@@ -1,17 +1,20 @@
-import { Server } from 'http';
 import * as Koa from 'koa';
 import * as koaMount from 'koa-mount';
 import * as KoaRouter from 'koa-router';
 import * as koaStatic from 'koa-static';
 
-import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
-import { Route } from '../http/types';
+import { Server } from '../../core';
+import { AdapterRoute, HttpApplicationAdapter, ParameterType } from '../http';
 
 export class KoaAdapter implements HttpApplicationAdapter {
-  server?: Server;
   type = 'koa';
+  private server: Server;
 
-  constructor(public app: Koa = new Koa()) { }
+  constructor(public app = new Koa()) { }
+
+  attachServer(server: Server): void {
+    this.server = server;
+  }
 
   close() {
     this.server?.close();
@@ -37,8 +40,8 @@ export class KoaAdapter implements HttpApplicationAdapter {
     return response.headerSent;
   }
 
-  listen(port: number) {
-    this.server = this.app.listen(port);
+  listen() {
+    this.server.on('request', this.app.callback());
   }
 
   async render(response: Koa.Response, template: string, message: object) {
@@ -65,7 +68,7 @@ export class KoaAdapter implements HttpApplicationAdapter {
     response.ctx.body = message;
   }
 
-  routes(routes: Route[]) {
+  routes(routes: AdapterRoute[]) {
     const router = new KoaRouter();
 
     for (const route of routes) {

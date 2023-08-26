@@ -1,8 +1,8 @@
 import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { addLeadingSlash, APP_VERSION, buildUrl, ClassConstructor, MethodMetadata, Reflector, ROOT_MODULE } from '../../../core';
+import { addLeadingSlash, APP_VERSION, buildUrl, ClassConstructor, isEnum, MethodMetadata, Reflector, ROOT_MODULE } from '../../../core';
 import { RouteMetadata } from '../types';
-import { METHOD_TEMPLATE_METADATA } from './constants';
+import { HttpMethodType, METHOD_TEMPLATE_METADATA } from './constants';
 
 @Injectable()
 export class MetadataScanner {
@@ -21,8 +21,10 @@ export class MetadataScanner {
 
     const routes = controllers.map(controller => {
       const metadata = this.reflector.getControllerMetadata(controller);
+      const methods = metadata.methods
+        .filter((method: MethodMetadata) => isEnum(HttpMethodType, method.type));
 
-      return metadata.methods.map((method: MethodMetadata) => {
+      return methods.map((method: MethodMetadata) => {
         const template = this.reflector.getMetadata(METHOD_TEMPLATE_METADATA, controller.prototype[method.methodName]) as string;
         const params = metadata.params.filter(param => param.methodName === method.methodName);
         const pipes = metadata.pipes

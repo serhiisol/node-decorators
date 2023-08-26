@@ -1,14 +1,17 @@
 import * as express from 'express';
-import { Server } from 'http';
 
-import { HttpApplicationAdapter, ParameterType } from '../http/helpers';
-import { Route } from '../http/types';
+import { Server } from '../../core';
+import { AdapterRoute, HttpApplicationAdapter, ParameterType } from '../http';
 
 export class ExpressAdapter implements HttpApplicationAdapter {
-  server?: Server;
   type = 'express';
+  private server: Server;
 
-  constructor(public app: express.Express = express()) { }
+  constructor(public app = express()) { }
+
+  attachServer(server: Server) {
+    this.server = server;
+  }
 
   close() {
     this.server?.close();
@@ -31,8 +34,8 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     return response.headersSent;
   }
 
-  listen(port: number) {
-    this.server = this.app.listen(port);
+  listen() {
+    this.server.on('request', this.app);
   }
 
   render(response: express.Response, template: string, message: object) {
@@ -57,7 +60,7 @@ export class ExpressAdapter implements HttpApplicationAdapter {
     return response.send(message);
   }
 
-  routes(routes: Route[]) {
+  routes(routes: AdapterRoute[]) {
     for (const route of routes) {
       this.app[route.type]?.(route.url, route.handler);
     }
