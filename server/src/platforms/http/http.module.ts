@@ -44,6 +44,10 @@ export class HttpModule {
 
     await this.adapter.listen();
 
+    if (this.server.listening) {
+      return;
+    }
+
     return this.server.listen(port);
   }
 

@@ -16,7 +16,7 @@ export class MetadataScanner {
     return this.scanModule(this.rootModule);
   }
 
-  private scanModule(module: ClassConstructor, parentNamespace = ''): RouteMetadata[] {
+  private scanModule(module: ClassConstructor, parentNamespaces: string[] = []): RouteMetadata[] {
     const { controllers, modules, namespace } = this.reflector.getModuleMetadata(module);
 
     const routes = controllers.map(controller => {
@@ -26,13 +26,14 @@ export class MetadataScanner {
 
       return methods.map((method: MethodMetadata) => {
         const template = this.reflector.getMetadata(METHOD_TEMPLATE_METADATA, controller.prototype[method.methodName]) as string;
-        const params = metadata.params.filter(param => param.methodName === method.methodName);
+        const params = this.reflector.getParamsMetadata(controller.prototype[method.methodName]);
         const pipes = metadata.pipes
           .filter(([, methodName]) => !methodName || methodName === method.methodName)
           .map(([pipe]) => pipe);
 
         const version = metadata.options?.ignoreVersion || !this.appVersion ? '' : this.appVersion;
-        const url = addLeadingSlash(buildUrl(version, parentNamespace, namespace, metadata.url, method.url));
+        const paths = [version, ...parentNamespaces, namespace, metadata.url, method.url].filter(Boolean);
+        const url = addLeadingSlash(buildUrl(...paths));
 
         return {
           ...method,
@@ -46,7 +47,7 @@ export class MetadataScanner {
       });
     });
 
-    const nestedRoutes = modules.map(module => this.scanModule(module, namespace));
+    const nestedRoutes = modules.map(module => this.scanModule(module, [...parentNamespaces, namespace]));
 
     return [...nestedRoutes.flat(), ...routes.flat()];
   }

@@ -16,6 +16,10 @@ export class FastifyAdapter implements HttpApplicationAdapter {
 
   async close() {
     await this.app.close();
+
+    if (this.server.listening) {
+      this.server.close();
+    }
   }
 
   getParam(type: ParameterType, name: string, req: Fastify.FastifyRequest, res: Fastify.FastifyReply) {

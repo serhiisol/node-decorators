@@ -25,7 +25,7 @@ export class MetadataScanner {
         .filter((method: EventMetadata) => isEnum(EventType, method.type));
 
       return methods.map((method: EventMetadata) => {
-        const params = metadata.params.filter(param => param.methodName === method.methodName);
+        const params = this.reflector.getParamsMetadata(controller.prototype[method.methodName]);
         const pipes = metadata.pipes
           .filter(([, methodName]) => !methodName || methodName === method.methodName)
           .map(([pipe]) => pipe);

@@ -44,4 +44,7 @@ export interface ParamMetadata {
   paramName: string;
   paramType: string;
   paramValidator?: Validator;
+
+  // If decorator is used multiple times over the same method
+  sameIndex: number;
 }
