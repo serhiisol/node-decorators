@@ -3,9 +3,11 @@ import { ExpressAdapter } from '@server/express';
 import { FastifyAdapter } from '@server/fastify';
 import { HttpModule } from '@server/http';
 import { KoaAdapter } from '@server/koa';
+import { SocketIoAdapter } from '@server/socket-io';
+import { SocketsModule } from '@server/sockets';
 import { SwaggerModule } from '@server/swagger';
 
-import { MiscModule, PostsModule } from './modules';
+import { EventsModule, MiscModule, PostsModule } from './modules';
 import { ServerPipe } from './pipes';
 
 @Module({
@@ -19,6 +21,8 @@ import { ServerPipe } from './pipes';
     }),
     MiscModule,
     PostsModule,
+    SocketsModule.create(SocketIoAdapter),
+    EventsModule,
   ],
   providers: [
     {

@@ -9,7 +9,7 @@ import { AppModule } from '../src/app.module';
 })
 class TestModule { }
 
-describe('Express :: Scopes', () => {
+describe('Core :: Scopes', () => {
   let app: Application;
 
   beforeEach(async () => {
