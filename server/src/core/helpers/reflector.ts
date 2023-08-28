@@ -21,7 +21,7 @@ export class Reflector {
     return Reflect.getMetadata(MODULE_METADATA, module) as ModuleMetadata;
   }
 
-  getParamsMetadata(target: unknown) {
-    return (Reflect.getMetadata(PARAMS_METADATA, target) ?? []) as ParamMetadata[];
+  getParamsMetadata(controller: ClassConstructor, methodName: string) {
+    return (Reflect.getMetadata(PARAMS_METADATA, controller.prototype[methodName]) ?? []) as ParamMetadata[];
   }
 }
