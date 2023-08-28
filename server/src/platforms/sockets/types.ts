@@ -1,13 +1,9 @@
-import { ClassConstructor, Handler, MethodMetadata, ParamMetadata } from '../../core';
+import { Handler, Metadata } from '../../core';
 
 export type AckFunction = (...args: any[]) => void;
 
-export interface EventMetadata extends MethodMetadata {
-  controller: ClassConstructor;
+export interface EventMetadata extends Metadata {
   event?: string;
-  module: ClassConstructor;
-  params: ParamMetadata[];
-  pipes: ClassConstructor[];
 }
 
 export interface AdapterEvent {

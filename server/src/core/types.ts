@@ -48,3 +48,12 @@ export interface ParamMetadata {
   // If decorator is used multiple times over the same method
   sameIndex: number;
 }
+
+export interface Metadata extends MethodMetadata {
+  controller: ClassConstructor;
+  module: ClassConstructor;
+  params: ParamMetadata[];
+  paths: string[];
+  pipes: ClassConstructor[];
+  url: string;
+}

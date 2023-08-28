@@ -1,4 +1,4 @@
-import { Application, HttpStatus, Module } from '@server';
+import { APP_VERSION, Application, HttpStatus, Module } from '@server';
 import { ExpressAdapter } from '@server/express';
 import { HttpModule } from '@server/http';
 import * as request from 'supertest';
@@ -9,6 +9,9 @@ import { AppModule } from '../src/app.module';
   modules: [
     HttpModule.create(ExpressAdapter),
     AppModule,
+  ],
+  providers: [
+    { provide: APP_VERSION, useValue: 'app-version' },
   ],
 })
 class TestModule { }

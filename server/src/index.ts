@@ -1,8 +1,10 @@
 import 'reflect-metadata';
 export { Application } from './core/application';
 export * from './core/decorators';
+export { MetadataScanner } from './core/helpers';
 export * from './core/helpers/constants/http-status';
 export * from './core/helpers/constants/injectables';
+export { Context } from './core/helpers/context';
 export { createParamDecorator, Decorate } from './core/helpers/decorators';
 export * from './core/helpers/errors';
 export { PipeHandle, ProcessPipe } from './core/helpers/pipe';

@@ -1,4 +1,4 @@
-import { Application, Module } from '@server';
+import { APP_VERSION, Application, Module } from '@server';
 import { SocketIoAdapter } from '@server/socket-io';
 import { SocketsModule } from '@server/sockets';
 import { connect, Socket } from 'socket.io-client';
@@ -9,6 +9,9 @@ import { AppModule } from '../src/app.module';
   modules: [
     SocketsModule.create(SocketIoAdapter),
     AppModule,
+  ],
+  providers: [
+    { provide: APP_VERSION, useValue: 'app-version' },
   ],
 })
 class TestModule { }

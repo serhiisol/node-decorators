@@ -1,11 +1,15 @@
 import { Provider } from '@decorators/di';
 
-import { ModuleResolver, ParamValidator, Pipeline, Reflector } from './helpers';
+import { MetadataScanner, ModuleResolver, ParamValidator, Pipeline, Reflector } from './helpers';
 
 export const DEFAULT_PROVIDERS = [
   {
     provide: Reflector,
     useClass: Reflector,
+  },
+  {
+    provide: MetadataScanner,
+    useClass: MetadataScanner,
   },
   {
     provide: ModuleResolver,

@@ -1,6 +1,5 @@
-import { Application, Module } from '@server';
+import { Application, MetadataScanner, Module } from '@server';
 import { HttpModule } from '@server/http';
-import { MetadataScanner } from '@server/http';
 import { KoaAdapter } from '@server/koa';
 
 import { AppModule } from '../src/app.module';

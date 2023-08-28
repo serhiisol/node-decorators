@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@decorators/di';
 
-import { asyncMap, ClassConstructor, ContainerManager, ProcessPipe } from '../../../core';
-import { SOCKETS_ADAPTER } from './constants';
+import { asyncMap, ClassConstructor, ContainerManager, isEnum, MetadataScanner, ProcessPipe } from '../../../core';
+import { EventMetadata } from '../types';
+import { EventType, SOCKETS_ADAPTER } from './constants';
 import { EventHandler } from './event-handler';
-import { MetadataScanner } from './metadata-scanner';
 import { SocketsApplicationAdapter } from './sockets-application-adapter';
 
 @Injectable()
@@ -16,7 +16,9 @@ export class EventResolver {
   ) { }
 
   async resolve() {
-    const metadatas = this.metadataScanner.scan();
+    const metadatas = this.metadataScanner.scan<EventMetadata>()
+      .filter(meta => isEnum(EventType, meta.type));
+
     const events = [];
 
     for (const metadata of metadatas) {

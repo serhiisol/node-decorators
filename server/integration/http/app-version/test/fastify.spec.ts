@@ -1,4 +1,4 @@
-import { Application, HttpStatus, Module } from '@server';
+import { APP_VERSION, Application, HttpStatus, Module } from '@server';
 import { FastifyAdapter } from '@server/fastify';
 import { HttpModule } from '@server/http';
 import * as request from 'supertest';
@@ -9,6 +9,9 @@ import { AppModule } from '../src/app.module';
   modules: [
     HttpModule.create(FastifyAdapter),
     AppModule,
+  ],
+  providers: [
+    { provide: APP_VERSION, useValue: 'app-version' },
   ],
 })
 class TestModule { }

@@ -1,11 +1,10 @@
 import { Inject } from '@decorators/di';
 
 import { APP_SERVER, ClassConstructor, Module, ModuleWithProviders, Server } from '../../core';
-import { EventHandler, EventResolver, MetadataScanner, SOCKETS_ADAPTER, SocketsApplicationAdapter } from './helpers';
+import { EventHandler, EventResolver, SOCKETS_ADAPTER, SocketsApplicationAdapter } from './helpers';
 
 @Module({
   providers: [
-    MetadataScanner,
     EventHandler,
     EventResolver,
   ],

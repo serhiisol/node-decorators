@@ -1,11 +1,10 @@
 import { Inject } from '@decorators/di';
 
 import { APP_SERVER, ClassConstructor, Module, ModuleWithProviders, Server } from '../../core';
-import { HTTP_ADAPTER, HttpApplicationAdapter, MetadataScanner, RouteHandler, RouteResolver } from './helpers';
+import { HTTP_ADAPTER, HttpApplicationAdapter, RouteHandler, RouteResolver } from './helpers';
 
 @Module({
   providers: [
-    MetadataScanner,
     RouteHandler,
     RouteResolver,
   ],

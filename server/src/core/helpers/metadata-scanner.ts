@@ -1,32 +1,30 @@
-import { ClassConstructor, MethodMetadata } from '../types';
+import { Inject, Injectable, Optional } from '@decorators/di';
+
+import { ClassConstructor, Metadata, MethodMetadata } from '../types';
 import { addLeadingSlash, buildUrl } from '../utils';
+import { APP_VERSION, ROOT_MODULE } from './constants';
 import { Reflector } from './reflector';
 
-export abstract class MetadataScanner<Metadata extends MethodMetadata> {
+@Injectable()
+export class MetadataScanner {
   constructor(
-    private appVersion: string,
-    protected rootModule: ClassConstructor,
-    protected reflector: Reflector,
+    @Inject(APP_VERSION) @Optional() private appVersion: string,
+    @Inject(ROOT_MODULE) private rootModule: ClassConstructor,
+    private reflector: Reflector,
   ) { }
 
-  scan() {
-    return this.scanModule(this.rootModule);
+  scan<M extends Metadata>() {
+    return this.scanModule(this.rootModule) as M[];
   }
 
-  protected abstract extractExtraMetadata(controller: ClassConstructor, method: Metadata): object;
-  protected abstract filterMethod(method: Metadata): boolean;
-
-  protected scanModule(module: ClassConstructor, parentNamespaces: string[] = []): Metadata[] {
+  private scanModule(module: ClassConstructor, parentNamespaces: string[] = []): MethodMetadata[] {
     const { controllers, modules, namespace } = this.reflector.getModuleMetadata(module);
     const namespaces = [...parentNamespaces, namespace];
 
     const methods = controllers.map(controller => {
       const metadata = this.reflector.getControllerMetadata(controller);
-      const methods = metadata.methods.filter((method: Metadata) =>
-        this.filterMethod(method),
-      );
 
-      return methods.map((method: Metadata) => {
+      return metadata.methods.map((method: MethodMetadata) => {
         const params = this.reflector.getParamsMetadata(controller, method.methodName);
 
         const pipes = metadata.pipes
@@ -45,7 +43,6 @@ export abstract class MetadataScanner<Metadata extends MethodMetadata> {
           paths,
           pipes,
           url,
-          ...this.extractExtraMetadata(controller, method),
         } as Metadata;
       });
     });
