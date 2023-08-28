@@ -18,10 +18,13 @@ export abstract class MetadataScanner<Metadata extends MethodMetadata> {
 
   protected scanModule(module: ClassConstructor, parentNamespaces: string[] = []): Metadata[] {
     const { controllers, modules, namespace } = this.reflector.getModuleMetadata(module);
+    const namespaces = [...parentNamespaces, namespace];
 
-    const events = controllers.map(controller => {
+    const methods = controllers.map(controller => {
       const metadata = this.reflector.getControllerMetadata(controller);
-      const methods = metadata.methods.filter((method: Metadata) => this.filterMethod(method));
+      const methods = metadata.methods.filter((method: Metadata) =>
+        this.filterMethod(method),
+      );
 
       return methods.map((method: Metadata) => {
         const params = this.reflector.getParamsMetadata(controller, method.methodName);
@@ -31,7 +34,7 @@ export abstract class MetadataScanner<Metadata extends MethodMetadata> {
           .map(([pipe]) => pipe);
 
         const version = metadata.options?.ignoreVersion || !this.appVersion ? '' : this.appVersion;
-        const paths = [version, ...parentNamespaces, namespace, metadata.url, method.url].filter(Boolean);
+        const paths = [version, ...namespaces, metadata.url, method.url].filter(Boolean);
         const url = addLeadingSlash(buildUrl(...paths));
 
         return {
@@ -47,8 +50,13 @@ export abstract class MetadataScanner<Metadata extends MethodMetadata> {
       });
     });
 
-    const nestedEvents = modules.map(module => this.scanModule(module, [...parentNamespaces, namespace]));
+    const nestedMethods = modules.map(module =>
+      this.scanModule(module, namespaces),
+    );
 
-    return [...nestedEvents.flat(), ...events.flat()];
+    return [
+      ...nestedMethods.flat(),
+      ...methods.flat(),
+    ];
   }
 }
