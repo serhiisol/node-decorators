@@ -1,9 +1,9 @@
-import { ParamMetadata } from '../types';
+import { MethodMetadata, ParamMetadata } from '../types';
 import { extractParamNames } from '../utils';
 import { METHOD_METADATA, PARAM_TYPE_METADATA, PARAMS_METADATA, RETURN_TYPE_METADATA } from './constants';
 import { Context } from './context';
 
-export function paramDecoratorFactory(metadata: Partial<ParamMetadata>) {
+export function paramDecoratorFactory(metadata: Partial<ParamMetadata> & { [key: string]: any; }) {
   return function (target: InstanceType<any>, methodName: string, index: number) {
     const params = Reflect.getMetadata(PARAMS_METADATA, target[methodName]) ?? [];
     const argType = Reflect.getMetadata(PARAM_TYPE_METADATA, target, methodName)[index];
@@ -27,7 +27,7 @@ export function paramDecoratorFactory(metadata: Partial<ParamMetadata>) {
   };
 }
 
-export function methodDecoratorFactory(metadata: object) {
+export function methodDecoratorFactory(metadata: Partial<MethodMetadata> & { [key: string]: any; }) {
   return (target: object, methodName: string, descriptor: TypedPropertyDescriptor<any>) => {
     const methods = Reflect.getMetadata(METHOD_METADATA, target.constructor) ?? [];
     const returnType = Reflect.getMetadata(RETURN_TYPE_METADATA, target, methodName);
