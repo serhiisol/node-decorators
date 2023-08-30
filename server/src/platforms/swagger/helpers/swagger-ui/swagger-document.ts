@@ -2,10 +2,14 @@ import { Inject, Injectable, Optional } from '@decorators/di';
 import { OpenAPIV3_1 } from 'openapi-types';
 
 import { APP_VERSION, ClassConstructor, Handler, MetadataScanner, Reflector } from '../../../../core';
-import { ParameterType, RouteMetadata } from '../../../http';
+import { HttpMethodType, ParameterType, RouteMetadata } from '../../../http';
+import { SOURCE_TYPE as SOCKETS_SOURCE_TYPE } from '../../../sockets';
 import { ApiResponse, SwaggerConfig } from '../../types';
-import { METHOD_API_RESPONSE_METADATA, METHOD_API_RESPONSES_METADATA, METHOD_API_SECURITY_METADATA, PROPERTY_API_PARAMETER_METADATA, SWAGGER_CONFIG } from '../constants';
+import { METHOD_API_OPERATION_METADATA, METHOD_API_RESPONSE_METADATA, METHOD_API_RESPONSES_METADATA, METHOD_API_SECURITY_METADATA, PROPERTY_API_PARAMETER_METADATA, SWAGGER_CONFIG } from '../constants';
 import { getValidationMeta, isStandardType, pick, replaceUrlParameters, typeToContentType } from './utils';
+
+export const DEFAULT_STATUS = 200;
+export const DEFAULT_METHOD = HttpMethodType.POST;
 
 @Injectable()
 export class SwaggerDocument {
@@ -53,6 +57,10 @@ export class SwaggerDocument {
       METHOD_API_RESPONSES_METADATA,
       route.controller.prototype[route.methodName],
     );
+    const operationMeta = this.reflector.getMetadata(
+      METHOD_API_OPERATION_METADATA,
+      route.controller.prototype[route.methodName],
+    );
 
     const ctrlMethod = `${route.controller.name}.${route.methodName}`;
 
@@ -79,19 +87,27 @@ export class SwaggerDocument {
       };
     }
 
-    const preResponses = { [route.status]: { type: route.returnType, ...simpleMeta }, ...detailedMeta };
+    const preResponses = {
+      [route.status || DEFAULT_STATUS]: { type: route.returnType, ...simpleMeta },
+      ...detailedMeta,
+    };
     const responses = Object.keys(preResponses).reduce((acc, status) => ({
       ...acc, [status]: this.toResponse(preResponses[status], route.methodName),
     }), {});
 
     const security = this.securitySchemas[ctrlMethod] ? [{ [ctrlMethod]: [] }] : [];
 
+    const tag = route.source === SOCKETS_SOURCE_TYPE
+      ? `Sockets :: ${route.controller.name}`
+      : route.controller.name;
+
     return {
+      ...operationMeta,
       parameters,
       requestBody,
       responses,
       security,
-      tags: [route.controller.name],
+      tags: [tag],
     } as OpenAPIV3_1.OperationObject;
   }
 
@@ -165,11 +181,18 @@ export class SwaggerDocument {
         this.securitySchemas[`${route.controller.name}.${route.methodName}`] = meta;
       }
 
-      const url = replaceUrlParameters(route.url);
+      const rawUrl = replaceUrlParameters(route.url);
+      const url = route.source === SOCKETS_SOURCE_TYPE
+        ? `${rawUrl} => ${route.type}` + (route['event'] ? ` => ${route['event']}` : '')
+        : rawUrl;
+
+      const methodType = route.source === SOCKETS_SOURCE_TYPE
+        ? DEFAULT_METHOD
+        : route.type;
 
       this.paths[url] = {
         ...(this.paths[url] ?? {}),
-        [route.type]: this.getPath(route),
+        [methodType]: this.getPath(route),
       };
     }
   }

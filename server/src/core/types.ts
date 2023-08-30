@@ -27,6 +27,7 @@ export interface ControllerMetadata {
 export interface MethodMetadata {
   methodName: string;
   returnType: ClassConstructor;
+  source: string;
   type: string;
   url: string;
 }

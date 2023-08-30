@@ -1,20 +1,23 @@
 import { methodDecoratorFactory } from '../../../core';
-import { EventType } from '../helpers';
+import { EventType, SOURCE_TYPE } from '../helpers';
 
 export function Connection() {
   return methodDecoratorFactory({
+    source: SOURCE_TYPE,
     type: EventType.CONNECTION,
   });
 }
 
 export function Disconnect() {
   return methodDecoratorFactory({
+    source: SOURCE_TYPE,
     type: EventType.DISCONNECT,
   });
 }
 
 export function Disconnecting() {
   return methodDecoratorFactory({
+    source: SOURCE_TYPE,
     type: EventType.DISCONNECTING,
   });
 }
@@ -22,6 +25,7 @@ export function Disconnecting() {
 export function Event(event: string) {
   return methodDecoratorFactory({
     event,
+    source: SOURCE_TYPE,
     type: EventType.EVENT,
   });
 }

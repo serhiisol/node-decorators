@@ -80,7 +80,27 @@ function initializerScriptContent(jsonPath: string) {
         ],
         layout: "StandaloneLayout"
       });
+
+      onSwaggerUIReady(disableSocketsTryItOut);
     };
+
+    function onSwaggerUIReady(fn) {
+      const interval = setInterval(() => {
+        if (document.getElementById('swagger-ui')) {
+          clearInterval(interval);
+
+          fn();
+        }
+      }, 100);
+    }
+
+    function disableSocketsTryItOut() {
+      const socketEvents = [...document.querySelectorAll('[data-tag^="sockets" i]')];
+
+      for (const el of socketEvents) {
+        el.parentElement.classList.add('server-swagger-sockets');
+      }
+    }
   `;
 }
 
@@ -90,6 +110,28 @@ function indexStyles(theme: SwaggerConfig['theme']) {
 
   const styleOverrides = `
     ${styles}
+
+    .server-swagger-sockets .try-out {
+      display: none;
+    }
+
+    .server-swagger-sockets .opblock-summary-method {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .server-swagger-sockets .opblock-summary-method::after {
+      align-items: center;
+      background-color: #a748cb;
+      bottom: 0;
+      content: 'SOCKETS';
+      display: flex;
+      justify-content: center;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
   `;
 
   if (theme === 'light') {
