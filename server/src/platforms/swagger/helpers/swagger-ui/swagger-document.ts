@@ -1,8 +1,8 @@
 import { Inject, Injectable, Optional } from '@decorators/di';
 import { OpenAPIV3_1 } from 'openapi-types';
 
-import { APP_VERSION, ClassConstructor, Handler, Reflector } from '../../../../core';
-import { MetadataScanner, ParameterType, RouteMetadata } from '../../../http';
+import { APP_VERSION, ClassConstructor, Handler, MetadataScanner, Reflector } from '../../../../core';
+import { ParameterType, RouteMetadata } from '../../../http';
 import { ApiResponse, SwaggerConfig } from '../../types';
 import { METHOD_API_RESPONSE_METADATA, METHOD_API_RESPONSES_METADATA, METHOD_API_SECURITY_METADATA, PROPERTY_API_PARAMETER_METADATA, SWAGGER_CONFIG } from '../constants';
 import { getValidationMeta, isStandardType, pick, replaceUrlParameters, typeToContentType } from './utils';

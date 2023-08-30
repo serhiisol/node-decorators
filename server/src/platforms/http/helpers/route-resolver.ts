@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@decorators/di';
 
-import { asyncMap, ClassConstructor, ContainerManager, ProcessPipe } from '../../../core';
+import { asyncMap, ClassConstructor, ContainerManager, isEnum, MetadataScanner, ProcessPipe, Reflector } from '../../../core';
 import { RouteMetadata } from '../types';
-import { HTTP_ADAPTER } from './constants';
+import { HTTP_ADAPTER, HttpMethodType, METHOD_TEMPLATE_METADATA } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
-import { MetadataScanner } from './metadata-scanner';
 import { RouteHandler } from './route-handler';
 
 @Injectable()
@@ -14,10 +13,12 @@ export class RouteResolver {
     private containerManager: ContainerManager,
     private metadataScanner: MetadataScanner,
     private routeHandler: RouteHandler,
+    private reflector: Reflector,
   ) { }
 
   async resolve() {
-    const metadatas = this.metadataScanner.scan();
+    const metadatas = this.metadataScanner.scan<RouteMetadata>()
+      .filter(meta => isEnum(HttpMethodType, meta.type));
 
     const baseRoutes = metadatas.filter(meta => !meta.url.includes('*'));
     const wildcardRoutes = metadatas
@@ -33,13 +34,18 @@ export class RouteResolver {
         container.get<ProcessPipe>(pipe),
       );
 
+      const template = this.reflector.getMetadata(
+        METHOD_TEMPLATE_METADATA,
+        metadata.controller.prototype[metadata.methodName],
+      );
+
       const handler = this.routeHandler.createHandler(
         controller,
         metadata.methodName,
         metadata.params,
         routePipes,
         metadata.status,
-        metadata.template,
+        template,
       );
 
       routes.push({

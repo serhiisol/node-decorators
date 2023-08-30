@@ -14,7 +14,9 @@ export class ExpressAdapter implements HttpApplicationAdapter {
   }
 
   close() {
-    this.server?.close();
+    if (this.server.listening) {
+      this.server.close();
+    }
   }
 
   getParam(type: ParameterType, name: string, req: express.Request, res: express.Response) {

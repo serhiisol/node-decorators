@@ -1,6 +1,6 @@
-import { Application, Module } from '@server';
+import { Application, MetadataScanner, Module } from '@server';
 import { SocketIoAdapter } from '@server/socket-io';
-import { MetadataScanner, SocketsModule } from '@server/sockets';
+import { SocketsModule } from '@server/sockets';
 
 import { AppModule } from '../src/app.module';
 

@@ -21,11 +21,11 @@ export class Application {
         provide: ContainerManager,
         useValue: containerManger,
       },
-      ...DEFAULT_PROVIDERS,
       {
         provide: ROOT_MODULE,
         useValue: rootModule,
       },
+      ...DEFAULT_PROVIDERS,
     ]);
 
     const moduleResolver = await container.get<ModuleResolver>(ModuleResolver);

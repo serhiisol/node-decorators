@@ -1,18 +1,20 @@
 import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { ApiError, GLOBAL_PIPE, Handler, HttpStatus, ParamMetadata, ParamValidator, Pipeline, ProcessPipe, toStandardType } from '../../../core';
+import { GLOBAL_PIPE, Handler, HandlerCreator, HttpStatus, ParamMetadata, ParamValidator, Pipeline, ProcessPipe } from '../../../core';
 import { HTTP_ADAPTER, ParameterType } from './constants';
 import { HttpApplicationAdapter } from './http-application-adapter';
 import { HttpContext } from './http-context';
 
 @Injectable()
-export class RouteHandler {
+export class RouteHandler extends HandlerCreator {
   constructor(
     @Inject(HTTP_ADAPTER) private adapter: HttpApplicationAdapter,
     @Inject(GLOBAL_PIPE) @Optional() private pipes: ProcessPipe[] = [],
     private pipeline: Pipeline,
     private paramValidator: ParamValidator,
-  ) { }
+  ) {
+    super();
+  }
 
   createHandler(
     controller: InstanceType<any>,
@@ -70,47 +72,7 @@ export class RouteHandler {
     };
   }
 
-  message(message: unknown) {
-    if (message instanceof ApiError) {
-      return message.toObject();
-    }
-
-    if (message instanceof Error) {
-      return { message: message.message };
-    }
-
-    return message;
-  }
-
-  async params(metadata: ParamMetadata[], context: HttpContext, args: unknown[]) {
-    const params$ = metadata
-      .sort((a, b) => a.index - b.index)
-      .map(param => param.factory
-        ? param.factory(context)
-        : this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args),
-      );
-    const params = await Promise.all(params$);
-
-    return params.map(paramFn => toStandardType(paramFn()));
-  }
-
-  status(message: unknown, status: number) {
-    if (message instanceof ApiError) {
-      return message.status;
-    }
-
-    if (message instanceof Error) {
-      return HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-
-    return status;
-  }
-
-  private async runHandler(handler: Handler) {
-    try {
-      return await handler();
-    } catch (error) {
-      return error;
-    }
+  getParam(param: ParamMetadata, args: unknown[]): unknown {
+    return this.adapter.getParam(param.paramType as ParameterType, param.paramName, ...args);
   }
 }
