@@ -8,7 +8,7 @@ import { Reflector } from './reflector';
 @Injectable()
 export class MetadataScanner {
   constructor(
-    @Inject(APP_VERSION) @Optional() private appVersion: string,
+    @Inject(APP_VERSION) @Optional() private appVersion = '',
     @Inject(ROOT_MODULE) private rootModule: ClassConstructor,
     private reflector: Reflector,
   ) { }
@@ -17,7 +17,7 @@ export class MetadataScanner {
     return this.scanModule(this.rootModule) as M[];
   }
 
-  private scanModule(module: ClassConstructor, parentNamespaces: string[] = []): MethodMetadata[] {
+  private scanModule(module: ClassConstructor, parentNamespaces = []) {
     const { controllers, modules, namespace } = this.reflector.getModuleMetadata(module);
     const namespaces = [...parentNamespaces, namespace];
 
@@ -31,7 +31,8 @@ export class MetadataScanner {
           .filter(([, methodName]) => !methodName || methodName === method.methodName)
           .map(([pipe]) => pipe);
 
-        const version = metadata.options?.ignoreVersion || !this.appVersion ? '' : this.appVersion;
+        const version = metadata.options?.ignoreVersion ? '' : this.appVersion;
+
         const paths = [version, ...namespaces, metadata.url, method.url].filter(Boolean);
         const url = addLeadingSlash(buildUrl(...paths));
 
@@ -43,7 +44,7 @@ export class MetadataScanner {
           paths,
           pipes,
           url,
-        } as Metadata;
+        };
       });
     });
 

@@ -75,6 +75,6 @@ export class EventHandler extends HandlerCreator {
   }
 
   getParam(param: ParamMetadata, args: unknown[]): unknown {
-    return this.adapter.getParam(param.paramType as ParameterType, param.sameIndex, ...args);
+    return this.adapter.getParam(param.paramType as ParameterType, param.callIndex, ...args);
   }
 }

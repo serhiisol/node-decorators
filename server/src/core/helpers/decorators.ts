@@ -20,7 +20,7 @@ export function paramDecoratorFactory(metadata: Partial<ParamMetadata>) {
     params
       .filter((param: ParamMetadata) => param.paramType === metadata.paramType)
       .forEach((param: ParamMetadata, index: number) => {
-        param.sameIndex = index;
+        param.callIndex = index;
       });
 
     Reflect.defineMetadata(PARAMS_METADATA, params, target[methodName]);

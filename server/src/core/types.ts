@@ -38,15 +38,14 @@ export interface ParamMetadata {
   // argument name defined in the function
   argName?: string;
   argType?: Handler | ClassConstructor;
+  // If decorator is used multiple times over the same method
+  callIndex: number;
   factory?: (context: any) => Promise<any> | any;
   index: number;
   methodName: string;
   paramName: string;
   paramType: string;
   paramValidator?: Validator;
-
-  // If decorator is used multiple times over the same method
-  sameIndex: number;
 }
 
 export interface Metadata extends MethodMetadata {
