@@ -22,6 +22,10 @@ export class SocketIoAdapter implements SocketsApplicationAdapter {
     }
   }
 
+  disconnect(socket: Socket) {
+    socket.disconnect();
+  }
+
   emit(socket: Socket, event: string, message: unknown) {
     socket.emit(event, message);
   }
@@ -34,7 +38,7 @@ export class SocketIoAdapter implements SocketsApplicationAdapter {
         ns.on(EventType.CONNECTION, socket => event.handler(socket, EventType.CONNECTION));
       }
 
-      if ([EventType.DISCONNECT, EventType.DISCONNECTING].includes(event.type as EventType)) {
+      if (event.type === EventType.DISCONNECT) {
         ns.on(EventType.CONNECTION, socket => {
           socket.on(event.type, (...args) => event.handler(socket, event.type, ...args));
         });

@@ -34,6 +34,10 @@ export class SocketsModule {
     return this.adapter.close();
   }
 
+  getAdapter<Adapter extends SocketsApplicationAdapter>() {
+    return this.adapter as Adapter;
+  }
+
   getHttpServer() {
     return this.server;
   }

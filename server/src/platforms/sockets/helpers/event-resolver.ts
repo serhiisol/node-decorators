@@ -31,6 +31,7 @@ export class EventResolver {
       const handler = this.eventHandler.createHandler(
         controller,
         metadata.methodName,
+        metadata.type as EventType,
         metadata.params,
         eventPipes,
       );

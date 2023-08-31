@@ -90,6 +90,8 @@ export function Decorate(key: string, value: unknown) {
 
     Reflect.defineMetadata(key, value, metaTarget, descriptor ? undefined : propertyKey);
 
-    return descriptor ?? target;
+    if (descriptor) {
+      return descriptor;
+    }
   };
 }

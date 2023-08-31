@@ -46,7 +46,7 @@ describe('Socket.io :: Events', () => {
     });
   });
 
-  it('registers `disconnect` + `disconnecting` events', (done) => {
+  it('registers `disconnect` events', (done) => {
     socket = connect(`http://localhost:${port}`);
 
     socket.on('connect', () => {
@@ -54,7 +54,6 @@ describe('Socket.io :: Events', () => {
       socket.disconnect();
 
       setTimeout(() => {
-        expect(seq.push).toBeCalledWith('disconnecting');
         expect(seq.push).toBeCalledWith('disconnect');
 
         done();

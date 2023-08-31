@@ -34,6 +34,10 @@ export class HttpModule {
     return this.adapter.close();
   }
 
+  getAdapter<Adapter extends HttpApplicationAdapter>() {
+    return this.adapter as Adapter;
+  }
+
   getHttpServer() {
     return this.server;
   }
