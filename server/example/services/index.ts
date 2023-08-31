@@ -1,1 +1,2 @@
-export { PostsService } from './posts.service';
+export { Message } from './message';
+export { MessagesService } from './messages.service';

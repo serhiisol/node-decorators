@@ -7,7 +7,7 @@ import { SocketIoAdapter } from '@server/socket-io';
 import { SocketsModule } from '@server/sockets';
 import { SwaggerModule } from '@server/swagger';
 
-import { EventsModule, MiscModule, PostsModule } from './modules';
+import { EventsModule, MessagesModule, MiscModule } from './modules';
 import { ServerPipe } from './pipes';
 
 @Module({
@@ -19,10 +19,10 @@ import { ServerPipe } from './pipes';
       description: 'Decorators Example App',
       title: '@decorators/server',
     }),
-    MiscModule,
-    PostsModule,
     SocketsModule.create(SocketIoAdapter),
     EventsModule,
+    MessagesModule,
+    MiscModule,
   ],
   providers: [
     {
