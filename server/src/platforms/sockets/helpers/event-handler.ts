@@ -1,8 +1,8 @@
 import { Inject, Injectable, Optional } from '@decorators/di';
 
-import { GLOBAL_PIPE, Handler, HandlerCreator, ParamMetadata, ParamValidator, Pipeline, ProcessPipe } from '../../../core';
+import { GLOBAL_PIPE, HandlerCreator, ParamMetadata, ParamValidator, Pipeline, ProcessPipe } from '../../../core';
 import { AckFunction } from '../types';
-import { ParameterType, SOCKETS_ADAPTER } from './constants';
+import { EventType, ParameterType, SOCKETS_ADAPTER } from './constants';
 import { SocketsApplicationAdapter } from './sockets-application-adapter';
 import { SocketsContext } from './sockets-context';
 
@@ -20,9 +20,10 @@ export class EventHandler extends HandlerCreator {
   createHandler(
     controller: InstanceType<any>,
     methodName: string,
+    eventType: EventType,
     params: ParamMetadata[],
     pipes: ProcessPipe[],
-  ): Handler {
+  ) {
     const handler = controller[methodName].bind(controller);
 
     return async (...args: unknown[]) => {
@@ -62,6 +63,10 @@ export class EventHandler extends HandlerCreator {
 
       if (message instanceof Error) {
         await context.emit('error', this.message(message));
+
+        if (eventType === EventType.CONNECTION) {
+          await this.adapter.disconnect(socket());
+        }
 
         return;
       }

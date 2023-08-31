@@ -42,13 +42,10 @@ export class ParamValidator {
 
   private async useMetadataValidator(type: ClassConstructor, meta: ParamMetadata, arg: any) {
     const instance = plainToInstance(type, arg);
+    const errors = await validate(instance, { validationError: { target: false } });
 
-    if (this.hasDecorators(type)) {
-      const errors = await validate(instance, { validationError: { target: false } });
-
-      if (errors.length) {
-        throw new BadRequestError(`Invalid param "${meta.argName}".`, errors);
-      }
+    if (errors.length) {
+      throw new BadRequestError(`Invalid param "${meta.argName}".`, errors);
     }
   }
 }

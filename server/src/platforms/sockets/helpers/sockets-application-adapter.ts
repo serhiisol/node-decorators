@@ -6,6 +6,7 @@ export abstract class SocketsApplicationAdapter {
   abstract type: string;
   abstract attachServer(server: Server): void;
   abstract close(): void;
+  abstract disconnect(socket: unknown): Promise<void> | void;
   abstract emit(socket: unknown, event: string, message: unknown): Promise<void> | void;
   abstract events(events: AdapterEvent[]): void;
   abstract getParam(type: ParameterType, index: number, ...args: any[]): Promise<() => unknown> | (() => unknown);

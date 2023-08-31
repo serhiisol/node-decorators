@@ -15,13 +15,6 @@ export function Disconnect() {
   });
 }
 
-export function Disconnecting() {
-  return methodDecoratorFactory({
-    source: SOURCE_TYPE,
-    type: EventType.DISCONNECTING,
-  });
-}
-
 export function Event(event: string) {
   return methodDecoratorFactory({
     event,

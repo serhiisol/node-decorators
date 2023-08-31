@@ -1,5 +1,5 @@
 import { Controller } from '@server';
-import { Connection, Disconnect, Disconnecting, Event } from '@server/sockets';
+import { Connection, Disconnect, Event } from '@server/sockets';
 
 import { Sequence } from './sequence';
 
@@ -15,11 +15,6 @@ export class AppController {
   @Disconnect()
   disconnect() {
     this.sequence.push('disconnect');
-  }
-
-  @Disconnecting()
-  disconnecting() {
-    this.sequence.push('disconnecting');
   }
 
   @Event('message')
