@@ -1,8 +1,10 @@
 import * as FastifyView from '@fastify/view';
 import { Application } from '@server';
+import { ExpressAdapter } from '@server/express';
 import { HttpModule } from '@server/http';
 import { SocketsModule } from '@server/sockets';
 import { json } from 'body-parser';
+import { renderFile } from 'ejs';
 import * as koaBodyparser from 'koa-bodyparser';
 import * as koaViews from 'koa-views';
 import { join } from 'path';
@@ -24,11 +26,17 @@ async function bootstrap() {
   } else if (process.env.USE_KOA) {
     module.use(koaViews(join(__dirname, 'views'), {
       autoRender: false,
-      extension: 'ejs',
+      extension: 'html',
+      map: {
+        html: 'ejs',
+      },
     }));
     module.use(koaBodyparser());
   } else {
-    module.set('view engine', 'ejs');
+    const expressApp = module.getAdapter<ExpressAdapter>().app;
+
+    expressApp.engine('html', renderFile);
+    module.set('view engine', 'html');
     module.set('views', join(__dirname, 'views'));
     module.use(json());
   }

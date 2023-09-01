@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+  <meta
+    name="color-scheme"
+    content="light dark"
+  >
+
+  <title>Example</title>
+
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+  />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://ga.jspm.io/npm:es-module-shims@1.7.0/dist/es-module-shims.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "axios": "https://esm.sh/axios?dev",
+        "react": "https://esm.sh/react?dev",
+        "react-dom/client": "https://esm.sh/react-dom/client?dev",
+        "socket.io-client": "https://esm.sh/socket.io-client?dev"
+      }
+    }
+  </script>
+</head>
+
+<body class="h-screen bg-gray-100 dark:bg-gray-900 dark:text-white">
+  <div
+    id="root"
+    class="h-full"
+  ></div>
+</body>
+
+<script
+  type="text/babel"
+  data-type="module"
+>
+  import React, { createContext, useContext, useState, useReducer, useEffect, useRef } from 'react';
+  import { createRoot } from 'react-dom/client';
+  import axios from 'axios';
+  import { connect } from 'socket.io-client';
+
+  // Data Layer
+
+  const StoreContext = createContext(null);
+
+  const messagesReducer = (messages, action) => {
+    if (action.type === 'add_messages') {
+      return [...messages, ...action.messages];
+    }
+
+    if (action.type === 'remove_messages') {
+      return [];
+    }
+
+    if (action.type === 'add_message') {
+      return [...messages, action.message];
+    }
+
+    return messages;
+  };
+
+  function StoreProvider({ children }) {
+    const [token, setAuthorized] = useState(localStorage.getItem('token'));
+    const [messages, updateMessages] = useReducer(messagesReducer, [])
+
+    const state = {
+      token,
+      setAuthorized(token) {
+        if (token) {
+          localStorage.setItem('token', token);
+        } else {
+          updateMessages({ type: 'remove_messages' });
+          localStorage.removeItem('token');
+        }
+
+        return setAuthorized(token);
+      },
+      messages,
+      updateMessages,
+    };
+
+    return <StoreContext.Provider value={state}>
+      {children}
+    </StoreContext.Provider>;
+  }
+
+  const socketClient = {
+    socket: null,
+    connect(token) {
+      if (this.socket) {
+        return;
+      }
+
+      this.socket = connect(`http://localhost:3000/v1/events`, {
+        extraHeaders: {
+          'authorization': `Bearer ${token}`
+        }
+      });
+    },
+    disconnect() {
+      this.socket?.disconnect();
+      this.socket = null;
+    }
+  };
+
+  // UI
+
+  function Login() {
+    const { setAuthorized } = useContext(StoreContext);
+
+    const [login, setLogin] = useState('user');
+    const [password, setPassword] = useState('password');
+    const [error, setError] = useState(null);
+
+    async function authorize() {
+      axios.post('/login', { login, password })
+        .then(({ data }) => setAuthorized(data.token))
+        .catch(({ response }) => setError(response.data.message));
+    }
+
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="bg-white dark:bg-gray-800 w-96 p-8 rounded shadow">
+          <h2 className="text-2xl mb-4">Login</h2>
+          <p className="text-xs">Username: user; Password: password</p>
+          <div className="mb-4">
+            <label>Username</label>
+            <input
+              className="dark:bg-gray-800 mt-1 p-2 w-full border rounded-md"
+              value={login}
+              onChange={e => setLogin(e.target.value)}
+            />
+          </div>
+          <div className="mb-4">
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              className="dark:bg-gray-800 mt-1 p-2 w-full border rounded-md"
+              onChange={e => setPassword(e.target.value)}
+            />
+          </div>
+          {error && <p className="text-red-300 mb-4 capitalize">{error}</p>}
+          <button
+            className="text-white w-full bg-blue-500 p-2 rounded-md hover:bg-blue-600 active:bg-blue-300 disabled:bg-gray-300"
+            onClick={authorize}
+            disabled={!login || !password}
+          >Login</button>
+        </div>
+      </div>
+    )
+  }
+
+  function Messages() {
+    const { messages, token, updateMessages } = useContext(StoreContext);
+    const scroll = useRef();
+    const previous = useRef(messages);
+
+    function getMessages() {
+      axios.get('/v1/messages', { headers: { 'authorization': `Bearer ${token}` } })
+        .then(({ data }) => {
+          updateMessages({
+            messages: data,
+            type: 'add_messages',
+          });
+        });
+    }
+
+    useEffect(getMessages, []);
+
+    useEffect(() => {
+      if (messages.length !== previous.current.length) {
+        previous.current = messages;
+
+        setTimeout(() => scroll.current.scrollTop = scroll.current.scrollHeight);
+      }
+    }, [messages]);
+
+    return (
+      <div
+        className="h-96 p-3 overflow-y-auto"
+        ref={scroll}
+      >
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className="pb-3"
+          >
+            <div className="px-2 w-fit bg-blue-500 rounded text-white">
+              <span className="text-md">{message.message}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  function MessageForm() {
+    const { token, updateMessages } = useContext(StoreContext)
+
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+      socketClient.connect(token);
+      socketClient.socket.on('message', message => {
+        updateMessages({
+          type: 'add_message',
+          message,
+        });
+      })
+    });
+
+    function sendMessage() {
+      socketClient.socket.emit('message', { message }, message => {
+        updateMessages({
+          type: 'add_message',
+          message,
+        });
+      });
+    }
+
+    return (
+      <div className="px-3 py-3 dark:bg-slate-800">
+        <div className="flex flex-row items-center space-x-2">
+          <input
+            className="w-full block p-1.5 text-sm rounded bg-transparent border"
+            onChange={e => setMessage(e.target.value)}
+          />
+
+          <button
+            className="px-3 py-2 text-xs text-center text-white bg-blue-500 rounded hover:bg-blue-800 disabled:opacity-50"
+            onClick={sendMessage}
+            disabled={!message}
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  function Chat() {
+    const { setAuthorized } = useContext(StoreContext);
+
+    return (
+      <div className="bg-white dark:bg-slate-800 border border-gray-200 rounded-lg shadow overflow-hidden w-1/2">
+        <div className="border-b-2 border-b-gray-200 p-3 flex justify-between items-center">
+          <a
+            className="hover:text-blue-500"
+            href="/swagger"
+            target="_blank"
+          >
+            Messages Swagger
+          </a>
+
+          <button
+            className="dark:text-white bg-transparent hover:text-gray-500"
+            onClick={() => setAuthorized(false)}
+          >
+            <span className="text-lg material-symbols-outlined">
+              logout
+            </span>
+          </button>
+        </div>
+
+        <Messages />
+        <MessageForm />
+      </div>
+    );
+  }
+
+  function App() {
+    const { token } = useContext(StoreContext);
+
+    return (
+      <div className="h-full flex items-center justify-center">
+        {token ? <Chat /> : <Login />}
+      </div>
+    );
+  }
+
+  createRoot(document.getElementById('root')).render(
+    <StoreProvider>
+      <App />
+    </StoreProvider>
+  );
+</script>
+
+</html>
